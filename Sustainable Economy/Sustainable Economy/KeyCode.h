@@ -1,3 +1,6 @@
+#ifndef KeyCode_h
+#define KeyCode_h
+
 #include "Player.h"
 
 class KeyCode
@@ -17,3 +20,4 @@ private:
 	Machine* machine;
 };
 
+#endif

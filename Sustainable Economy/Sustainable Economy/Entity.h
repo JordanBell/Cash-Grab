@@ -1,7 +1,9 @@
+#ifndef Entity_h
+#define Entity_h
+
 #include "SDL.h"
 #include "toolkit.h"
 
-#pragma once
 class Entity
 {
 public:
@@ -24,3 +26,4 @@ protected:
 	void incCycle(void);
 };
 
+#endif

@@ -1,9 +1,11 @@
+#ifndef Game_h
+#define Game_h
+
 #include <vector>
 #include "KeyCode.h"
 #include "Entity.h"
 #include "Player.h"
 
-#pragma once
 class Game
 {
 	KeyCode keys;
@@ -29,4 +31,6 @@ private:
 	void render();
 	void poll();
 };
+
+#endif
 

@@ -49,7 +49,7 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	SDL_BlitSurface(source, clip, destination, &offset);
 }
 
-int main(int argc, char* args[])
+/*int main(int argc, char* args[])
 {
 	//<start>
 	if (init() == false)
@@ -78,4 +78,4 @@ int main(int argc, char* args[])
 	deinit();
 
 	return 0;
-}
+}*/

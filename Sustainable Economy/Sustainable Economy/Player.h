@@ -1,3 +1,6 @@
+#ifndef Player_h
+#define Player_h
+
 #include "Entity.h"
 
 class Player : public Entity {
@@ -26,3 +29,5 @@ private:
 	//Defined in cpp
 	void set_skin();
 };
+
+#endif
