@@ -1,0 +1,6 @@
+*.vcxproj
+*.xcodeproj
+*.sdf
+*.sln
+*.suo
+Debug/
