@@ -23,7 +23,7 @@ protected:
 	SDL_Surface* sprite_sheet;
 	
 	virtual void set_skin() = 0;
-	void incCycle(void);
+	virtual void incCycle(void);
 };
 
 #endif

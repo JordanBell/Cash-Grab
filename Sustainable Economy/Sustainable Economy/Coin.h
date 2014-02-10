@@ -20,6 +20,9 @@ public:
     void update();
     void render();
     
+protected:
+    void set_skin();
+    
 private:
     static SDL_Surface *image;
 };

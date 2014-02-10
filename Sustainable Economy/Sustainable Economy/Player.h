@@ -12,7 +12,7 @@ public:
 	
 	//De/Constructors
 	Player(void);
-	Player(SDL_Surface* spriteSheet) : Entity(spriteSheet), direction(DOWN) {Player();}
+	Player(SDL_Surface* spriteSheet) : Entity(spriteSheet), direction(DOWN) { Player(); }
 	~Player() {}
 
 	//Defined Here

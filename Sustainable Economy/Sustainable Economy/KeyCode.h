@@ -2,6 +2,7 @@
 #define KeyCode_h
 
 #include "Player.h"
+#include "Machine.h"
 
 class KeyCode
 {

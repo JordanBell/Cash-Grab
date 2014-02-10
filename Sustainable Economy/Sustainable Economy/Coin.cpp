@@ -8,7 +8,7 @@
 
 #include "Coin.h"
 
-Coin::Coin(SDL_Surface* sheet)
+Coin::Coin(SDL_Surface* sheet) : Entity(sheet)
 {
     if (!image)
         image = sheet;
@@ -20,6 +20,11 @@ void Coin::update()
 }
 
 void Coin::render()
+{
+    
+}
+
+void Coin::set_skin()
 {
     
 }
