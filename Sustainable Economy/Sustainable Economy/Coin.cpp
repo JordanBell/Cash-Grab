@@ -21,6 +21,15 @@ Coin::Coin(void)
 	}
 }
 
+void Coin::update()
+{
+    
+}
+
+void Coin::render()
+{
+    
+}
 
 Coin::~Coin(void)
 {

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef machine_h
+#define machine_h
+
 #include "entity.h"
 class Machine :
 	public Entity
@@ -14,3 +16,4 @@ private:
 	void set_skin();
 };
 
+#endif

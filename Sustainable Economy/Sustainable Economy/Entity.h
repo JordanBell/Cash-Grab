@@ -1,3 +1,6 @@
+#ifndef Entity_h
+#define Entity_h
+
 #include "SDL.h"
 #include "toolkit.h"
 
@@ -27,3 +30,4 @@ protected:
 	void inc_cycle(void) { cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; };
 };
 
+#endif

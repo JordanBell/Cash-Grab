@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __SustainableEconomy__Coin__
+#define __SustainableEconomy__Coin__
+
 #include "entity.h"
 class Coin :
 	public Entity
@@ -15,4 +17,6 @@ protected:
 
 	void set_skin();
 };
+
+#endif
 

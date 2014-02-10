@@ -1,4 +1,6 @@
-#pragma once
+#ifndef environment_h
+#define environment_h
+
 #include "entity.h"
 class Environment :
 	public Entity
@@ -14,3 +16,4 @@ private:
 	void set_skin();
 };
 
+#endif

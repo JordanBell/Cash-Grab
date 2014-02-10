@@ -1,7 +1,14 @@
+#ifndef game_h
+#define game_h
+
 #include <vector>
 #include "KeyCode.h"
 #include "Entity.h"
 #include "Player.h"
+#include "Coin.h"
+#include "Environment.h"
+#include "Prompt.h"
+#include "Machine.h"
 
 #pragma once
 class Game
@@ -34,3 +41,4 @@ private:
 	void poll();
 };
 
+#endif

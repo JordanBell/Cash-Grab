@@ -1,3 +1,6 @@
+#ifndef player_h
+#define player_h
+
 #include "Entity.h"
 
 class Player : public Entity {
@@ -25,3 +28,5 @@ private:
 
 	void set_skin() : skin( sprites[direction][cycle] );
 };
+
+#endif

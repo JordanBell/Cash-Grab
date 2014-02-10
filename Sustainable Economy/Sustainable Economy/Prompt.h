@@ -1,4 +1,6 @@
-#pragma once
+#ifndef prompt_h
+#define prompt_h
+
 #include "entity.h"
 class Prompt :
 	public Entity
@@ -14,3 +16,4 @@ private:
 	void set_skin();
 };
 
+#endif
