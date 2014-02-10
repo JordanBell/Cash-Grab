@@ -2,7 +2,7 @@
 #include <string>
 #include "toolkit.h"
 
-bool init()
+bool SDL_init()
 {
 	//Init Subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) return false;
@@ -49,10 +49,10 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	SDL_BlitSurface(source, clip, destination, &offset);
 }
 
-/*int main(int argc, char* args[])
+int main(int argc, char* args[])
 {
 	//<start>
-	if (init() == false)
+	if (SDL_init() == false)
 	{
 		return 1;
 	}
@@ -78,4 +78,4 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	deinit();
 
 	return 0;
-}*/
+}

@@ -1,11 +1,11 @@
 #pragma once
 #include "entity.h"
-class Environment :
+class Machine :
 	public Entity
 {
 public:
-	Environment(void);
-	~Environment(void);
+	Machine(void);
+	~Machine(void);
 
 	void update();
 	void render();

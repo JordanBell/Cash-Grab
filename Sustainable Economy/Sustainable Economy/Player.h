@@ -1,6 +1,3 @@
-#ifndef Player_h
-#define Player_h
-
 #include "Entity.h"
 
 class Player : public Entity {
@@ -9,25 +6,22 @@ public:
 	static const int RIGHT	= 1;
 	static const int DOWN	= 2;
 	static const int LEFT	= 3;
+
+	static const int STILL	= 1;
 	
 	//De/Constructors
 	Player(void);
-	Player(SDL_Surface* spriteSheet) : Entity(spriteSheet), direction(DOWN) { Player(); }
-	~Player() {}
-
-	//Defined Here
-	void face_direction (int direction) {direction = direction;};
+	~Player() { }
 	
-	//Defined in cpp
+	void face_direction (int direction) {moving(false); direction = direction;};
+	void stop_moving () {moving = true;};
 	void update();
 	void render();
 
 private:
-	int direction;
-	SDL_Rect* sprites[ 4 ][ 3 ];
+	int direction; //The direction being faced by the player
+	bool moving;
+	SDL_Rect* sprites[ 4 ][ 3 ]; //The 12 sprite locations in the sprite sheet
 
-	//Defined in cpp
-	void set_skin();
+	void set_skin() : skin( sprites[direction][cycle] );
 };
-
-#endif

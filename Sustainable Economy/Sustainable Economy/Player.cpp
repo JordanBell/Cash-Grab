@@ -1,8 +1,12 @@
 #include "Player.h"
 
 //Initialise the size and position of each sprite clip
-Player::Player(void)
+Player::Player(void) : direction(DOWN), moving(false)
 {
+	delay = 200;
+	max_cycles = 3;
+
+	//Initialise the clips of the sprite_sheet
 	int clip_w = (sprite_sheet->w / 3);
 	int clip_h = (sprite_sheet->h / 4);
 
@@ -14,21 +18,17 @@ Player::Player(void)
 
 			clip->x = clip_w * j;
 			clip->y = clip_h * i,
-				
+			
 			clip->w = clip_w;
 			clip->h = clip_h;
 		}
 	}
 }
 
-void Player::set_skin()
-{
-	skin = sprites[direction][cycle];
-}
-
 void Player::update()
 {
-	
+	inc_cycle();
+	cycle = moving ? cycle : STILL;
 }
 
 void Player::render()

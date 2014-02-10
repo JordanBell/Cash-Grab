@@ -1,30 +1,18 @@
-//
-//  Coin.h
-//  SustainableEconomy
-//
-//  Created by Tristan Bell on 09/02/2014.
-//  Copyright (c) 2014 Tristan Bell. All rights reserved.
-//
-
-#ifndef __SustainableEconomy__Coin__
-#define __SustainableEconomy__Coin__
-
-#include "SDL.h"
-#include "Entity.h"
-
-class Coin : public Entity
+#pragma once
+#include "entity.h"
+class Coin :
+	public Entity
 {
 public:
-    Coin(SDL_Surface* sheet);
-    
-    void update();
-    void render();
-    
+	Coin(void);
+	~Coin(void);
+
+	void update();
+	void render();
+
 protected:
-    void set_skin();
-    
-private:
-    static SDL_Surface *image;
+	SDL_Rect* sprites[ 8 ]; //The 8 sprite locations in the sprite sheet
+
+	void set_skin();
 };
 
-#endif

@@ -21,7 +21,7 @@ bool load_files() //Load files, and check for the success of each one
 	else return true;
 }
 
-void deinit()
+void SDL_deinit()
 {
 	//Free all of this
 	SDL_FreeSurface(player_sheet);
@@ -38,13 +38,13 @@ void deinit()
 
 int main(int argc, char* args[])
 {
-	if (!init()) return 1;
+	if (!SDL_init()) return 1;
 
 	//Stuff
 	Game game(player_sheet, coin_sheet, environment, money_machine, prompt);
 	game.run();
 	
-	deinit();
+	SDL_deinit();
 
 	return 0;
 }

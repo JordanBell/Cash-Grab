@@ -1,11 +1,11 @@
 #pragma once
 #include "entity.h"
-class Environment :
+class Prompt :
 	public Entity
 {
 public:
-	Environment(void);
-	~Environment(void);
+	Prompt(void);
+	~Prompt(void);
 
 	void update();
 	void render();
