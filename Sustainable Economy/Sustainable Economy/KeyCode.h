@@ -6,7 +6,7 @@
 class KeyCode
 {
 public:
-	KeyCode(Player* player, Machine* machine) : player(player), machine(machine) { }
+	KeyCode(Player* player, Machine* _machine) : player(player), machine(_machine) { }
 	KeyCode(void) {}
 	~KeyCode(void) {}
 

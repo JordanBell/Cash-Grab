@@ -48,34 +48,3 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 
 	SDL_BlitSurface(source, clip, destination, &offset);
 }
-
-int main(int argc, char* args[])
-{
-	//<start>
-	if (SDL_init() == false)
-	{
-		return 1;
-	}
-	if (load_files() == false)
-	{
-		return 1;
-	}
-	//</start>
-
-	message = TTF_RenderText_Solid(font, "Testing out some good ol' TTL!", textColor);
-
-	apply_surface(0, 0, background, screen);
-	apply_surface(50, 150, message, screen);
-
-	if (SDL_Flip(screen) == -1)
-	{
-		return 1;
-	}
-
-	SDL_Delay(2000);
-
-	//Quit SDL
-	deinit();
-
-	return 0;
-}

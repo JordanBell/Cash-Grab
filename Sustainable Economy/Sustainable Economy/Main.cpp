@@ -41,8 +41,10 @@ int main(int argc, char* args[])
 	if (!SDL_init()) return 1;
 
 	//Stuff
-	Game game(player_sheet, coin_sheet, environment, money_machine, prompt);
-	game.run();
+	//Game game(player_sheet, coin_sheet, environment, money_machine, prompt);
+	//game.run();
+
+	Coin test_coin(200, 100, 200, 200);
 	
 	SDL_deinit();
 

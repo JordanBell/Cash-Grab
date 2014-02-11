@@ -14,7 +14,7 @@ public:
 	Entity(void) : cycle(0) { }
 	~Entity(void) { SDL_FreeSurface(sprite_sheet); }
 
-	static void set_sheet(SDL_Surface* sheet) { sprite_sheet = sheet };
+	static void set_sheet(SDL_Surface* sheet) { sprite_sheet = sheet; };
 
 	virtual void update() = 0;
 	void render();

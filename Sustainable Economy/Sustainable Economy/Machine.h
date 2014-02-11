@@ -8,8 +8,9 @@ class Machine :
 public:
 	Machine(void);
 	~Machine(void);
-
+	
 	void update();
+	void dispense();
 
 private:
 	void set_skin();

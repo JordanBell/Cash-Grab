@@ -2,6 +2,9 @@
 
 Coin::Coin(void)
 {
+	x = ex;
+	y = ey;
+	
 	delay = 200;
 	max_cycles = 8;
 
