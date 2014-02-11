@@ -12,7 +12,7 @@ public:
 
 protected:
 	SDL_Rect* sprites[ 8 ]; //The 8 sprite locations in the sprite sheet
-	void set_skin();
+	void set_skin() { skin = sprites[cycle]; };
 
 private:
 	static int const square_size = 32;
