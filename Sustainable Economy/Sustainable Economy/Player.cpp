@@ -30,9 +30,3 @@ void Player::update()
 	inc_cycle();
 	cycle = moving ? cycle : STILL;
 }
-
-void Player::render()
-{
-	set_skin();
-	apply_surface(x, y, sprite_sheet, screen, skin);
-}

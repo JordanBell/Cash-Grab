@@ -16,17 +16,17 @@ public:
 	Player(void);
 	~Player() { }
 	
-	void face_direction (int direction) {moving(false); direction = direction;};
-	void stop_moving () {moving = true;};
+	void face_direction (int direction) {moving = true; direction = direction;};
+	void stop_moving () {moving = false;};
+
 	void update();
-	void render();
 
 private:
 	int direction; //The direction being faced by the player
 	bool moving;
 	SDL_Rect* sprites[ 4 ][ 3 ]; //The 12 sprite locations in the sprite sheet
 
-	void set_skin() : skin( sprites[direction][cycle] );
+	void set_skin() { skin = sprites[direction][cycle]; };
 };
 
 #endif

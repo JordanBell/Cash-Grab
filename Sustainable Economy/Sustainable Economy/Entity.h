@@ -12,12 +12,12 @@ public:
 
 	//Constructors
 	Entity(void) : cycle(0) { }
-	~Entity(void) { }
+	~Entity(void) { SDL_FreeSurface(sprite_sheet); }
 
 	static void set_sheet(SDL_Surface* sheet) { sprite_sheet = sheet };
 
 	virtual void update() = 0;
-	virtual void render() = 0;
+	void render();
 
 protected:
 	int delay; //The Delay before cycling through each sprite. Make smaller to speed up the animation

@@ -1,16 +1,7 @@
 #include "Entity.h"
 
-
-Entity::Entity(void)
+void Entity::render()
 {
-}
-
-
-Entity::~Entity(void)
-{
-}
-
-void Entity::incCycle(void)
-{
-	cycle = (cycle == 2) ? 0 : cycle+1;
+	set_skin();
+	apply_surface(x, y, sprite_sheet, screen, skin);    
 }

@@ -10,7 +10,6 @@ public:
 	~Environment(void);
 
 	void update();
-	void render();
 
 private:
 	void set_skin();

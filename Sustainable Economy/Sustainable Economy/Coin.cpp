@@ -1,34 +1,23 @@
 #include "Coin.h"
 
-
 Coin::Coin(void)
 {
 	delay = 200;
-	max_cycles = 3;
+	max_cycles = 8;
 
-	//Initialise the clips of the sprite_sheet
-	//clip = 32
-	
-	for (int j = 0; j < 3; j++)
+	//Initialise the clips of the sprite_sheet	
+	for (int i = 0; i < 8; i++)
 	{
-		SDL_Rect* clip = sprites[i][j];
+		SDL_Rect* clip = sprites[i];
 
-		clip->x = clip_w * j;
-		clip->y = clip_h * i,
-			
-		clip->w = clip_w;
-		clip->h = clip_h;
+		clip->x = clip->y = square_size * i,
+		clip->w = clip->h = square_size;
 	}
 }
 
 void Coin::update()
 {
-    
-}
-
-void Coin::render()
-{
-    
+    inc_cycle();
 }
 
 Coin::~Coin(void)
