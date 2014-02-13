@@ -6,21 +6,36 @@
 class Coin : public Entity
 {
 public:
-	Coin(int start_x, int start_y, int end_x, int end_y) : sx(start_x), sy(start_y), ex(end_x), ey(end_y) { Coin(); }
+	Coin(int start_x, int start_y, int end_x, int end_y);
 	Coin(void);
-	~Coin(void);
+	~Coin(void) {}
 
 	void update();
 
 protected:
-	SDL_Rect* sprites[ 8 ]; //The 8 sprite locations in the sprite sheet
 	void set_skin() { skin = sprites[cycle]; };
 
 private:
-	static int const square_size = 32;
-	int sx, sy, ex, ey;
-};
+	//Init
+	void init_sheet();
+	void init_kin();
 
+	//Graphics
+	static const int square_size = 32;
+	SDL_Rect* sprites[ 8 ];
+
+	//Kinematics
+	struct XY {int x; int y;};
+	XY start, end, planar, velocity;
+
+	int initial_vertical;
+	bool moving;
+	int angle;
+	static const int speed = 200;
+	static const int gravity = 1;
+
+	void move();
+};
 
 #endif
 
