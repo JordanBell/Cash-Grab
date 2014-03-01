@@ -62,6 +62,11 @@ Environment::Environment(void)
 	apply_surface(screen->w - (2*square_size), screen->h - (2*square_size), sprite_sheet, entire_image, shiny_block);
 }
 
+void Environment::update()
+{
+    
+}
+
 void Environment::render()
 {
 	apply_surface(x, y, entire_image, screen);

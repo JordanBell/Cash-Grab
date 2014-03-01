@@ -4,11 +4,11 @@
 Game::Game(SDL_Surface* p_image, SDL_Surface* c_image, SDL_Surface* e_image, SDL_Surface* m_image, SDL_Surface* pr_image)
 {
 	//Set the sprite_sheets of each Entity
-	Player.set_sheet(p_image);
-	Coin.set_sheet(c_image);
-	Environment.set_sheet(e_image);
-	Machine.set_sheet(m_image);
-	Prompt.set_sheet(pr_image);
+	Player::set_sheet(p_image);
+	Coin::set_sheet(c_image);
+	Environment::set_sheet(e_image);
+	Machine::set_sheet(m_image);
+	Prompt::set_sheet(pr_image);
 	
 	init();
 }
