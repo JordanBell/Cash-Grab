@@ -1,6 +1,10 @@
 //The headers
-#include <string>
 #include "toolkit.h"
+
+SDL_Surface* screen;
+TTF_Font* font;
+SDL_Color textColor = { 0, 0, 0 };
+SDL_Event event;
 
 bool SDL_init()
 {
@@ -46,5 +50,5 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	offset.x = x;
 	offset.y = y;
 
-	SDL_BlitSurface(source, clip, destination, &offset);
+	SDL_BlitSurface(source, NULL, destination, &offset);
 }
