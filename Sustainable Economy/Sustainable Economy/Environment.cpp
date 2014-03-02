@@ -1,6 +1,6 @@
 #include "Environment.h"
 
-Environment::Environment(void)
+Environment::Environment(int x, int y) : Entity(x, y)
 {
 	//Set the bounds for the clips from the sprite_sheet
 	for (int i = 0; i < 8; i++)

@@ -7,7 +7,7 @@ class Coin : public Entity
 {
 public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
-	Coin(void);
+	Coin(int x, int y);
 	~Coin(void) {}
 
 	void update();
@@ -25,8 +25,7 @@ private:
 	void init_kin();
 
 	//Graphics
-	static const int square_size = 32;
-	SDL_Rect* sprites[ 8 ];
+    SDL_Rect* sprites[ 8 ];
 
 	//Kinematics
 	struct XY {int x; int y;};

@@ -6,7 +6,7 @@ class Prompt :
 	public Entity
 {
 public:
-	Prompt(void);
+	Prompt(int x, int y);
 	~Prompt(void);
 
 	void update();

@@ -1,5 +1,6 @@
 #include "toolkit.h"
 #include "Coin.h"
+#include "Machine.h"
 //#include "Game.h"
 
 SDL_Surface* player_sheet, *coin_sheet, *environment, *money_machine, *prompt;
@@ -28,8 +29,8 @@ bool load_files() //Load files, and check for the success of each one
 	else if (coin_sheet    == NULL)	return false;
 	else if (environment   == NULL)	return false;
 	else if (money_machine == NULL)	return false;
-	else if (prompt		   == NULL)	return false;
-	else if (font		   == NULL)	return false;
+	else if (prompt		  == NULL)	return false;
+	else if (font		  == NULL)	return false;
 	else return true;
 }
 
@@ -56,9 +57,10 @@ int main(int argc, char* args[])
 	//Game game(player_sheet, coin_sheet, environment, money_machine, prompt);
 	//game.run();
 
-	Coin test_coin(200, 100, 200, 200);
+	Machine testMachine(5, 6);
+    testMachine.test_stuff();
     
-    printf("Succeeded");
+    printf("\nSucceeded\n");
 	
 	SDL_deinit();
 

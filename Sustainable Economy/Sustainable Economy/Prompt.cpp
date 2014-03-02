@@ -1,7 +1,7 @@
 #include "Prompt.h"
 
 
-Prompt::Prompt(void)
+Prompt::Prompt(int x, int y) : Entity(x, y)
 {
 }
 

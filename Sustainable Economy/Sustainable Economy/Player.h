@@ -13,7 +13,7 @@ public:
 	static const int STILL	= 1;
 	
 	//De/Constructors
-	Player(void);
+	Player(int x, int y);
 	~Player() { }
 	
 	void face_direction (int direction) {moving = true; direction = direction;};

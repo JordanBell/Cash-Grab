@@ -7,7 +7,7 @@ class Environment :
 	public Entity
 {
 public:
-	Environment(void);
+	Environment(int x, int y);
 	~Environment(void);
 
 	void update();

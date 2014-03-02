@@ -11,7 +11,7 @@ public:
 	int x, y;
 
 	//Constructors
-	Entity(void) : cycle(0) { }
+	Entity(int x, int y) : cycle(0), x(x), y(y) { }
 	~Entity(void) { SDL_FreeSurface(sprite_sheet); }
 
 	static void set_sheet(SDL_Surface* sheet) { sprite_sheet = sheet; };

@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "SDL.h"
 
+std::vector<Entity*> Game::entities;
+
 Game::Game(SDL_Surface* p_image, SDL_Surface* c_image, SDL_Surface* e_image, SDL_Surface* m_image, SDL_Surface* pr_image)
 {
 	//Set the sprite_sheets of each Entity
@@ -16,11 +18,11 @@ Game::Game(SDL_Surface* p_image, SDL_Surface* c_image, SDL_Surface* e_image, SDL
 void Game::init()
 {
 	//Initialise all ENTITIES
-	player = new Player();		  
-	coin = new Coin();
-	environment = new Environment();	
-	machine = new Machine();
-	prompt = new Prompt();
+	player = new Player(0, 0);
+	coin = new Coin(0, 0);
+	environment = new Environment(0, 0);
+	machine = new Machine(0, 0);
+	prompt = new Prompt(0, 0);
 	
 	entities.push_back(environment);
 	entities.push_back(machine);
@@ -92,3 +94,14 @@ void Game::poll()
 {
 
 }
+
+void Game::addEntity(Entity* entity)
+{
+    entities.push_back(entity);
+}
+
+
+
+
+
+

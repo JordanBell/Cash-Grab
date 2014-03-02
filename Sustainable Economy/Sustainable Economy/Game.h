@@ -10,7 +10,7 @@
 #include "Prompt.h"
 #include "Machine.h"
 
-#pragma once
+#define TILE_SIZE 32
 class Game
 {
 	KeyCode keys;
@@ -26,10 +26,11 @@ public:
 	Game(SDL_Surface* p_image, SDL_Surface* c_image, SDL_Surface* e_image, SDL_Surface* m_image, SDL_Surface* pr_image);
 	~Game(void) {}
 	void run();
+    static void addEntity(Entity* entity);
 
 private:
 	bool running;
-	std::vector<Entity*> entities;
+	static std::vector<Entity*> entities;
 
 	void init();
 

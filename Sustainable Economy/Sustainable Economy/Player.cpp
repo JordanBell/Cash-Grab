@@ -1,7 +1,7 @@
 #include "Player.h"
 
 //Initialise the size and position of each sprite clip
-Player::Player(void) : direction(DOWN), moving(false)
+Player::Player(int x, int y) : Entity(x, y), direction(DOWN), moving(false)
 {
 	delay = 200;
 	max_cycles = 3;

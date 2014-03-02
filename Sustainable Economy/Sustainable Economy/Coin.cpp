@@ -2,17 +2,18 @@
 #include <cmath>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "Game.h"
 
-Coin::Coin(int start_x, int start_y, int end_x, int end_y)
+Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Entity(x, y)
 { 
 	start.x = start_x;
 	start.y = start_y;
 	end.x = end_x;
 	end.y = end_y;
-	Coin(); 
+	Coin(start_x, start_y);
 }
 
-Coin::Coin(void) : moving(true)
+Coin::Coin(int x, int y) : Entity(x, y), moving(true)
 {
 	delay = 200;
 	max_cycles = 8;
@@ -30,8 +31,8 @@ void Coin::init_sheet()
 	{
 		SDL_Rect* clip = new SDL_Rect();
 
-		clip->x = clip->y = square_size * i;
-		clip->w = clip->h = square_size;
+		clip->x = clip->y = TILE_SIZE * i;
+		clip->w = clip->h = TILE_SIZE;
         
         sprites[i] = clip;
 	}
