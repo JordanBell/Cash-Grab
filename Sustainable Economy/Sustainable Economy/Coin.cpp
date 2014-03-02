@@ -28,10 +28,12 @@ void Coin::init_sheet()
 {
 	for (int i = 0; i < 8; i++)
 	{
-		SDL_Rect* clip = sprites[i];
+		SDL_Rect* clip = new SDL_Rect();
 
-		clip->x = clip->y = square_size * i,
+		clip->x = clip->y = square_size * i;
 		clip->w = clip->h = square_size;
+        
+        sprites[i] = clip;
 	}
 }
 

@@ -8,17 +8,21 @@ SDL_Event event;
 
 bool SDL_init()
 {
+    printf("subsystems\n");
 	//Init Subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) return false;
-
+    
+    printf("screen\n");
 	//Init Screen
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
 	SDL_WM_SetCaption("SDL Tutorials", NULL);
 	if (screen == NULL) return false;
-
+    
+    printf("sdl_ttf\n");
 	//Init SDL_ttf
 	if (TTF_Init() == -1) return false;
-
+    
+    printf("load files\n");
 	return load_files();
 }
 

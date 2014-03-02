@@ -17,6 +17,10 @@ protected:
 
 private:
 	//Init
+    
+    /**
+     * Init sheet.
+     */
 	void init_sheet();
 	void init_kin();
 

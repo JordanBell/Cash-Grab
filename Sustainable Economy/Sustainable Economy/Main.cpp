@@ -1,4 +1,5 @@
 #include "toolkit.h"
+#include "Coin.h"
 //#include "Game.h"
 
 SDL_Surface* player_sheet, *coin_sheet, *environment, *money_machine, *prompt;
@@ -12,6 +13,16 @@ bool load_files() //Load files, and check for the success of each one
 	prompt =		load_image("Press Enter.png");
 	font =			TTF_OpenFont("joystix monospace.ttf", 28); //Custom font import; size 28
 
+    /*
+    printf("\n");
+    
+    if (player_sheet  == NULL)	printf("player null\n");
+	if (coin_sheet    == NULL)	printf("coin null\n");
+	if (environment   == NULL)	printf("environment null\n");
+	if (money_machine == NULL)	printf("machine null\n");
+	if (prompt		   == NULL)	printf("prompt null\n");
+	if (font		   == NULL)	printf("font null\n");
+     */
 
 		 if (player_sheet  == NULL)	return false;
 	else if (coin_sheet    == NULL)	return false;
@@ -45,7 +56,9 @@ int main(int argc, char* args[])
 	//Game game(player_sheet, coin_sheet, environment, money_machine, prompt);
 	//game.run();
 
-	//Coin test_coin(200, 100, 200, 200);
+	Coin test_coin(200, 100, 200, 200);
+    
+    printf("Succeeded");
 	
 	SDL_deinit();
 
