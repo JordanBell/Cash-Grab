@@ -1,8 +1,11 @@
 #include "Machine.h"
+#include "Resources.h"
 #include "Game.h"
 
 Machine::Machine(int x, int y) : Entity(x, y), coins()
 {
+	sprite_sheet = g_resources->GetMoneyMachineSheet();
+
     dispenser_pos = std::pair<int, int>(x, (y + 2) * TILE_SIZE);
     
     for (int i = 0; i < NUM_SLOTS; i++) {
@@ -27,7 +30,7 @@ void Machine::update()
 void Machine::dispense()
 {
     Coin *coin = new Coin(x, y, 0, 0);
-    Game::addEntity(coin);
+    g_game->addEntity(coin);
 }
 
 void Machine::set_skin()

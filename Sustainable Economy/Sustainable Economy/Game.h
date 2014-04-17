@@ -12,7 +12,17 @@
 
 #define TILE_SIZE 32
 class Game
-{
+{	
+public:
+	Game();
+	~Game(void) {}
+	void run();
+    void addEntity(Entity* entity);
+
+private:
+	//
+	/// Fields
+	//
 	KeyCode keys;
 
 	//Entities
@@ -21,25 +31,20 @@ class Game
 	Environment *environment;
 	Machine *machine;
 	Prompt *prompt;
-	
-public:
-	Game(SDL_Surface* p_image, SDL_Surface* c_image, SDL_Surface* e_image, SDL_Surface* m_image, SDL_Surface* pr_image);
-	~Game(void) {}
-	void run();
-    static void addEntity(Entity* entity);
-
-private:
+	std::vector<Entity*> m_Entities;
 	bool running;
-	static std::vector<Entity*> entities;
 
-	void init();
+	//
+	/// Functions
+	//
+	void Update();
+		void HandleKeys();
+		void CheckCollisions();
+	void Render();
 
-	void update();
-		void handle_keys();
-		void check_collisions();
-	void render();
-
-	void poll();
+	void Poll();
 };
+
+extern Game* g_game;
 
 #endif

@@ -1,5 +1,6 @@
 //The headers
 #include "toolkit.h"
+#include "Resources.h"
 
 SDL_Surface* screen;
 TTF_Font* font;
@@ -8,22 +9,41 @@ SDL_Event event;
 
 bool SDL_init()
 {
-    printf("subsystems\n");
 	//Init Subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) return false;
     
-    printf("screen\n");
 	//Init Screen
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
 	SDL_WM_SetCaption("SDL Tutorials", NULL);
 	if (screen == NULL) return false;
     
-    printf("sdl_ttf\n");
 	//Init SDL_ttf
 	if (TTF_Init() == -1) return false;
     
-    printf("load files\n");
 	return load_files();
+}
+
+void SDL_deinit()
+{
+	//Free all of this
+	delete g_resources;
+
+	//Quit all of that
+	TTF_Quit();
+	SDL_Quit();
+}
+
+bool load_files() //Load files, and check for the success of each one
+{
+	try {
+		g_resources = new Resources();
+	}
+	catch (std::exception &e) {
+		printf(e.what());
+		return false;
+	}
+
+	return true;
 }
 
 SDL_Surface* load_image(std::string filename)
@@ -54,5 +74,5 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	offset.x = x;
 	offset.y = y;
 
-	SDL_BlitSurface(source, NULL, destination, &offset);
+	SDL_BlitSurface(source, clip, destination, &offset);
 }

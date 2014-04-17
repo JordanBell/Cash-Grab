@@ -3,9 +3,12 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Game.h"
+#include "Resources.h"
 
 Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Entity(x, y)
 { 
+	sprite_sheet = g_resources->GetCoinSheet();
+
 	start.x = start_x;
 	start.y = start_y;
 	end.x = end_x;

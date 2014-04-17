@@ -11,7 +11,6 @@
 #define SCREEN_BPP 32
 
 extern SDL_Surface* screen;
-extern TTF_Font* font;
 extern SDL_Color textColor;
 extern SDL_Event event;
 

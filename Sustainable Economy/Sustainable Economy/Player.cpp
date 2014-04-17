@@ -1,8 +1,11 @@
 #include "Player.h"
+#include "Resources.h"
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) : Entity(x, y), direction(DOWN), moving(false)
 {
+	sprite_sheet = g_resources->GetPlayerSheet();
+
 	delay = 200;
 	max_cycles = 3;
 

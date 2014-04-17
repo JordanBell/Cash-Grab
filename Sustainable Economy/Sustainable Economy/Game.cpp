@@ -1,65 +1,53 @@
 #include "Game.h"
 #include "SDL.h"
+Game* g_game = NULL;
 
-std::vector<Entity*> Game::entities;
-
-Game::Game(SDL_Surface* p_image, SDL_Surface* c_image, SDL_Surface* e_image, SDL_Surface* m_image, SDL_Surface* pr_image)
+Game::Game() : running(true)
 {
-	//Set the sprite_sheets of each Entity
-	Player::set_sheet(p_image);
-	Coin::set_sheet(c_image);
-	Environment::set_sheet(e_image);
-	Machine::set_sheet(m_image);
-	Prompt::set_sheet(pr_image);
-	
-	init();
-}
+	// Initialise all ENTITIES
+	g_environment = new Environment(0, 0);
+	environment = g_environment;
 
-void Game::init()
-{
-	//Initialise all ENTITIES
-	player = new Player(0, 0);
+	// Change this later
+	/*player = new Player(0, 0);
 	coin = new Coin(0, 0);
-	environment = new Environment(0, 0);
 	machine = new Machine(0, 0);
-	prompt = new Prompt(0, 0);
+	prompt = new Prompt(0, 0);*/
 	
-	entities.push_back(environment);
-	entities.push_back(machine);
-	entities.push_back(coin);
-	entities.push_back(player);
-	entities.push_back(prompt);
+	m_Entities.push_back(environment);
+	/*m_Entities.push_back(machine);
+	m_Entities.push_back(coin);
+	m_Entities.push_back(player);
+	m_Entities.push_back(prompt);*/
 
-	//Set up the key responses
-	keys = KeyCode(player, machine);
+	// Set up the key responses
+	//keys = KeyCode(player, machine);
 }
 
 void Game::run()
-{
-	init();
-	
+{	
 	while (running)
 	{
-		update();
-		render();
-		poll();
+		Update();
+		Render();
+		Poll();
 	}
 }
 
-void Game::update()
+void Game::Update()
 {
-	handle_keys();
+	//HandleKeys();
 	
-	for (Entity* e : entities) { e->update(); }
-	check_collisions();
+	for (Entity* e : m_Entities) { e->update(); }
+	CheckCollisions();
 }
 
-void Game::check_collisions()
+void Game::CheckCollisions()
 {
 	//Player/Coin collisions
 }
 
-void Game::handle_keys()
+void Game::HandleKeys()
 {
 	//Get the keystates
 	Uint8 *keystates = SDL_GetKeyState(NULL);
@@ -77,7 +65,7 @@ void Game::handle_keys()
 	if (keystates[SDLK_RETURN]) keys.enter();
 }
 
-void Game::render()
+void Game::Render()
 {
 	//For all entities, render images
 		//Change sprites
@@ -87,21 +75,23 @@ void Game::render()
 			//Remove touched coins
 			//If coins are non-stationary, animate them along trajectory
 
-	for (Entity* e : entities) { e->render(); }
+	for (Entity* e : m_Entities) { e->render(); }
+	SDL_Flip(screen);
 }
 
-void Game::poll()
+void Game::Poll()
 {
-
+	SDL_Event event;
+	while(SDL_PollEvent(&event))
+	{
+		if (event.type == SDL_QUIT)
+		{
+			running = false;
+		}
+	}
 }
 
 void Game::addEntity(Entity* entity)
 {
-    entities.push_back(entity);
+    m_Entities.push_back(entity);
 }
-
-
-
-
-
-
