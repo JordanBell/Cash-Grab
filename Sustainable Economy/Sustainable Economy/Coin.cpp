@@ -20,7 +20,6 @@ Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Entity(start_x, sta
 	max_cycles = 8 * LOOP_SPEED;
 	
 	// Get the random number generator going
-	srand(time(NULL));
 	
 	//Initialise the kinematics fields
 	InitKin();
@@ -31,7 +30,7 @@ Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Entity(start_x, sta
 
 void Coin::InitKin()
 {
-	moving = true; //Testing only. Skips animation
+	moving = true; //Testing only. FALSE skips animation
 
 	CalcInitPlanar();
 	CalcInitXAngle();
@@ -41,8 +40,9 @@ void Coin::InitKin()
 void Coin::CalcInitPlanar(void)
 {
 	//Randomise the angle of initial trajectory.
-			//angle = (rand() % 35) + 10; //Angle between 10 and 45 degrees
-			angle = 85;
+			angle = (rand() % 65) + 20; //Angle between 20 and 85 degrees
+			//printf("%d\n", rand());
+			//angle = 45;
 	angle *= 2 * M_PI / 360;	//Convert to Radians
 
 	//Get the planar x and y velocities (planar being the movement in a 3D space, where y is vertical and x is horizontal
@@ -73,18 +73,16 @@ void Coin::CalcInitXAngle(void)
 void Coin::CalcInitVelocities(void)
 {
 	//Use previous information to calculate the velocity.
-	velocity.x = planar.x * cos(alpha);
-	initial_vertical = velocity.y = (planar.x * sin(alpha) + planar.y) * -1;
+	angleInducedVelocity.x = planar.x * cos(alpha);
+	angleInducedVelocity.y = planar.x * sin(alpha);
+	velocity.x = angleInducedVelocity.x;
+	velocity.y = (angleInducedVelocity.y + planar.y) * -1; // Multiply by -1 as the axis for the coordinates are swapped
 }
 
 float Coin::ComputeVariableGravity()
 {
 	// It's just a cold, hard equation. Just plug in the values.
-	/*printf("GravConst: %f", gravityStruct.gravityConstant);
-	printf("Height: %f", height);
-	printf("Min: %f", gravityStruct.min);
-	printf("Denominator: %f", (speed * speed * sin(angle) * sin(angle)));*/
-	return gravityStruct.gravityConstant * height / (speed * speed * sin(angle) * sin(angle)) + gravityStruct.min;
+	return gravityStruct.gravityConstant * height * height / (speed * speed * sin(angle) * sin(angle)) + gravityStruct.min;
 }
 
 void Coin::InitSheet()
@@ -114,20 +112,20 @@ void Coin::update(int delta)
 
 void Coin::move()
 {
-	/*printf("Moving... ");
+	/*printf("Moving...\n");
+	printf("Trajectory Angle: %f\n", angle);
+	printf("Destination Angle: %f\n", alpha);
 	printf("px: %f, py: %f\n", planar.x, planar.y);
 	printf("vx: %f, vy: %f\n", velocity.x, velocity.y);
-	printf("x: %f, y: %f\n", x, y);
 	printf("height: %f\n\n", height);*/
 
 	//planar.y changes based on height
-	printf("Gravity Computed as: %f\n", ComputeVariableGravity());
-	planar.y -= ComputeVariableGravity();
+	if (VARY_GRAVITY) planar.y -= ComputeVariableGravity();
+	else planar.y -= gravityStruct.mid * 10;
 	height += planar.y;
 
 	if (height < 0) //Has hit the ground
 	{
-		printf("CRASH\n");
 		moving = false;
 		/*x = end.x;
 		y = end.y;*/
@@ -135,8 +133,7 @@ void Coin::move()
 	}
 	else
 	{
-		velocity.y = planar.y* -3/4;
-		//velocity.y *= -1;
+		velocity.y = angleInducedVelocity.y + planar.y* -3/4;
 		x += velocity.x;
 		y += velocity.y;
 	}

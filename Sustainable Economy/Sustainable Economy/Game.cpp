@@ -1,41 +1,54 @@
 #include "Game.h"
 #include "SDL.h"
+#include <time.h>
 Game* g_game = NULL;
 
 Game::Game() : running(true)
 {
 	delta = 0;
+	srand(time(NULL));
 
 	// Initialise all ENTITIES
 	g_environment = new Environment(0, 0);
 	environment = g_environment;
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
-	coin = new Coin(160, 320, 480, 320);
+	coin = new Coin((8*32), (8*32), (4*32), (12*32));
 	
-	// Change these later
-	/*prompt = new Prompt(0, 0);*/
+	// Add this later
+	//prompt = new Prompt(0, 0);
 	
 	m_Entities.push_back(environment);
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
-	m_Entities.push_back(coin);
-	/*m_Entities.push_back(prompt);*/
+	//m_Entities.push_back(coin);
+	//m_Entities.push_back(prompt);
 
 	
-	/*m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));*/
+	addABunchOfCoins();
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
+}
+
+Game::~Game(void)
+{
+	// Delete all entities
+}
+
+
+void Game::addABunchOfCoins()
+{
+	m_Entities.push_back(new Coin((10*32), (8*32), (14*32), (12*32)));
+	m_Entities.push_back(new Coin((8*32), (8*32), (4*32), (12*32)));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
 }
 
 void Game::run()

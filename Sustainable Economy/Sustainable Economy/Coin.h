@@ -6,6 +6,7 @@
 #define LOOP_SPEED 6
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
+#define VARY_GRAVITY true
 
 class Coin : public Entity
 {
@@ -43,10 +44,10 @@ private:
 		to determine the gravity at a given height. */
 		float gravityConstant; 
 
-		Gravity::Gravity() : mid(0.5), 
+		Gravity::Gravity() : mid(0.05), 
 							 rangeRatio(0.5),  
 							 min(mid - (rangeRatio * mid / 2)),
-							 gravityConstant(2 * (rangeRatio * mid) * mid) {}
+							 gravityConstant(4 * (rangeRatio * mid) * mid) {}
 	} gravityStruct;
 
 	//Graphics
@@ -54,7 +55,7 @@ private:
 
 	//Kinematics
 	struct XY {float x; float y;};
-	XY start, end, planar, velocity;
+	XY start, end, planar, velocity, angleInducedVelocity;
 	float initial_vertical;
 	
 	bool moving;

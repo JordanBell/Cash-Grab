@@ -17,9 +17,10 @@ class Game
 {	
 public:
 	Game();
-	~Game(void) {}
+	~Game(void);
 	void run();
     void addEntity(Entity* entity);
+	void addABunchOfCoins();
 
 private:
 	//
@@ -32,6 +33,7 @@ private:
 	//Entities
 	Player *player;
 	Coin *coin;
+	Coin *coin2;
 	Environment *environment;
 	Machine *machine;
 	Prompt *prompt;

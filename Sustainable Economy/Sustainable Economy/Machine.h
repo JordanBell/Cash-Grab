@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define NUM_SLOTS 8
+#define NUM_SLOTS 6
 
 class Machine :
 	public Entity
