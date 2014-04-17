@@ -5,6 +5,7 @@
 Machine::Machine(int x, int y) : Entity(x, y), coins()
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
+	skin = NULL; //Use the entire image
 
     dispenser_pos = std::pair<int, int>(x, (y + 2) * TILE_SIZE);
     
@@ -22,15 +23,16 @@ Machine::~Machine(void)
 {
 }
 
-void Machine::update()
+void Machine::update(int delta)
 {
     
 }
 
 void Machine::dispense()
 {
-    Coin *coin = new Coin(x, y, 0, 0);
-    g_game->addEntity(coin);
+	printf("DISPENSING");
+    /*Coin *coin = new Coin(x, y, 0, 0);
+    g_game->addEntity(coin);*/
 }
 
 void Machine::set_skin()

@@ -4,17 +4,16 @@
 #include "Player.h"
 #include "Machine.h"
 
-class KeyCode
+struct KeyCode
 {
-public:
-	KeyCode(Player* player, Machine* _machine) : player(player), machine(_machine) { }
+	KeyCode(Player* _player, Machine* _machine) : player(_player), machine(_machine) { }
 	KeyCode(void) {}
 	~KeyCode(void) {}
 
-	void up()			{player->face_direction(Player::UP);}
-	void down()			{player->face_direction(Player::DOWN);}
-	void left()			{player->face_direction(Player::LEFT);}
-	void right()		{player->face_direction(Player::RIGHT);}
+	void up()			{player->move(Player::UP);}
+	void down()			{player->move(Player::DOWN);}
+	void left()			{player->move(Player::LEFT);}
+	void right()		{player->move(Player::RIGHT);}
 	void no_direction()	{player->stop_moving();}
 	void enter()		{machine->dispense();}
 private:

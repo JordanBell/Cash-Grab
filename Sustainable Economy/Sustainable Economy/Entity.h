@@ -14,7 +14,7 @@ public:
 	Entity(int x, int y) : cycle(0), x(x), y(y) { }
 	~Entity(void) { SDL_FreeSurface(sprite_sheet); }
 
-	virtual void update() = 0;
+	virtual void update(int delta) = 0;
 	virtual void render();
 
 protected:
@@ -25,7 +25,7 @@ protected:
 	SDL_Surface* sprite_sheet;
 	
 	virtual void set_skin() = 0;
-	void inc_cycle(void) { cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; };
+	virtual void IncCycle(void) { cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; }
 };
 
 #endif

@@ -9,8 +9,10 @@
 #include "Environment.h"
 #include "Prompt.h"
 #include "Machine.h"
+#include "Timer.h"
 
 #define TILE_SIZE 32
+#define FRAME_RATE 60
 class Game
 {	
 public:
@@ -24,6 +26,8 @@ private:
 	/// Fields
 	//
 	KeyCode keys;
+	Timer m_FPSTimer;
+	int delta; // The time since the last frame
 
 	//Entities
 	Player *player;
@@ -41,8 +45,9 @@ private:
 		void HandleKeys();
 		void CheckCollisions();
 	void Render();
-
 	void Poll();
+
+	int RegulateFrameRate();
 };
 
 extern Game* g_game;

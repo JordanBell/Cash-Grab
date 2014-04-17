@@ -29,11 +29,6 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	shiny_block = sprites[2][4];
 }
 
-void Environment::update()
-{
-    
-}
-
 void Environment::render()
 {
 	//Build the floor

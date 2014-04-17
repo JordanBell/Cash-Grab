@@ -10,7 +10,7 @@ public:
 	Coin(int x, int y);
 	~Coin(void) {}
 
-	void update();
+	void update(int delta);
 
 protected:
 	void set_skin() { skin = sprites[cycle]; };
@@ -21,8 +21,8 @@ private:
     /**
      * Init sheet.
      */
-	void init_sheet();
-	void init_kin();
+	void InitSheet();
+	void InitKin();
 
 	//Graphics
     SDL_Rect* sprites[ 8 ];

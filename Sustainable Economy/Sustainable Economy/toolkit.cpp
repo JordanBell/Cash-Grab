@@ -6,6 +6,20 @@ SDL_Surface* screen;
 TTF_Font* font;
 SDL_Color textColor = { 0, 0, 0 };
 SDL_Event event;
+bool inFullScreen;
+
+void toggleScreenFormat()
+{
+	screen = inFullScreen ? 
+			 SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE) :
+			 SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN);
+	inFullScreen = !inFullScreen;
+}
+
+void exitFullScreen()
+{
+	if (inFullScreen) screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
+}
 
 bool SDL_init()
 {
@@ -13,8 +27,9 @@ bool SDL_init()
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) return false;
     
 	//Init Screen
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
-	SDL_WM_SetCaption("SDL Tutorials", NULL);
+	inFullScreen = true;
+	toggleScreenFormat();
+	SDL_WM_SetCaption("Sustainable Economy", NULL);
 	if (screen == NULL) return false;
     
 	//Init SDL_ttf
@@ -54,7 +69,7 @@ SDL_Surface* load_image(std::string filename)
 	loadedImage = IMG_Load(filename.c_str());
 	if (loadedImage != NULL)
 	{
-		optimizedImage = SDL_DisplayFormat(loadedImage);
+		optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
 		SDL_FreeSurface(loadedImage);
 
 		if (optimizedImage != NULL)

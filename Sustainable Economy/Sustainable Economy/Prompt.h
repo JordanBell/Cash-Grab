@@ -9,7 +9,7 @@ public:
 	Prompt(int x, int y);
 	~Prompt(void);
 
-	void update();
+	void update(int delta);
 
 private:
 	void set_skin();

@@ -18,7 +18,7 @@ public:
 	Machine(int x, int y);
 	~Machine(void);
 	
-	void update();
+	void update(int delta);
 	void dispense();
 
 private:

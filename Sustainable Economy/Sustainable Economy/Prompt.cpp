@@ -11,7 +11,7 @@ Prompt::~Prompt(void)
 {
 }
 
-void Prompt::update()
+void Prompt::update(int delta)
 {
     
 }

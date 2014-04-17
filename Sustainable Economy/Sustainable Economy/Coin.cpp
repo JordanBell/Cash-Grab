@@ -22,13 +22,13 @@ Coin::Coin(int x, int y) : Entity(x, y), moving(true)
 	max_cycles = 8;
 
 	//Initialise the kinematics fields
-	init_kin();
+	InitKin();
 
 	//Initialise the clips of the sprite_sheet
-	init_sheet();
+	InitSheet();
 }
 
-void Coin::init_sheet()
+void Coin::InitSheet()
 {
 	for (int i = 0; i < 8; i++)
 	{
@@ -41,7 +41,7 @@ void Coin::init_sheet()
 	}
 }
 
-void Coin::init_kin()
+void Coin::InitKin()
 {
 	moving = false; //Testing only. Skips animation
 
@@ -66,9 +66,9 @@ void Coin::init_kin()
 	initial_vertical = velocity.y = planar.x * sin(alpha);
 }
 
-void Coin::update()
+void Coin::update(int delta)
 {
-    inc_cycle();
+    IncCycle();
 
 	if (moving) move();
 	else

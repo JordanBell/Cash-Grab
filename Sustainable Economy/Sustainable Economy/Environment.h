@@ -10,7 +10,7 @@ public:
 	Environment(int x, int y);
 	~Environment(void);
 
-	void update();
+	void update(int delta) {}
 	void render();
 
 private:
