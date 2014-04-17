@@ -8,7 +8,7 @@
 class Entity
 {
 public:
-	int x, y;
+	float x, y;
 
 	//Constructors
 	Entity(int x, int y) : cycle(0), x(x), y(y) { }

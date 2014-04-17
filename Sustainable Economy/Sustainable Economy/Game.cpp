@@ -11,15 +11,28 @@ Game::Game() : running(true)
 	environment = g_environment;
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
+	coin = new Coin(160, 320, 480, 320);
+	
 	// Change these later
-	/*coin = new Coin(0, 0);
-	prompt = new Prompt(0, 0);*/
+	/*prompt = new Prompt(0, 0);*/
 	
 	m_Entities.push_back(environment);
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
-	/*m_Entities.push_back(coin);
-	m_Entities.push_back(prompt);*/
+	m_Entities.push_back(coin);
+	/*m_Entities.push_back(prompt);*/
+
+	
+	/*m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));
+	m_Entities.push_back(new Coin(160, 160, 480, 160));*/
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
@@ -31,10 +44,12 @@ void Game::run()
 	{
 		m_FPSTimer.start();
 
+		// Triumvirate Game loop processes
 		Update();
 		Render();
 		Poll();
 
+		// Regulate the framerate, and save the delta time.
 		delta = RegulateFrameRate();
 	}
 }
@@ -94,20 +109,15 @@ void Game::HandleKeys()
 
 void Game::Render()
 {
-	//For all entities, render images
-		//Change sprites
-			//Change player sprite
-			//Change coin sprite
-		//Update animations
-			//Remove touched coins
-			//If coins are non-stationary, animate them along trajectory
-
+	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }
+	// Flip (update) the screen
 	SDL_Flip(screen);
 }
 
 void Game::Poll()
 {
+	// Respond to events
 	SDL_Event event;
 	while(SDL_PollEvent(&event))
 	{
