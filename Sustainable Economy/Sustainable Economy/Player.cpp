@@ -2,7 +2,7 @@
 #include "Resources.h"
 
 //Initialise the size and position of each sprite clip
-Player::Player(int x, int y) : Entity(x, y), direction(DOWN), moving(false)
+Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false)
 {
 	sprite_sheet = g_resources->GetPlayerSheet();
 
@@ -54,4 +54,6 @@ void Player::update(int delta)
 		x -= (this->direction == LEFT)	* pixelsToMove;
 		x += (this->direction == RIGHT) * pixelsToMove;
 	}
+    
+    Collidable::update(delta);
 }

@@ -7,7 +7,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Entity(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
+Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
 { 
 	sprite_sheet = g_resources->GetCoinSheet();
 	max_cycles = 8 * LOOP_SPEED;
@@ -146,6 +146,8 @@ void Coin::update(int delta)
 		x = end.x;
 		y = end.y;
 	}
+    
+    Collidable::update(delta);
 }
 
 void Coin::move()

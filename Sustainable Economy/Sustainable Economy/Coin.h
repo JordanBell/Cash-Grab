@@ -1,14 +1,14 @@
 #ifndef __SustainableEconomy__Coin__
 #define __SustainableEconomy__Coin__
 
-#include "entity.h"
+#include "Collidable.h"
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
 #define VARY_GRAVITY false // Setting this as true may cause instability with coin landing positions
 #define ADAPT_ANGLE false
 
-class Coin : public Entity
+class Coin : public Collidable
 {
 public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
@@ -41,11 +41,11 @@ private:
 		to determine the gravity at a given height. */
 		float gravityConstant; 
 
-		Gravity::Gravity() : mid(0.05), 
-							 norm(mid*10),
-							 rangeRatio(0.5),  
-							 min(mid - (rangeRatio * mid / 2)),
-							 gravityConstant(4 * (rangeRatio * mid) * mid) {}
+		Gravity() : mid(0.05),
+                    norm(mid*10),
+					rangeRatio(0.5),
+					min(mid - (rangeRatio * mid / 2)),
+					gravityConstant(4 * (rangeRatio * mid) * mid) {}
 	} gravityStruct;
 
 	//Graphics

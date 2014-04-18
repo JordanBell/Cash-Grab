@@ -43,7 +43,7 @@ void Machine::dispense()
 		} while (!valid);
 
 		Coin *coin = new Coin(coin_slots[i].first, coin_slots[i].second, coinX, coinY);
-		g_game->addEntity(coin);
+		g_game->addCollidable(coin);
 	}
 }
 

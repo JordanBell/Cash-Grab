@@ -1,13 +1,13 @@
 #ifndef player_h
 #define player_h
-#include "Entity.h"
+#include "Collidable.h"
 #include <math.h>
 
 #define SPEED 0.3 // The movement speed (independent of framerate)
 #define WALK_SPEED 5 // The number of frames between cycle changes
 #define STILL 1
 
-class Player : public Entity {
+class Player : public Collidable {
 public:
 	enum {
 		UP,

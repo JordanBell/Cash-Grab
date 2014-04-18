@@ -1,11 +1,14 @@
 #include "Game.h"
 #include "SDL.h"
 #include <time.h>
+
+using namespace std;
+
 Game* g_game = NULL;
 
 Game::Game() : running(true)
 {
-	delta = 0;
+    delta = 0;
 	srand(time(NULL));
 
 	// Initialise all ENTITIES
@@ -13,6 +16,8 @@ Game::Game() : running(true)
 	environment = g_environment;
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
+    
+	m_CollisionManager = new CollisionManager(this);
 	
 	// Add this later
 	//prompt = new Prompt(0, 0);
@@ -71,13 +76,7 @@ void Game::Update()
 	HandleKeys();
 	
 	for (Entity* e : m_Entities) { e->update(delta); }
-	CheckCollisions();
-}
-
-void Game::CheckCollisions()
-{
-	//Player/Coin Collisions
-	//Player/Wall Collisions
+	m_CollisionManager->Update(delta);
 }
 
 void Game::HandleKeys()
@@ -127,3 +126,21 @@ void Game::addEntity(Entity* entity)
 {
     m_Entities.push_back(entity);
 }
+
+void Game::addCollidable(Collidable* collidable)
+{
+    addEntity(collidable);
+    m_CollisionManager->AddCollidable(collidable);
+}
+
+void Game::removeEntity(Entity* entity)
+{
+    m_Entities.remove(entity);
+}
+
+void Game::removeCollidable(Collidable *collidable)
+{
+    //m_CollisionManager->RemoveCollidable(collidable);
+    removeEntity(collidable);
+}
+
