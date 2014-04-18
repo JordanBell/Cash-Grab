@@ -115,7 +115,7 @@ float Coin::DistanceToEnd()
 float Coin::ComputeVariableGravity()
 {
 	// It's just a cold, hard equation. Just plug in the values.
-	return gravityStruct.gravityConstant * height * height / (speed * speed * sin(angle) * sin(angle)) + gravityStruct.mid;
+	return (gravityStruct.gravityConstant * height * height / (speed * speed * sin(angle) * sin(angle)) + gravityStruct.mid) * /* Subtract a bit, because science */ (0.85 - 0.2);
 }
 
 void Coin::update(int delta)
@@ -135,7 +135,6 @@ void Coin::move()
 	//planar.y changes based on gravity
 	if (VARY_GRAVITY) planar.y -= ComputeVariableGravity();
 	else planar.y -= gravityStruct.norm;
-
 	// Keep track of the height, to know when the coin has landed
 	height += planar.y;
 

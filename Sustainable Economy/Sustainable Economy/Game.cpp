@@ -21,7 +21,7 @@ Game::Game() : running(true)
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
 	//m_Entities.push_back(new Coin((6*32), (4*32), (4*32), screen->h - 64));
-	//m_Entities.push_back(new Coin(0, 0, 160, 160));
+	//m_Entities.push_back(new Coin(0, 0, 180, 180));
 	//m_Entities.push_back(prompt);
 
 	// Set up the key responses

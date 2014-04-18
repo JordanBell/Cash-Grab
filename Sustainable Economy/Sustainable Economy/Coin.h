@@ -5,7 +5,7 @@
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
-#define VARY_GRAVITY false
+#define VARY_GRAVITY true
 
 class Coin : public Entity
 {
@@ -54,7 +54,7 @@ private:
 	struct XY { float x, y; };
 	XY start, end, planar, velocity, angleInducedVelocity;
 	float initial_vertical;
-	
+
 	bool moving;
 	int LOOP_SPEED;
 	float angle;	//The trajectory angle, from the ground horizontal
