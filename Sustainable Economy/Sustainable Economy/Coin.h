@@ -5,7 +5,8 @@
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
-#define VARY_GRAVITY true
+#define VARY_GRAVITY false // Setting this as true may cause instability with coin landing positions
+#define ADAPT_ANGLE false
 
 class Coin : public Entity
 {
@@ -66,6 +67,7 @@ private:
 	void move();
 	float DistanceToEnd();
 	float ComputeAngleForDistance();
+	float ComputeSpeedForDistance();
 	float ComputeVariableGravity();
 };
 

@@ -48,9 +48,17 @@ void Coin::InitKin()
 void Coin::ComputeInitPlanar(void)
 {
 	// Calculate the angle of the trajectory
-	angle = ComputeAngleForDistance();
+	if (ADAPT_ANGLE) angle = ComputeAngleForDistance();
+	else
+	{
+		// Get a reasonably random angle
+		angle = (rand() % 30) + 45;
+		angle *= (2 * M_PI) / 360;
 
-	//Get the planar x and y velocities (planar being the movement in a 3D space, where y is vertical and x is horizontal
+		// Get the planar x and y velocities (planar being the movement in a 3D space, where y is vertical and x is horizontal
+		speed = ComputeSpeedForDistance();
+	}
+
 	planar.x = speed * cos(angle);
 	planar.y = speed * sin(angle);
 } 
@@ -99,6 +107,16 @@ float Coin::ComputeAngleForDistance()
 	if (!(r_angle > 0)) printf("Error with coin, sent to (0, 0). Coin launch strength not strong enough to reach position (%f, %f)", end.x, end.y);
 	
 	return r_angle;
+}
+
+float Coin::ComputeSpeedForDistance()
+{
+	float r_speed;
+
+	float distance = DistanceToEnd();
+
+	r_speed = sqrt( (distance * gravityStruct.norm) / sin(2*angle) );
+	return r_speed;
 }
 
 float Coin::DistanceToEnd()
