@@ -32,12 +32,25 @@ void Machine::dispense()
 {
 	for (int i = 0; i < NUM_SLOTS; i++)
 	{	
-		int coinX = rand() % screen->w;
-		int coinY = rand() % screen->h;
-		printf("x1: %d, y1: %d, x2: %d, y2: %d\n", coin_slots[i].first, coin_slots[i].second, coinX, coinY);
+		int coinX = 0;
+		int coinY = 0;
+		bool valid = true;
+		do
+		{
+			coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+			coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE; 
+			//valid = ValidLandingPosition(coinX, coinY);
+		} while (!valid);
+
 		Coin *coin = new Coin(coin_slots[i].first, coin_slots[i].second, coinX, coinY);
 		g_game->addEntity(coin);
 	}
+}
+
+bool ValidLandingPosition(int _x, int _y)
+{
+	return true;
+	// Check to see if any of the coins collide with unmoveable objects (walls, shiny blocks, etc.)
 }
 
 void Machine::set_skin()

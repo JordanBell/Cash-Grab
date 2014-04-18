@@ -27,6 +27,8 @@ private:
     pair<int, int> dispenser_pos;
     pair<int, int> coin_slots[NUM_SLOTS];
     vector<Coin*> coins;
+
+	bool ValidLandingPosition(int _x, int _y);
 };
 
 #endif

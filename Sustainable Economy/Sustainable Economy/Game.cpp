@@ -13,7 +13,6 @@ Game::Game() : running(true)
 	environment = g_environment;
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
-	coin = new Coin((8*32), (8*32), (4*32), (12*32));
 	
 	// Add this later
 	//prompt = new Prompt(0, 0);
@@ -21,11 +20,9 @@ Game::Game() : running(true)
 	m_Entities.push_back(environment);
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
-	//m_Entities.push_back(coin);
+	//m_Entities.push_back(new Coin((6*32), (4*32), (4*32), screen->h - 64));
+	//m_Entities.push_back(new Coin(0, 0, 160, 160));
 	//m_Entities.push_back(prompt);
-
-	
-	addABunchOfCoins();
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
@@ -34,21 +31,6 @@ Game::Game() : running(true)
 Game::~Game(void)
 {
 	// Delete all entities
-}
-
-
-void Game::addABunchOfCoins()
-{
-	m_Entities.push_back(new Coin((10*32), (8*32), (14*32), (12*32)));
-	m_Entities.push_back(new Coin((8*32), (8*32), (4*32), (12*32)));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
-	m_Entities.push_back(new Coin(160, 160, 480, 160));
 }
 
 void Game::run()
