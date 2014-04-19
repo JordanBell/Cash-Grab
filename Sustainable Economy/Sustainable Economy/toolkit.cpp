@@ -54,7 +54,7 @@ bool load_files() //Load files, and check for the success of each one
 		g_resources = new Resources();
 	}
 	catch (std::exception &e) {
-		printf(e.what());
+		printf("%s\n", e.what());
 		return false;
 	}
 

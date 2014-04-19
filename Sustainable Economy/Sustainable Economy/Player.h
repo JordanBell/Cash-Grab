@@ -18,7 +18,17 @@ public:
 	
 	//De/Constructors
 	Player(int x, int y);
-	~Player() { }
+    // TODO: move into .cpp
+	~Player()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                delete sprites[i][j];
+            }
+        }
+    }
 	
 	void move(int direction);
 	void stop_moving () { moving = false; }

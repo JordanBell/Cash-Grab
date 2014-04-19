@@ -12,7 +12,6 @@
 #include <list>
 #include "Collidable.h"
 #include "Player.h"
-#include "Game.h"
 
 using namespace std;
 
@@ -21,8 +20,11 @@ class Game;
 class CollisionManager {
 protected:
     list<Collidable*> m_Collidables;
+    list<Collidable*> m_DeleteQueue;
     Player* m_Player;
     Game* m_Game;
+    
+    void DeleteCollidables();
     
 public:
     CollisionManager(Game* game);
@@ -30,7 +32,7 @@ public:
     void Update(int delta);
     
     void AddCollidable(Collidable* collidable) { m_Collidables.push_back(collidable); }
-    void RemoveCollidable(Collidable* collidable) { m_Collidables.remove(collidable); }
+    void RemoveCollidable(Collidable* collidable) { m_DeleteQueue.push_back(collidable); }
     
     void MovableCollision(Collidable* collidable);
     void ImmovableCollision(Collidable* collidable);

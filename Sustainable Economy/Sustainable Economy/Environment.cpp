@@ -29,6 +29,20 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	shiny_block = sprites[2][4];
 }
 
+Environment::~Environment()
+{
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 5; j++) {
+            delete sprites[i][j];
+        }
+    }
+    
+    delete floor;
+    delete wall;
+    delete shiny_block;
+}
+
 void Environment::render()
 {
 	//Build the floor

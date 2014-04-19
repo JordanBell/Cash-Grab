@@ -10,7 +10,8 @@
 #include "Prompt.h"
 #include "Machine.h"
 #include "Timer.h"
-#include "CollisionManager.h"
+
+using namespace std;
 
 #define TILE_SIZE 32
 #define FRAME_RATE 60
@@ -41,12 +42,11 @@ private:
 	int delta; // The time since the last frame
 
 	//Entities
-	Coin *coin;
-	Coin *coin2;
 	Environment *environment;
 	Machine *machine;
 	Prompt *prompt;
-	std::list<Entity*> m_Entities;
+	list<Entity*> m_Entities;
+    list<Entity*> m_EntityDeleteQueue;
 	bool running;
 
 	//
@@ -57,6 +57,7 @@ private:
 	void Render();
 	void Poll();
 
+    void DeleteEntities();
 	int RegulateFrameRate();
 };
 

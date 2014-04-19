@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "SDL.h"
+#include "CollisionManager.h"
 #include <time.h>
 
 using namespace std;
@@ -48,6 +49,9 @@ void Game::run()
 		Update();
 		Render();
 		Poll();
+        
+        // Handle any deletions that need to take place after updating
+        DeleteEntities();
 
 		// Regulate the framerate, and save the delta time.
 		delta = RegulateFrameRate();
@@ -69,14 +73,6 @@ int Game::RegulateFrameRate()
     }
 	
 	return 1000/ticks;
-}
-
-void Game::Update()
-{
-	HandleKeys();
-	
-	for (Entity* e : m_Entities) { e->update(delta); }
-	m_CollisionManager->Update(delta);
 }
 
 void Game::HandleKeys()
@@ -101,8 +97,19 @@ void Game::HandleKeys()
 	if (keystates[SDLK_ESCAPE]) exitFullScreen();
 }
 
+void Game::Update()
+{
+	HandleKeys();
+	
+	for (Entity* e : m_Entities) { e->update(delta); }
+	m_CollisionManager->Update(delta);
+}
+
 void Game::Render()
 {
+    // Clear the screen
+    SDL_FillRect(screen,NULL,0x000000);
+    
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }
 	// Flip (update) the screen
@@ -135,12 +142,22 @@ void Game::addCollidable(Collidable* collidable)
 
 void Game::removeEntity(Entity* entity)
 {
-    m_Entities.remove(entity);
+    m_EntityDeleteQueue.push_back(entity);
 }
 
 void Game::removeCollidable(Collidable *collidable)
 {
-    //m_CollisionManager->RemoveCollidable(collidable);
+    m_CollisionManager->RemoveCollidable(collidable);
     removeEntity(collidable);
 }
 
+void Game::DeleteEntities()
+{
+    for (Entity* entity : m_EntityDeleteQueue)
+    {
+        m_Entities.remove(entity);
+        //delete entity;
+    }
+    
+    m_EntityDeleteQueue.clear();
+}

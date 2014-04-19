@@ -12,7 +12,14 @@ class Coin : public Collidable
 {
 public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
-	~Coin(void) {}
+	~Coin(void)
+    {
+        // Maybe not hardcode number of sprites? (8)
+        for (int i = 0; i < 8; i++)
+        {
+            delete sprites[i];
+        }
+    }
 
 	void update(int delta);
 

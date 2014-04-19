@@ -7,6 +7,9 @@
 //
 
 #include "CollisionManager.h"
+#include "Game.h"
+
+using namespace std;
 
 CollisionManager::CollisionManager(Game* game)
 {
@@ -20,8 +23,6 @@ void CollisionManager::Update(int delta)
     {
         if (m_Player->CollidesWith(c))
         {
-            printf("Collision!\n");
-            
             if (c->m_IsMoveable)
             {
                 MovableCollision(c);
@@ -32,6 +33,8 @@ void CollisionManager::Update(int delta)
             }
         }
     }
+    
+    DeleteCollidables();
 }
 
 void CollisionManager::MovableCollision(Collidable* collidable)
@@ -42,4 +45,14 @@ void CollisionManager::MovableCollision(Collidable* collidable)
 void CollisionManager::ImmovableCollision(Collidable* collidable)
 {
     
+}
+
+void CollisionManager::DeleteCollidables()
+{
+    for (Collidable* c : m_DeleteQueue)
+    {
+        m_Collidables.remove(c);
+    }
+    
+    m_DeleteQueue.clear();
 }

@@ -11,8 +11,13 @@ public:
 	float x, y;
 
 	//Constructors
-	Entity(int x, int y) : cycle(0), x(x), y(y) { }
-	~Entity(void) { SDL_FreeSurface(sprite_sheet); }
+	Entity(int x, int y) : cycle(0), x(x), y(y), skin(NULL) { }
+	virtual ~Entity(void)
+    {
+        SDL_FreeSurface(sprite_sheet);
+        
+        // Skin deletion should be managed by subclasses
+    }
 
 	virtual void update(int delta) = 0;
 	virtual void render();
