@@ -10,8 +10,9 @@
 Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
 { 
 	sprite_sheet = g_resources->GetCoinSheet();
-    m_HitBox->w = 16;
+	m_HitBox->w = 16;
     m_HitBox->h = 16;
+
 	max_cycles = 8 * LOOP_SPEED;
 
 	// Coordinates
@@ -54,7 +55,7 @@ void Coin::ComputeInitPlanar(void)
 	else
 	{
 		// Get a reasonably random angle
-		angle = (rand() % 30) + 45;
+		angle = (rand() % 14) + 75;
 		angle *= (2 * M_PI) / 360;
 
 		// Get the planar x and y velocities (planar being the movement in a 3D space, where y is vertical and x is horizontal

@@ -1,7 +1,7 @@
 #include "Machine.h"
 #include "Resources.h"
 
-Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0), coinCost(START_MONEY * COIN_INCREASE)
+Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
 	skin = NULL; //Use the entire image
@@ -19,12 +19,19 @@ Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_n
 
 void Machine::update(int delta)
 {
-    if (m_dispensing)
+	//printf("Coins: %d, Cost: %d\n", g_game->wallet, coinCost);
+
+	m_timeElapsed += delta;
+
+    if ((m_dispensing) && (m_timeElapsed >= DISPENSING_STUTTER))
 	{
-		// Take that money from the player
-		g_game-> wallet--;
-		// Find where to shoot the coin from
-		int slotNum = m_numDispensed % NUM_SLOTS;
+		m_timeElapsed = 0;
+
+		// Choose the slot number, in a serpentine pattern.
+		int n = m_numDispensed % (NUM_SLOTS*2);
+		int slotNum = (n < NUM_SLOTS) ?
+					n :
+					((NUM_SLOTS*2)-1) - n;
 
 		// Dispense!
 		ShootCoinFrom(slotNum);
@@ -42,6 +49,8 @@ void Machine::dispense()
 	if (!m_dispensing && canAfford())
 	{
 		m_dispensing = true;
+		// Take the player's money
+		g_game->wallet -= coinCost;
 		// Increase the cost of the next coin set by the increase constant.
 		coinCost *= COIN_INCREASE; 
 		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price

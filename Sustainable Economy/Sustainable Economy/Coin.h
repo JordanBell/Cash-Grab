@@ -11,6 +11,8 @@
 class Coin : public Collidable
 {
 public:
+	bool moving;
+
 	Coin(int start_x, int start_y, int end_x, int end_y);
 	~Coin(void)
     {
@@ -63,7 +65,6 @@ private:
 	XY start, end, planar, velocity, angleInducedVelocity;
 	float initial_vertical;
 
-	bool moving;
 	int LOOP_SPEED;
 	float angle;	//The trajectory angle, from the ground horizontal
 	float alpha;	//The angle between start and end position
