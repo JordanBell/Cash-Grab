@@ -7,6 +7,7 @@
 #include "Prompt.h"
 
 #include <stdexcept>
+
 Resources* g_resources = NULL;
 
 Resources::Resources(void)
@@ -18,7 +19,13 @@ Resources::Resources(void)
 	m_MoneyMachineSheet =	load_image("moneyMachine.png");
 	m_Prompt =				load_image("Press Enter.png");
 	m_Font =				TTF_OpenFont("joystix monospace.ttf", 28); //Custom font import; size 28
-
+    
+    m_CoinSounds[0] = Mix_LoadMUS("Coin1.wav");
+    m_CoinSounds[1] = Mix_LoadMUS("Coin2.wav");
+    m_CoinSounds[2] = Mix_LoadMUS("Coin3.wav");
+    
+    Mix_VolumeMusic(40);
+    
 	// Check for failures.
 	if ((m_PlayerSheet		  == NULL)	||
 		(m_CoinSheet		  == NULL)	||
@@ -40,4 +47,9 @@ Resources::~Resources(void)
 	SDL_FreeSurface(m_MoneyMachineSheet);
 	SDL_FreeSurface(m_Prompt);
 	TTF_CloseFont(m_Font);
+    
+    for (int i = 0; i < NUM_COIN_SOUNDS; i++)
+    {
+        Mix_FreeMusic(m_CoinSounds[i]);
+    }
 }

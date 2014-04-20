@@ -1,6 +1,8 @@
 //The headers
 #include "toolkit.h"
 #include "Resources.h"
+#include "Entity.h"
+#include "Coin.h"
 
 SDL_Surface* screen;
 TTF_Font* font;
@@ -35,6 +37,10 @@ bool SDL_init()
 	//Init SDL_ttf
 	if (TTF_Init() == -1) return false;
     
+    //Initialize SDL_mixer
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+        return false;
+    
 	return load_files();
 }
 
@@ -45,6 +51,7 @@ void SDL_deinit()
 
 	//Quit all of that
 	TTF_Quit();
+    Mix_CloseAudio();
 	SDL_Quit();
 }
 
@@ -90,4 +97,16 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	offset.y = y;
 
 	SDL_BlitSurface(source, clip, destination, &offset);
+}
+
+bool entity_compare(const Entity* first, const Entity* second)
+{
+    // This is a hacky check for if these are coins or not
+    const Coin* coin1 = dynamic_cast<const Coin*>(first);
+    const Coin* coin2 = dynamic_cast<const Coin*>(second);
+    
+    if (!coin1 || !coin2)
+        return false;
+    
+    return first->y < second->y;
 }

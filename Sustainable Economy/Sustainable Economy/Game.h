@@ -36,7 +36,7 @@ public:
 	void addABunchOfCoins();
 
 	// Money Stuff
-	void collectCoin() { wallet++; }
+	void collectCoin();
 
 private:
 	//

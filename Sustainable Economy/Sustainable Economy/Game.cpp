@@ -3,6 +3,7 @@
 #include "CollisionManager.h"
 #include "Prompt.h"
 #include "Machine.h"
+#include "Resources.h"
 #include <time.h>
 
 using namespace std;
@@ -12,7 +13,7 @@ Game* g_game = NULL;
 Game::Game() : running(true), wallet(START_MONEY)
 {
     delta = 0;
-	srand(time(NULL));
+	srand((uint)time(NULL));
 
 	// Initialise all ENTITIES
 	player = new Player((9*32)-1, (8*32)-3);
@@ -136,9 +137,16 @@ void Game::Poll()
 	}
 }
 
+void Game::collectCoin()
+{
+    Mix_PlayMusic(g_resources->GetCoinSound(), 0);
+    wallet++;
+}
+
 void Game::addEntity(Entity* entity)
 {
     m_Entities.push_back(entity);
+    m_Entities.sort(entity_compare);
 }
 
 void Game::addCollidable(Collidable* collidable, bool toFront)
