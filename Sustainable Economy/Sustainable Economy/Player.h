@@ -35,6 +35,7 @@ public:
 	
 	void move(int direction);
 	void stop_moving(void);
+    void SetCanMove(bool canMove);
 	void update(int delta);
 
 protected:

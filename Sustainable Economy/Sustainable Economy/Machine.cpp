@@ -19,7 +19,7 @@ Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_n
 
 void Machine::update(int delta)
 {
-	//printf("Coins: %d, Cost: %d\n", g_game->wallet, coinCost);
+	printf("Coins: %d, Cost: %d\n", g_game->wallet, coinCost);
 
 	m_timeElapsed += delta;
 
