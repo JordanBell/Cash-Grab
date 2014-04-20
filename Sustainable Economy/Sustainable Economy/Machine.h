@@ -11,7 +11,8 @@
 using namespace std;
 
 #define NUM_SLOTS 6
-#define COIN_INCREASE 0.2
+#define COIN_INCREASE 1.2
+#define DISPENSING_STUTTER 35
 
 class Machine :
 	public Entity
@@ -31,6 +32,7 @@ private:
     pair<int, int> coin_slots[NUM_SLOTS];
 	bool m_dispensing;
 	int m_numDispensed;
+	int m_timeElapsed;
     vector<Coin*> coins;
 
 	bool ValidLandingPosition(int _x, int _y);

@@ -14,7 +14,7 @@ using namespace std;
 
 #define TILE_SIZE 32
 #define FRAME_RATE 60
-#define START_MONEY 10
+#define START_MONEY 100
 
 class CollisionManager;
 class Machine;
