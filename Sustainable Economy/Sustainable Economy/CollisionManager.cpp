@@ -44,7 +44,7 @@ void CollisionManager::MovableCollision(Collidable* collidable)
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)
 {
-    
+    printf("Aw yeah\n");
 }
 
 void CollisionManager::DeleteCollidables()

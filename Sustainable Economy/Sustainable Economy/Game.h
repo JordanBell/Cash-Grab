@@ -52,6 +52,7 @@ private:
 	//
 	/// Functions
 	//
+    void InitEnvironment();
 	void Update();
 	void HandleKeys();
 	void Render();

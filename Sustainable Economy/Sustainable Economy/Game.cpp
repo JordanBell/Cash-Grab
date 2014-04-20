@@ -13,8 +13,6 @@ Game::Game() : running(true)
 	srand(time(NULL));
 
 	// Initialise all ENTITIES
-	g_environment = new Environment(0, 0);
-	environment = g_environment;
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
     
@@ -23,7 +21,6 @@ Game::Game() : running(true)
 	// Add this later
 	//prompt = new Prompt(0, 0);
 	
-	m_Entities.push_back(environment);
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
 	//m_Entities.push_back(new Coin((6*32), (4*32), (4*32), screen->h - 64));
@@ -40,7 +37,10 @@ Game::~Game(void)
 }
 
 void Game::run()
-{	
+{
+    // Must be initialised after Game is constructed
+    InitEnvironment();
+    
 	while (running)
 	{
 		m_FPSTimer.start();
@@ -56,6 +56,13 @@ void Game::run()
 		// Regulate the framerate, and save the delta time.
 		delta = RegulateFrameRate();
 	}
+}
+
+void Game::InitEnvironment()
+{
+	g_environment = new Environment(0, 0);
+	environment = g_environment;
+	//m_Entities.push_back(environment);
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
@@ -109,6 +116,8 @@ void Game::Render()
 {
     // Clear the screen
     SDL_FillRect(screen,NULL,0x000000);
+    
+    environment->render();
     
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }

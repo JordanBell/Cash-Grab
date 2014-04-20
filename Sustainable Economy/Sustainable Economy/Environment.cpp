@@ -1,5 +1,7 @@
 #include "Environment.h"
 #include "Resources.h"
+#include "Game.h"
+#include "Wall.h"
 
 Environment* g_environment = NULL;
 
@@ -27,6 +29,31 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	floor = sprites[7][1];
 	wall = sprites[6][0];
 	shiny_block = sprites[2][4];
+	
+	//Build the walls
+	for (int i = 0; i < screen->w; i += square_size) //For all of the width
+	{
+		if (i == 0 || i == (screen->w - square_size)) //If at the edged widths
+		{
+			for (int j = 0; j < screen->h; j += square_size) //For all of the height
+			{
+                Wall* toAdd = new Wall(i, j, sprite_sheet, wall);
+                if (!toAdd) printf("ERROR\n");
+                g_game->addCollidable(toAdd);
+			}
+		}
+		else //If not at the edge
+		{
+            Wall* wall1 = new Wall(i, 0, sprite_sheet, wall);
+            Wall* wall2 = new Wall(i, screen->h - square_size, sprite_sheet, wall);
+            
+            if (!wall1 || ! wall2) printf("ERROR\n");
+            
+			//Just the sides
+			g_game->addCollidable(wall1);
+			g_game->addCollidable(wall2);
+		}
+	}
 }
 
 Environment::~Environment()
@@ -56,23 +83,23 @@ void Environment::render()
 		}
 	}
 	
-	//Build the walls
-	for (int i = 0; i < screen->w; i += square_size) //For all of the width
-	{
-		if (i == 0 || i == (screen->w - square_size)) //If at the edged widths
-		{
-			for (int j = 0; j < screen->h; j += square_size) //For all of the height
-			{
-				apply_surface(i, j, sprite_sheet, screen, wall);
-			}
-		}
-		else //If not at the edge
-		{
-			//Just the sides
-			apply_surface(i, 0, sprite_sheet, screen, wall);
-			apply_surface(i, screen->h - square_size, sprite_sheet, screen, wall);
-		}
-	}
+//	//Build the walls
+//	for (int i = 0; i < screen->w; i += square_size) //For all of the width
+//	{
+//		if (i == 0 || i == (screen->w - square_size)) //If at the edged widths
+//		{
+//			for (int j = 0; j < screen->h; j += square_size) //For all of the height
+//			{
+//				apply_surface(i, j, sprite_sheet, screen, wall);
+//			}
+//		}
+//		else //If not at the edge
+//		{
+//			//Just the sides
+//			apply_surface(i, 0, sprite_sheet, screen, wall);
+//			apply_surface(i, screen->h - square_size, sprite_sheet, screen, wall);
+//		}
+//	}
 
 	//Build the whatever man
 	//Top Left triangle
