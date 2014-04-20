@@ -1,6 +1,5 @@
 #include "Machine.h"
 #include "Resources.h"
-#include "Game.h"
 
 Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0)
 {
@@ -84,4 +83,9 @@ void Machine::FinishDispensing()
 {
 	m_dispensing = false;
 	m_numDispensed = 0;
+}
+
+bool Machine::canAfford()
+{
+    return (g_game->wallet >= coinCost);
 }

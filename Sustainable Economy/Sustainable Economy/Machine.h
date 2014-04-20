@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include "Coin.h"
+#include "Game.h"
 
 #include <vector>
 #include <iostream>
@@ -35,7 +36,7 @@ private:
 	bool ValidLandingPosition(int _x, int _y);
 	void ShootCoinFrom(int slotNum);
 	void FinishDispensing();
-	bool canAfford() { return (g_game->wallet >= coinCost); }
+	bool canAfford();
 };
 
 #endif

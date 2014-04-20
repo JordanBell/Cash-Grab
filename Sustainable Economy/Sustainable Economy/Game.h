@@ -8,7 +8,6 @@
 #include "Coin.h"
 #include "Environment.h"
 #include "Prompt.h"
-#include "Machine.h"
 #include "Timer.h"
 
 using namespace std;
@@ -17,6 +16,7 @@ using namespace std;
 #define FRAME_RATE 60
 
 class CollisionManager;
+class Machine;
 
 class Game
 {	

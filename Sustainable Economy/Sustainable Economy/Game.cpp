@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "CollisionManager.h"
 #include "Prompt.h"
+#include "Machine.h"
 #include <time.h>
 
 using namespace std;
