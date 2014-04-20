@@ -18,16 +18,15 @@ class Machine :
 	public Entity
 {
 public:
+	int coinCost;
+
 	Machine(int x, int y);
 	~Machine(void) {}
 	
 	void update(int delta);
 	void dispense();
 
-private:
-	//void set_skin();
-	int coinCost;
-    
+private:    
     pair<int, int> dispenser_pos;
     pair<int, int> coin_slots[NUM_SLOTS];
 	bool m_dispensing;

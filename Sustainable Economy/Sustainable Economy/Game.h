@@ -14,10 +14,11 @@ using namespace std;
 
 #define TILE_SIZE 32
 #define FRAME_RATE 60
-#define START_MONEY 100
+#define START_MONEY 20
 
 class CollisionManager;
 class Machine;
+class Prompt;
 
 class Game
 {	
@@ -29,7 +30,7 @@ public:
 	~Game(void);
 	void run();
     void addEntity(Entity* entity);
-    void addCollidable(Collidable* collidable);
+    void addCollidable(Collidable* collidable, bool toFront = false);
     void removeEntity(Entity* entity);
     void removeCollidable(Collidable* collidable);
 	void addABunchOfCoins();
@@ -57,7 +58,7 @@ private:
 	//
 	/// Functions
 	//
-    void InitEnvironment();
+	void InitEnvironment();
 	void Update();
 	void HandleKeys();
 	void Render();

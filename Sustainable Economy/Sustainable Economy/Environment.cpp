@@ -39,7 +39,7 @@ Environment::Environment(int x, int y) : Entity(x, y)
 			{
                 Wall* toAdd = new Wall(i, j, sprite_sheet, wall);
                 if (!toAdd) printf("ERROR\n");
-                g_game->addCollidable(toAdd);
+                g_game->addCollidable(toAdd, true);
 			}
 		}
 		else //If not at the edge
@@ -50,8 +50,8 @@ Environment::Environment(int x, int y) : Entity(x, y)
             if (!wall1 || ! wall2) printf("ERROR\n");
             
 			//Just the sides
-			g_game->addCollidable(wall1);
-			g_game->addCollidable(wall2);
+			g_game->addCollidable(wall1, true);
+			g_game->addCollidable(wall2, true);
 		}
 	}
 }

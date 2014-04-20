@@ -45,6 +45,12 @@ void CollisionManager::Update(int delta)
     DeleteCollidables();
 }
 
+void CollisionManager::AddCollidable(Collidable* collidable, bool toFront)
+{ 
+	if (toFront) m_Collidables.push_front(collidable);
+	else m_Collidables.push_back(collidable); 
+}
+
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
     m_Game->removeCollidable(collidable);

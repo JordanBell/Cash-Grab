@@ -17,16 +17,12 @@ Game::Game() : running(true), wallet(START_MONEY)
 	// Initialise all ENTITIES
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
-	prompt = new Prompt(0, 0);
+	prompt = new Prompt(machine);
     
 	m_CollisionManager = new CollisionManager(this);
 	
-	// Add this later
-	//prompt = new Prompt(0, 0);
-	
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
-	m_Entities.push_back(prompt);
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
@@ -38,10 +34,8 @@ Game::~Game(void)
 }
 
 void Game::run()
-{
-    // Must be initialised after Game is constructed
-    InitEnvironment();
-    
+{    
+	InitEnvironment();
 	while (running)
 	{
 		m_FPSTimer.start();
@@ -59,11 +53,15 @@ void Game::run()
 	}
 }
 
-void Game::InitEnvironment()
+void Game::InitEnvironment(void)
 {
+	// Environment stuff has a few steps
 	g_environment = new Environment(0, 0);
 	environment = g_environment;
-	//m_Entities.push_back(environment);
+	m_Entities.push_front(environment);
+
+	// Add the prompt now, to layer it over everything
+	m_Entities.push_back(prompt);
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
@@ -118,10 +116,9 @@ void Game::Render()
     // Clear the screen
     SDL_FillRect(screen,NULL,0x000000);
     
-    environment->render();
-    
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }
+
 	// Flip (update) the screen
 	SDL_Flip(screen);
 }
@@ -144,10 +141,10 @@ void Game::addEntity(Entity* entity)
     m_Entities.push_back(entity);
 }
 
-void Game::addCollidable(Collidable* collidable)
+void Game::addCollidable(Collidable* collidable, bool toFront)
 {
     addEntity(collidable);
-    m_CollisionManager->AddCollidable(collidable);
+    m_CollisionManager->AddCollidable(collidable, toFront);
 }
 
 void Game::removeEntity(Entity* entity)

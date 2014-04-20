@@ -31,7 +31,7 @@ public:
     
     void Update(int delta);
     
-    void AddCollidable(Collidable* collidable) { m_Collidables.push_back(collidable); }
+    void AddCollidable(Collidable* collidable, bool toFront = false);
     void RemoveCollidable(Collidable* collidable) { m_DeleteQueue.push_back(collidable); }
     
     void MovableCollision(Collidable* collidable);
