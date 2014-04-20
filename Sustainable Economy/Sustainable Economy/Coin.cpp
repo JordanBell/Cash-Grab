@@ -10,6 +10,8 @@
 Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
 { 
 	sprite_sheet = g_resources->GetCoinSheet();
+    m_HitBox->w = 16;
+    m_HitBox->h = 16;
 	max_cycles = 8 * LOOP_SPEED;
 
 	// Coordinates

@@ -15,6 +15,9 @@ public:
 		DOWN,
 		LEFT
 	} Directions;
+    
+    // For collision detection
+    bool m_CanMove;
 	
 	//De/Constructors
 	Player(int x, int y);
@@ -31,12 +34,12 @@ public:
     }
 	
 	void move(int direction);
-	void stop_moving () { moving = false; }
-
+	void stop_moving(void);
 	void update(int delta);
 
 protected:
 	void IncCycle(void);
+    void SnapToGrid(void);
 
 private:
 	int direction; //The direction being faced by the player

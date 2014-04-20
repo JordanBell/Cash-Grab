@@ -19,6 +19,8 @@ CollisionManager::CollisionManager(Game* game)
 
 void CollisionManager::Update(int delta)
 {
+    bool shouldMove = true;
+    
     for (Collidable* c : m_Collidables)
     {
         if (m_Player->CollidesWith(c))
@@ -30,8 +32,14 @@ void CollisionManager::Update(int delta)
             else
             {
                 ImmovableCollision(c);
+                shouldMove = false;
             }
         }
+    }
+    
+    if (shouldMove && !m_Player->m_CanMove)
+    {
+        m_Player->m_CanMove = true;
     }
     
     DeleteCollidables();
@@ -45,7 +53,10 @@ void CollisionManager::MovableCollision(Collidable* collidable)
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)
 {
-    printf("Aw yeah\n");
+    if (m_Player->m_CanMove)
+    {
+        m_Player->stop_moving();
+    }
 }
 
 void CollisionManager::DeleteCollidables()

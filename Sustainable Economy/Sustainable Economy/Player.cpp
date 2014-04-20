@@ -1,8 +1,9 @@
 #include "Player.h"
+#include "Game.h"
 #include "Resources.h"
 
 //Initialise the size and position of each sprite clip
-Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false)
+Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
 {
 	sprite_sheet = g_resources->GetPlayerSheet();
 
@@ -32,11 +33,39 @@ Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false)
 
 void Player::move(int direction)
 {
-	moving = true; 
-	this->direction = direction;
+    // If it's possible to move or moving in a different direction
+    if (m_CanMove || direction != this->direction)
+    {
+        m_CanMove = true;
+        moving = true;
+        this->direction = direction;
+    }
 }
-	
-void Player::IncCycle(void) 
+
+void Player::stop_moving()
+{
+    moving = m_CanMove = false;
+    SnapToGrid();
+}
+
+void Player::SnapToGrid()
+{
+    // Get grid position based on middle of the player
+    int gridX = (x + m_HitBox->w / 2) / TILE_SIZE;
+    int gridY = (y + m_HitBox->h / 2) / TILE_SIZE;
+    
+    // Snap to coordinates
+    if (direction == LEFT || direction == RIGHT)
+    {
+        x = gridX * TILE_SIZE;
+    }
+    else
+    {
+        y = gridY * TILE_SIZE;
+    }
+}
+
+void Player::IncCycle(void)
 {
 	cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; 
 }
@@ -47,7 +76,7 @@ void Player::update(int delta)
 
 	if (moving)
 	{
-		int pixelsToMove = SPEED*delta;
+		int pixelsToMove = SPEED * 1000 / 60;
 		
 		y -= (this->direction == UP)	* pixelsToMove;
 		y += (this->direction == DOWN)	* pixelsToMove;
