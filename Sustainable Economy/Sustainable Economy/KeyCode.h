@@ -2,7 +2,8 @@
 #define keycode_h
 
 #include "Player.h"
-#include "Machine.h"
+
+class Machine;
 
 struct KeyCode
 {
@@ -15,7 +16,7 @@ struct KeyCode
 	void left()			{player->move(Player::LEFT);}
 	void right()		{player->move(Player::RIGHT);}
 	void no_direction()	{player->stop_moving();}
-	void enter()		{machine->dispense();}
+	void enter();
 private:
 	Player*  player;
 	Machine* machine;

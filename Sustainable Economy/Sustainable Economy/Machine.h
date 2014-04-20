@@ -24,7 +24,7 @@ public:
 	void dispense();
 
 private:
-	void set_skin();
+	//void set_skin();
 	int coinCost;
     
     pair<int, int> dispenser_pos;

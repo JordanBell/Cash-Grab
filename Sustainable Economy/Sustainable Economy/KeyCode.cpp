@@ -1,4 +1,5 @@
 #include "KeyCode.h"
+#include "Machine.h"
 
 //void KeyCode::up(void)
 //{
@@ -20,7 +21,7 @@
 //	//Call code from all objects to respond
 //}
 //
-//void KeyCode::enter(void)
-//{
-//	//Call code from all objects to respond
-//}
+void KeyCode::enter(void)
+{
+    machine->dispense();
+}
