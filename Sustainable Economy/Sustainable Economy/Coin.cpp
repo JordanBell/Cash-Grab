@@ -148,6 +148,7 @@ void Coin::update(int delta)
 	{
 		x = end.x;
 		y = end.y;
+        moving = false;
 	}
     
     Collidable::update(delta);

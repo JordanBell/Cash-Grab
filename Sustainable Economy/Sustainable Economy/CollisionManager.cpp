@@ -29,7 +29,7 @@ void CollisionManager::Update(int delta)
             {
                 // I know it's bad design but whatever
                 Coin* coin = dynamic_cast<Coin*>(c);
-                if (coin && coin->moving)
+                if (coin && !coin->moving)
                 {
                     MovableCollision(c);
                 }
@@ -60,7 +60,7 @@ void CollisionManager::ImmovableCollision(Collidable* collidable)
 {
     if (m_Player->m_CanMove)
     {
-        m_Player->stop_moving();
+        m_Player->SetCanMove(false);
     }
 }
 

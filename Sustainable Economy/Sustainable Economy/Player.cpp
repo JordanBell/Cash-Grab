@@ -44,8 +44,18 @@ void Player::move(int direction)
 
 void Player::stop_moving()
 {
-    moving = m_CanMove = false;
-    SnapToGrid();
+    moving = false;
+}
+
+void Player::SetCanMove(bool canMove)
+{
+    m_CanMove = canMove;
+    
+    if (!canMove)
+    {
+        moving = false;
+        SnapToGrid();
+    }
 }
 
 void Player::SnapToGrid()
