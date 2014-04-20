@@ -14,9 +14,6 @@ int main(int argc, char* args[])
 	//Game Running
 	g_game = new Game();
 	g_game->run();
-
-	//Machine testMachine(5, 6);
-    //testMachine.test_stuff();
 	
 	SDL_deinit();
 

@@ -9,7 +9,7 @@ using namespace std;
 
 Game* g_game = NULL;
 
-Game::Game() : running(true), wallet(10), coinCost(wallet * COIN_INCREASE)
+Game::Game() : running(true), wallet(START_MONEY)
 {
     delta = 0;
 	srand(time(NULL));

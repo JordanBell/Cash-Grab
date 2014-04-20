@@ -1,7 +1,7 @@
 #include "Machine.h"
 #include "Resources.h"
 
-Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0)
+Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0), coinCost(START_MONEY * COIN_INCREASE)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
 	skin = NULL; //Use the entire image
@@ -47,10 +47,11 @@ void Machine::dispense()
 		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
 	}
 
-	for (int i = 0; i < NUM_SLOTS; i++)
+	// Just splash them everywhere
+	/*for (int i = 0; i < NUM_SLOTS; i++)
 	{	
 		ShootCoinFrom(i);
-	}
+	}*/
 }
 
 void Machine::ShootCoinFrom(int slotNum)
