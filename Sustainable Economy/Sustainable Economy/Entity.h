@@ -29,7 +29,7 @@ protected:
 	SDL_Rect* skin;
 	SDL_Surface* sprite_sheet;
 	
-	virtual void set_skin() = 0;
+	virtual void set_skin() { skin = NULL; }
 	virtual void IncCycle(void) { cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; }
 };
 

@@ -22,6 +22,7 @@ class Game
 {	
 public:
 	Player *player;
+	int wallet;
     
 	Game();
 	~Game(void);
@@ -31,6 +32,9 @@ public:
     void removeEntity(Entity* entity);
     void removeCollidable(Collidable* collidable);
 	void addABunchOfCoins();
+
+	// Money Stuff
+	void collectCoin() { wallet++; }
 
 private:
 	//
