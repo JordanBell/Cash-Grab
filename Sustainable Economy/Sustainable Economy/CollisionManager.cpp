@@ -40,6 +40,7 @@ void CollisionManager::Update(int delta)
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
     m_Game->removeCollidable(collidable);
+	m_Game->collectCoin();
 }
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)

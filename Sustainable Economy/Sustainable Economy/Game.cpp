@@ -1,13 +1,14 @@
 #include "Game.h"
 #include "SDL.h"
 #include "CollisionManager.h"
+#include "Prompt.h"
 #include <time.h>
 
 using namespace std;
 
 Game* g_game = NULL;
 
-Game::Game() : running(true)
+Game::Game() : running(true), wallet(10), coinCost(wallet * COIN_INCREASE)
 {
     delta = 0;
 	srand(time(NULL));
@@ -15,6 +16,7 @@ Game::Game() : running(true)
 	// Initialise all ENTITIES
 	player = new Player((9*32)-1, (8*32)-3);
 	machine = new Machine((7*32), (32));
+	prompt = new Prompt(0, 0);
     
 	m_CollisionManager = new CollisionManager(this);
 	
@@ -23,9 +25,7 @@ Game::Game() : running(true)
 	
 	m_Entities.push_back(player);
 	m_Entities.push_back(machine);
-	//m_Entities.push_back(new Coin((6*32), (4*32), (4*32), screen->h - 64));
-	//m_Entities.push_back(new Coin(0, 0, 180, 180));
-	//m_Entities.push_back(prompt);
+	m_Entities.push_back(prompt);
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
