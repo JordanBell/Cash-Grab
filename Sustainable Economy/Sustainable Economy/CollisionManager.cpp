@@ -27,7 +27,12 @@ void CollisionManager::Update(int delta)
         {
             if (c->m_IsMoveable)
             {
-                MovableCollision(c);
+                // I know it's bad design but whatever
+                Coin* coin = dynamic_cast<Coin*>(c);
+                if (coin && coin->moving)
+                {
+                    MovableCollision(c);
+                }
             }
             else
             {
