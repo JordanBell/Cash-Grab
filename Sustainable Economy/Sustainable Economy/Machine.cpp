@@ -1,7 +1,7 @@
 #include "Machine.h"
 #include "Resources.h"
 
-Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0)
+Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
 	skin = NULL; //Use the entire image
@@ -34,9 +34,13 @@ void Machine::update(int delta)
 					((NUM_SLOTS*2)-1) - n;
 
 		// Dispense!
-		ShootCoinFrom(slotNum);
-
-		m_numDispensed++;
+		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
+		int coinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
+		for (int i = 0; i < coinsPerSlot; i++)
+		{
+			ShootCoinFrom(slotNum);
+			m_numDispensed++;
+		}
 
 		// Stop dispensing if all of the coins have now been dispensed
 		if (m_numDispensed >= coinCost) FinishDispensing();
@@ -54,13 +58,8 @@ void Machine::dispense()
 		// Increase the cost of the next coin set by the increase constant.
 		coinCost *= COIN_INCREASE; 
 		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
+		m_dispenseType = RandomDispenseType();
 	}
-
-	// Just splash them everywhere
-	/*for (int i = 0; i < NUM_SLOTS; i++)
-	{	
-		ShootCoinFrom(i);
-	}*/
 }
 
 void Machine::ShootCoinFrom(int slotNum)
@@ -69,18 +68,109 @@ void Machine::ShootCoinFrom(int slotNum)
 	int coinY = 0;
 	bool valid;
 
-	// Find a valid landing position
-	do
+	// Find a landing position based on the type of dispensing
+	if (m_dispenseType == POINT)
+	{
+		coinX = (screen->w / 2) - (TILE_SIZE/2);
+		coinY = (screen->h / 2);
+	}
+	else if (m_dispenseType == CORNERS)
+	{
+		coinX = (screen->w / 2);
+		coinY = (screen->h / 2) + (TILE_SIZE/2);
+
+		// Get a random point from here
+		int n = rand() % 8;
+		
+		// Left Ground Coin
+		coinX -= (n==0) * (TILE_SIZE*8);
+		coinY -= (n==0) * (TILE_SIZE*3);
+		
+		coinX -= (n==1) * (TILE_SIZE*8);
+		coinY += (n==1) * (TILE_SIZE*3);
+		
+		coinX -= (n==2) * (TILE_SIZE*3);
+		coinY -= (n==2) * (TILE_SIZE*3);
+		
+		coinX -= (n==3) * (TILE_SIZE*3);
+		coinY += (n==3) * (TILE_SIZE*3);
+
+
+		// Right Ground Coin
+		coinX += (n==4) * (TILE_SIZE*7);
+		coinY += (n==4) * (TILE_SIZE*3);
+		
+		coinX += (n==5) * (TILE_SIZE*7);
+		coinY -= (n==5) * (TILE_SIZE*3);
+
+		coinX += (n==6) * (TILE_SIZE*2);
+		coinY += (n==6) * (TILE_SIZE*3);
+		
+		coinX += (n==7) * (TILE_SIZE*2);
+		coinY -= (n==7) * (TILE_SIZE*3);
+
+	}
+	else if (m_dispenseType == LINES_H)
 	{
 		coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+		coinY = (rand() % 5) * (2 * TILE_SIZE) + (4 * TILE_SIZE);
+	}
+	else if (m_dispenseType == LINES_V)
+	{
+		coinX = (rand() % 9) * (2 * TILE_SIZE) + (2 * TILE_SIZE);
 		coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE; 
-		valid = ValidLandingPosition(coinX, coinY);
-	} while (!valid);
+	}
+	else if ((m_dispenseType == LEFT) || (m_dispenseType == RIGHT) || (m_dispenseType == BOTH))
+	{
+		XY coords;
+
+		if (m_dispenseType == LEFT) coords = getLeftCircleCoords();
+		else if (m_dispenseType == RIGHT) coords = getRightCircleCoords();
+		else // (m_dispenseType == BOTH)
+		{
+			// Get either of the circle's coordinates
+			bool b = rand() % 2;
+			coords = b? getLeftCircleCoords() : getRightCircleCoords();
+		}
+
+		coinX = coords.x;
+		coinY = coords.y;
+	}
+	else // NORM, randomise within the box
+	{
+		do
+		{
+			coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+			coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE; 
+			valid = ValidLandingPosition(coinX, coinY);
+		} while (!valid);
+	}
 
 	// Create a new coin for that destination
 	Coin *coin = new Coin(coin_slots[slotNum].first, coin_slots[slotNum].second, coinX, coinY);
 	// Add it to the collidables
 	g_game->addCollidable(coin);
+}
+
+Machine::XY Machine::getLeftCircleCoords(bool addRightCoords)
+{
+	XY r_coords;
+
+	// Top left corner
+	XY topLeft;
+	topLeft.x = 3*TILE_SIZE;
+	topLeft.y = 6*TILE_SIZE;
+
+	// Addition in right circle x coordinates
+	int xc = addRightCoords * (10*TILE_SIZE); 
+	
+	r_coords.x = ((rand() % 4) * TILE_SIZE) + topLeft.x + xc;
+	r_coords.y = ((rand() % 5) * TILE_SIZE) + topLeft.y;
+
+	printf("(%d, %d)\n", r_coords.x, r_coords.y);
+
+	return r_coords;
+
 }
 
 bool Machine::ValidLandingPosition(int _x, int _y)
@@ -93,9 +183,28 @@ void Machine::FinishDispensing()
 {
 	m_dispensing = false;
 	m_numDispensed = 0;
+	m_dispenseType = NORM;
 }
 
 bool Machine::canAfford()
 {
     return (g_game->wallet >= coinCost);
+}
+
+Machine::DispenseType Machine::RandomDispenseType(void)
+{
+	int n = rand() % 20;
+	
+	//return REPLACE_WITH_TEST_TYPE;
+
+	// 10% chance for each non-normal dispense type
+	if (n == 0) return POINT;
+	if (n == 1) return CORNERS;
+	if (n == 2) return LINES_H;
+	if (n == 3) return LINES_V;
+	if (n == 4) return LEFT;
+	if (n == 5) return RIGHT;
+	if (n == 6) return BOTH;
+	else return NORM;
+	
 }

@@ -27,6 +27,7 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	
 	//Define the positions of used components from the sprite_sheet
 	floor = sprites[7][1];
+	floorBrown = sprites[6][1];
 	wall = sprites[6][0];
 	shiny_block = sprites[2][4];
 	
@@ -82,24 +83,93 @@ void Environment::render()
 			apply_surface(i, j, sprite_sheet, screen, floor);
 		}
 	}
+
+	// LEFT Brown floor coin
+	//apply_surface(square_size * 2, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 3, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 4, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 5, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 6, square_size * 5, sprite_sheet, screen, floorBrown);
+	//apply_surface(square_size * 7, square_size * 5, sprite_sheet, screen, floorBrown);
 	
-//	//Build the walls
-//	for (int i = 0; i < screen->w; i += square_size) //For all of the width
-//	{
-//		if (i == 0 || i == (screen->w - square_size)) //If at the edged widths
-//		{
-//			for (int j = 0; j < screen->h; j += square_size) //For all of the height
-//			{
-//				apply_surface(i, j, sprite_sheet, screen, wall);
-//			}
-//		}
-//		else //If not at the edge
-//		{
-//			//Just the sides
-//			apply_surface(i, 0, sprite_sheet, screen, wall);
-//			apply_surface(i, screen->h - square_size, sprite_sheet, screen, wall);
-//		}
-//	}
+	apply_surface(square_size * 2, square_size * 6, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 2, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 2, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 2, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 2, square_size * 10, sprite_sheet, screen, floorBrown);
+	
+	//apply_surface(square_size * 2, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 3, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 4, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 5, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 6, square_size * 11, sprite_sheet, screen, floorBrown);
+	//apply_surface(square_size * 7, square_size * 11, sprite_sheet, screen, floorBrown);
+	
+	apply_surface(square_size * 7, square_size * 6, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 7, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 7, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 7, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 7, square_size * 10, sprite_sheet, screen, floorBrown);
+	
+	// Filling
+	/*apply_surface(square_size * 4, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 5, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 4, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 5, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 4, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 5, square_size * 9, sprite_sheet, screen, floorBrown);*/
+
+	// CONNECTION
+	/*apply_surface(square_size * 8, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 9, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 10, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 11, square_size * 7, sprite_sheet, screen, floorBrown);
+	
+	apply_surface(square_size * 8, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 9, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 10, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 11, square_size * 8, sprite_sheet, screen, floorBrown);
+	
+	apply_surface(square_size * 8, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 9, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 10, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 11, square_size * 9, sprite_sheet, screen, floorBrown);*/
+
+
+	// RIGHT Brown floor coin
+	//apply_surface(square_size * 12, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 13, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 14, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 15, square_size * 5, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 16, square_size * 5, sprite_sheet, screen, floorBrown);
+	//apply_surface(square_size * 17, square_size * 5, sprite_sheet, screen, floorBrown);
+	
+	apply_surface(square_size * 12, square_size * 6, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 12, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 12, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 12, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 12, square_size * 10, sprite_sheet, screen, floorBrown);
+	
+	//apply_surface(square_size * 12, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 13, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 14, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 15, square_size * 11, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 16, square_size * 11, sprite_sheet, screen, floorBrown);
+	//apply_surface(square_size * 17, square_size * 11, sprite_sheet, screen, floorBrown);
+	
+	apply_surface(square_size * 17, square_size * 6, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 17, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 17, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 17, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 17, square_size * 10, sprite_sheet, screen, floorBrown);
+	
+	// Filling
+	/*apply_surface(square_size * 14, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 15, square_size * 7, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 14, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 15, square_size * 8, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 14, square_size * 9, sprite_sheet, screen, floorBrown);
+	apply_surface(square_size * 15, square_size * 9, sprite_sheet, screen, floorBrown);*/
 
 	//Build the whatever man
 	//Top Left triangle

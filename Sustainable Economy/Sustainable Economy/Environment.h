@@ -19,6 +19,7 @@ private:
 	SDL_Rect* sprites[ 8 ][ 5 ]; //All of the clip positions
 	// Sprite identifiers for certain objects' clips.
 	SDL_Rect* floor;
+	SDL_Rect* floorBrown;
 	SDL_Rect* wall;
 	SDL_Rect* shiny_block;
 
