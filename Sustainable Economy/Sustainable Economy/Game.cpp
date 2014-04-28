@@ -4,13 +4,15 @@
 #include "Prompt.h"
 #include "Machine.h"
 #include "Resources.h"
+#include "UI.h"
 #include <time.h>
+#include <sstream>
 
 using namespace std;
 
 Game* g_game = NULL;
 
-Game::Game() : running(true), wallet(START_MONEY)
+Game::Game() : running(true), wallet(START_MONEY), totalCollected(wallet)
 {
     delta = 0;
 	srand((uint)time(NULL));
@@ -32,15 +34,22 @@ Game::Game() : running(true), wallet(START_MONEY)
 Game::~Game(void)
 {
 	// Delete all entities
+    for (list<Entity*>::iterator it = m_Entities.begin(); it != m_Entities.end(); ++it)
+    {
+        delete *it;
+    }
 }
 
 void Game::run()
 {    
 	InitEnvironment();
+    
+    m_FPSTimer.start();
+    lastUpdate = m_FPSTimer.get_ticks();
+    
 	while (running)
 	{
-		m_FPSTimer.start();
-
+        
 		// Triumvirate Game loop processes
 		Update();
 		Render();
@@ -50,7 +59,7 @@ void Game::run()
         DeleteEntities();
 
 		// Regulate the framerate, and save the delta time.
-		delta = RegulateFrameRate();
+		RegulateFrameRate();
 	}
 }
 
@@ -66,7 +75,7 @@ void Game::InitEnvironment(void)
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
-int Game::RegulateFrameRate()
+void Game::RegulateFrameRate()
 {
 	// Regulate FrameRate
 	int ticks				= m_FPSTimer.get_ticks();
@@ -76,10 +85,12 @@ int Game::RegulateFrameRate()
     {
         //Sleep the remaining frame time
         SDL_Delay(gap_between_frames - ticks);
-		return gap_between_frames;
+//		delta = gap_between_frames;
+//        return;
     }
 	
-	return 1000/ticks;
+	delta = ticks - lastUpdate;
+    lastUpdate = ticks;
 }
 
 void Game::HandleKeys()
@@ -108,8 +119,19 @@ void Game::Update()
 {
 	HandleKeys();
 	
-	for (Entity* e : m_Entities) { e->update(delta); }
+	for (Entity* e : m_Entities)
+    {
+        e->update(delta);
+    }
+    
+    // Efficiency!
+    m_Entities.sort(entity_compare);
+    
 	m_CollisionManager->Update(delta);
+    
+    g_UI->SetCollectedCoins(wallet);
+    g_UI->SetRequiredCoins(machine->coinCost);
+    g_UI->SetTotalCoins(totalCollected);
 }
 
 void Game::Render()
@@ -119,6 +141,8 @@ void Game::Render()
     
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }
+    
+    g_UI->Render();
 
 	// Flip (update) the screen
 	SDL_Flip(screen);
@@ -141,17 +165,26 @@ void Game::collectCoin()
 {
     Mix_PlayMusic(g_resources->GetCoinSound(), 0);
     wallet++;
+    totalCollected++;
 }
 
-void Game::addEntity(Entity* entity)
+void Game::addEntity(Entity* entity, bool toFront)
 {
-    m_Entities.push_back(entity);
-    m_Entities.sort(entity_compare);
+    if (toFront)
+    {
+        m_Entities.push_front(entity);
+    }
+    else
+    {
+        m_Entities.push_back(entity);
+    }
+    
+//    m_Entities.sort(entity_compare);
 }
 
 void Game::addCollidable(Collidable* collidable, bool toFront)
 {
-    addEntity(collidable);
+    addEntity(collidable, toFront);
     m_CollisionManager->AddCollidable(collidable, toFront);
 }
 

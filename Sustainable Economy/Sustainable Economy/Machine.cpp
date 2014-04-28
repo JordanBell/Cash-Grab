@@ -19,7 +19,7 @@ Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_n
 
 void Machine::update(int delta)
 {
-	printf("Coins: %d, Cost: %d\n", g_game->wallet, coinCost);
+	//printf("Coins: %d, Cost: %d\n", g_game->wallet, coinCost);
 
 	m_timeElapsed += delta;
 
@@ -167,7 +167,7 @@ Machine::XY Machine::getLeftCircleCoords(bool addRightCoords)
 	r_coords.x = ((rand() % 4) * TILE_SIZE) + topLeft.x + xc;
 	r_coords.y = ((rand() % 5) * TILE_SIZE) + topLeft.y;
 
-	printf("(%d, %d)\n", r_coords.x, r_coords.y);
+//	printf("(%f, %f)\n", r_coords.x, r_coords.y);
 
 	return r_coords;
 

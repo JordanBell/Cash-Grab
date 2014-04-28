@@ -86,7 +86,7 @@ void Player::update(int delta)
 
 	if (moving)
 	{
-		int pixelsToMove = SPEED * 1000 / 60;
+		int pixelsToMove = SPEED * delta;//1000 / 60;
 		
 		y -= (this->direction == UP)	* pixelsToMove;
 		y += (this->direction == DOWN)	* pixelsToMove;

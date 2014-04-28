@@ -3,6 +3,7 @@
 #include "Resources.h"
 #include "Entity.h"
 #include "Coin.h"
+#include "UI.h"
 
 SDL_Surface* screen;
 TTF_Font* font;
@@ -59,6 +60,7 @@ bool load_files() //Load files, and check for the success of each one
 {
 	try {
 		g_resources = new Resources();
+        g_UI = new UI();
 	}
 	catch (std::exception &e) {
 		printf("%s\n", e.what());

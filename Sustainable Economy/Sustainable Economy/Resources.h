@@ -22,6 +22,8 @@ public:
 	SDL_Surface* GetMoneyMachineSheet() { return m_MoneyMachineSheet; }
 	SDL_Surface* GetPromptImage() { return m_Prompt; }
     
+    TTF_Font* GetFont() { return m_Font; }
+    
     // Get a random coin sound
     Mix_Music* GetCoinSound() { return m_CoinSounds[0/*rand() % NUM_COIN_SOUNDS*/]; }
 };

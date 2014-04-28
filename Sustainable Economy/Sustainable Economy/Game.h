@@ -14,7 +14,7 @@ using namespace std;
 
 #define TILE_SIZE 32
 #define FRAME_RATE 60
-#define START_MONEY 100
+#define START_MONEY 10
 
 class CollisionManager;
 class Machine;
@@ -25,11 +25,12 @@ class Game
 public:
 	Player *player;
 	int wallet;
+    int totalCollected;
     
 	Game();
 	~Game(void);
 	void run();
-    void addEntity(Entity* entity);
+    void addEntity(Entity* entity, bool toFront = false);
     void addCollidable(Collidable* collidable, bool toFront = false);
     void removeEntity(Entity* entity);
     void removeCollidable(Collidable* collidable);
@@ -46,6 +47,7 @@ private:
     CollisionManager* m_CollisionManager;
 	Timer m_FPSTimer;
 	int delta; // The time since the last frame
+    int lastUpdate; // Time of last update for delta tracking
 
 	//Entities
 	Environment *environment;
@@ -65,7 +67,7 @@ private:
 	void Poll();
 
     void DeleteEntities();
-	int RegulateFrameRate();
+	void RegulateFrameRate();
 };
 
 extern Game* g_game;
