@@ -23,9 +23,9 @@ void CollisionManager::Update(int delta)
     
     for (Collidable* c : m_Collidables)
     {
-        if (m_Player->CollidesWith(c))
+        if (c->m_IsMoveable) // Coin collisions
         {
-            if (c->m_IsMoveable)
+            if (m_Player->CollidesWith(c))
             {
                 // I know it's bad design but whatever
                 Coin* coin = dynamic_cast<Coin*>(c);
@@ -34,7 +34,10 @@ void CollisionManager::Update(int delta)
                     MovableCollision(c);
                 }
             }
-            else
+        }
+        else
+        {
+            if (m_Player->CollidesWith(c))
             {
                 ImmovableCollision(c);
                 shouldMove = false;
@@ -51,15 +54,15 @@ void CollisionManager::Update(int delta)
 }
 
 void CollisionManager::AddCollidable(Collidable* collidable, bool toFront)
-{ 
-	if (toFront) m_Collidables.push_front(collidable);
-	else m_Collidables.push_back(collidable); 
+{
+    if (toFront) m_Collidables.push_front(collidable);
+    else m_Collidables.push_back(collidable);
 }
 
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
     m_Game->removeCollidable(collidable);
-	m_Game->collectCoin();
+    m_Game->collectCoin();
 }
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)

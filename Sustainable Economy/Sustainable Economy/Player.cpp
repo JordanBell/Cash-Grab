@@ -6,6 +6,7 @@
 Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
 {
 	sprite_sheet = g_resources->GetPlayerSheet();
+    m_HitBox->w = 16;
 
 	delay = 200;
 	max_cycles = 3 * WALK_SPEED;

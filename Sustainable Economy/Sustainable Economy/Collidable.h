@@ -15,6 +15,7 @@
 class Collidable : public Entity {
 protected:
     SDL_Rect* m_HitBox;
+    SDL_Rect* m_AABB;
     
 public:
     bool m_IsMoveable; // Walls are not moveable
@@ -22,6 +23,7 @@ public:
     Collidable(int x, int y);
     
     virtual bool CollidesWith(Collidable* other);
+    virtual bool WillCollideWith(Collidable* other);
     virtual void update(int delta);
 };
 
