@@ -16,6 +16,7 @@ int main(int argc, char* args[])
 	 
 	//Game Running
 	g_game = new Game();
+	printf("Hey!");
 	g_game->run();
 	
 	SDL_deinit();

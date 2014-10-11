@@ -15,7 +15,7 @@ Game* g_game = NULL;
 Game::Game() : running(true), wallet(START_MONEY), totalCollected(wallet)
 {
     delta = 0;
-	srand((uint)time(NULL));
+	srand((unsigned int)time(NULL));
 
 	// Initialise all ENTITIES
 	player = new Player((9*32)-1, (8*32)-3);
@@ -79,13 +79,14 @@ void Game::RegulateFrameRate()
 {
 	// Regulate FrameRate
 	int ticks				= m_FPSTimer.get_ticks();
-	int gap_between_frames	= 1000 / FRAME_RATE;
+	int gap_between_frames	= ticks - lastUpdate;
+	int minimum_gap_between_frames	= 1000 / FRAME_RATE;
 
-	if(ticks < gap_between_frames)
+	if(gap_between_frames < minimum_gap_between_frames)
     {
         //Sleep the remaining frame time
-        SDL_Delay(gap_between_frames - ticks);
-//		delta = gap_between_frames;
+        SDL_Delay(minimum_gap_between_frames - gap_between_frames);
+		delta = gap_between_frames;
 //        return;
     }
 	
