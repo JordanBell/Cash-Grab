@@ -7,7 +7,7 @@
 
 SDL_Surface* screen;
 TTF_Font* font;
-SDL_Color textColor = { 0, 0, 0 };
+SDL_Color textColor = { 120, 10, 20 };
 SDL_Event event;
 bool inFullScreen;
 

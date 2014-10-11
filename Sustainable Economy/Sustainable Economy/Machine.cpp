@@ -26,16 +26,16 @@ void Machine::update(int delta)
     if ((m_dispensing) && (m_timeElapsed >= DISPENSING_STUTTER))
 	{
 		m_timeElapsed = 0;
-
+		
+		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
+		int coinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
 		// Choose the slot number, in a serpentine pattern.
-		int n = m_numDispensed % (NUM_SLOTS*2);
+		int n = m_numDispensed/coinsPerSlot % (NUM_SLOTS*2); // The number of shots already made (note: not the number of coins already shot, if shooting multiple at once
 		int slotNum = (n < NUM_SLOTS) ?
 					n :
 					((NUM_SLOTS*2)-1) - n;
 
 		// Dispense!
-		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		int coinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
 		for (int i = 0; i < coinsPerSlot; i++)
 		{
 			ShootCoinFrom(slotNum);
