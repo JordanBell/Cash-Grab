@@ -1,7 +1,7 @@
 #include "Machine.h"
 #include "Resources.h"
 
-Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
+Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
 	skin = NULL; //Use the entire image
@@ -27,23 +27,81 @@ void Machine::update(int delta)
 	{
 		m_timeElapsed = 0;
 		
-		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		int coinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
-		// Choose the slot number, in a serpentine pattern.
-		int n = m_numDispensed/coinsPerSlot % (NUM_SLOTS*2); // The number of shots already made (note: not the number of coins already shot, if shooting multiple at once
-		int slotNum = (n < NUM_SLOTS) ?
-					n :
-					((NUM_SLOTS*2)-1) - n;
 
-		// Dispense!
-		for (int i = 0; i < coinsPerSlot; i++)
+		if (m_dispensePattern == BURST)
 		{
-			ShootCoinFrom(slotNum);
-			m_numDispensed++;
+			if (m_ticker == 0)
+			{
+				// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
+				int coinsPerSlot = (coinCost / (QUANTITY_THRESHOLD*6/BURST_DELAY)) + 1;
+
+				// Dispense a set of coins for each row
+				for (int slotNum = 0; (slotNum < 6) && (m_numDispensed < coinCost); slotNum++)
+				{
+					// Dispense a coin for each value of coinsPerSlot
+					for (int i = 0; (i < coinsPerSlot) && (m_numDispensed < coinCost); i++)
+					{
+						ShootCoinFrom(slotNum);
+						m_numDispensed++;
+					}
+				}
+			}
+			
+			m_ticker++;
+
+			if (m_ticker == BURST_DELAY) // Reset at max
+				m_ticker = 0;
+		}
+		else if (m_dispensePattern == DUMP)
+		{
+			int slotAmounts[6];
+			slotAmounts[0] = slotAmounts[1] = slotAmounts[2] = slotAmounts[3] = slotAmounts[4] = slotAmounts[5] = 0;
+			int coinCounter = coinCost;
+			for (int i = 0; coinCounter > 0; i = (i==5) ? 0 : i+1)
+			{
+				slotAmounts[i]++;
+				coinCounter--;
+			}
+			for (int slotNum = 0; slotNum < 6; slotNum++)
+			{
+				int coinsPerSlot = coinCost / 6;
+				for (int coinsToShoot = slotAmounts[slotNum]; coinsToShoot > 0; coinsToShoot--)
+				{
+					ShootCoinFrom(slotNum);
+					m_numDispensed++;
+				}
+
+			}
+		}
+		else // Serpentine or Sputter. Both work similarly
+		{
+			
+			// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
+			int coinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
+			// Choose the slot number, in a serpentine pattern.
+			int n = m_numDispensed/coinsPerSlot % (NUM_SLOTS*2);
+			int slotNum = 0;
+			if (m_dispensePattern == SERPENTINE)
+			{
+				slotNum = (n < NUM_SLOTS) ?
+						   n :
+						   ((NUM_SLOTS*2)-1) - n;
+			}
+			else if (m_dispensePattern == SPUTTER)
+				slotNum = rand() % 6;
+
+			// Dispense!
+			for (int i = 0; (i < coinsPerSlot) && (m_numDispensed < coinCost); i++)
+			{
+				ShootCoinFrom(slotNum);
+				m_numDispensed++;
+			}
 		}
 
+
 		// Stop dispensing if all of the coins have now been dispensed
-		if (m_numDispensed >= coinCost) FinishDispensing();
+		if (m_numDispensed == coinCost) FinishDispensing();
+		else if (m_numDispensed > coinCost) printf("Somehow dispensed too many.");
 	}
 }
 
@@ -59,6 +117,7 @@ void Machine::dispense()
 		coinCost *= COIN_INCREASE; 
 		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
 		m_dispenseType = RandomDispenseType();
+		m_dispensePattern = RandomDispensePattern();
 	}
 }
 
@@ -183,6 +242,7 @@ void Machine::FinishDispensing()
 {
 	m_dispensing = false;
 	m_numDispensed = 0;
+	m_ticker = 0;
 	m_dispenseType = NORM;
 }
 
@@ -195,7 +255,7 @@ Machine::DispenseType Machine::RandomDispenseType(void)
 {
 	int n = rand() % 20;
 	
-	//return REPLACE_WITH_TEST_TYPE;
+	//return INSERT_TEST_VALUE;
 
 	// 10% chance for each non-normal dispense type
 	if (n == 0) return POINT;
@@ -206,5 +266,19 @@ Machine::DispenseType Machine::RandomDispenseType(void)
 	if (n == 5) return RIGHT;
 	if (n == 6) return BOTH;
 	else return NORM;
+	
+}
+
+Machine::DispensePattern Machine::RandomDispensePattern(void)
+{
+	int n = rand() % 10;
+	
+	//return INSERT_TEST_VALUE;
+
+	// 10% chance for each non-normal dispense type
+	if (n <= 2)		 return BURST;		// %30 Chance
+	else if (n <= 5) return SERPENTINE; // %30 Chance
+	else if (n <= 8) return SPUTTER;	// %30 Chance
+	else			 return DUMP;		// %10 Chance
 	
 }
