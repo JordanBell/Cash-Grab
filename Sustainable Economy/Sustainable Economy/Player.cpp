@@ -5,31 +5,31 @@
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
 {
-	sprite_sheet = g_resources->GetPlayerSheet();
-    m_HitBox->w = 16;
-
-	delay = 200;
-	max_cycles = 3 * WALK_SPEED;
-
-	//Initialise the clips of the sprite_sheet
-	int clip_w = (sprite_sheet->w / 3);
-	int clip_h = (sprite_sheet->h / 4);
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			SDL_Rect* clip = new SDL_Rect();
-
-			clip->x = clip_w * j;
-			clip->y = clip_h * i,
-			
-			clip->w = clip_w;
-			clip->h = clip_h;
-
-			sprites[i][j] = clip;
-		}
-	}
+    sprite_sheet = g_resources->GetPlayerSheet();
+    m_HitBox->w = m_AABB->w = PLAYER_WIDTH;
+    
+    delay = 200;
+    max_cycles = 3 * WALK_SPEED;
+    
+    //Initialise the clips of the sprite_sheet
+    int clip_w = (sprite_sheet->w / 3);
+    int clip_h = (sprite_sheet->h / 4);
+    
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            SDL_Rect* clip = new SDL_Rect();
+            
+            clip->x = clip_w * j;
+            clip->y = clip_h * i,
+            
+            clip->w = clip_w;
+            clip->h = clip_h;
+            
+            sprites[i][j] = clip;
+        }
+    }
 }
 
 void Player::move(int direction)
@@ -78,22 +78,70 @@ void Player::SnapToGrid()
 
 void Player::IncCycle(void)
 {
-	cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; 
+    cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1;
 }
 
 void Player::update(int delta)
 {
-	IncCycle();
-
-	if (moving)
-	{
-		int pixelsToMove = SPEED * delta;//1000 / 60;
-		
-		y -= (this->direction == UP)	* pixelsToMove;
-		y += (this->direction == DOWN)	* pixelsToMove;
-		x -= (this->direction == LEFT)	* pixelsToMove;
-		x += (this->direction == RIGHT) * pixelsToMove;
-	}
+    IncCycle();
     
-    Collidable::update(delta);
+    int pixelsToMove = SPEED * delta;//1000 / 60;
+    
+    int yVel = 0, xVel = 0;
+    
+    switch (this->direction) {
+        case UP:
+            yVel = -pixelsToMove;
+            break;
+        case DOWN:
+            yVel = pixelsToMove;
+            break;
+        case LEFT:
+            xVel = -pixelsToMove;
+            break;
+        case RIGHT:
+            xVel = pixelsToMove;
+            break;
+        default:
+            break;
+    }
+    
+//      y -= (this->direction == UP)	* pixelsToMove;
+//		y += (this->direction == DOWN)	* pixelsToMove;
+//		x -= (this->direction == LEFT)	* pixelsToMove;
+//		x += (this->direction == RIGHT) * pixelsToMove;
+    
+    // Left here, with it not going well...
+    
+    m_AABB->y = y + yVel;
+    m_AABB->x = x + xVel;
+    
+    if (moving)
+    {
+        y += yVel;
+        x += xVel;
+        
+        Collidable::update(delta);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

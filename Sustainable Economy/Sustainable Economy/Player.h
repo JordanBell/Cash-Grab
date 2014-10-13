@@ -5,6 +5,7 @@
 
 #define SPEED 0.3 // The movement speed (independent of framerate)
 #define WALK_SPEED 5 // The number of frames between cycle changes
+#define PLAYER_WIDTH 16 // Width of 16px on screen
 #define STILL 1
 
 class Player : public Collidable {

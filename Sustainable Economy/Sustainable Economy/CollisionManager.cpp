@@ -37,7 +37,7 @@ void CollisionManager::Update(int delta)
         }
         else
         {
-            if (m_Player->CollidesWith(c))
+            if (m_Player->WillCollideWith(c))
             {
                 ImmovableCollision(c);
                 shouldMove = false;
@@ -47,7 +47,8 @@ void CollisionManager::Update(int delta)
     
     if (shouldMove && !m_Player->m_CanMove)
     {
-        m_Player->m_CanMove = true;
+//        printf("move\n");
+//        m_Player->m_CanMove = true;
     }
     
     DeleteCollidables();

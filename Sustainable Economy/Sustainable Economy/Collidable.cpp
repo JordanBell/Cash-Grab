@@ -75,11 +75,7 @@ void Collidable::update(int delta)
     m_HitBox->x = x;
     m_HitBox->y = y;
     
-    if (m_IsMoveable)
-    {
-        m_AABB->x = x;
-        m_AABB->y = y;
-    }
+    // Subclasses must set position of AABB themselves
 }
 
 
