@@ -43,6 +43,17 @@ void Player::move(int direction)
     }
 }
 
+void Player::DoMove()
+{
+    if (moving)
+    {
+        y += m_yVel;
+        x += m_xVel;
+        m_AABB->x = x;
+        m_AABB->y = y;
+    }
+}
+
 void Player::stop_moving()
 {
     moving = false;
@@ -55,7 +66,7 @@ void Player::SetCanMove(bool canMove)
     if (!canMove)
     {
         moving = false;
-        SnapToGrid();
+//        SnapToGrid();
     }
 }
 
@@ -85,47 +96,54 @@ void Player::update(int delta)
 {
     IncCycle();
     
-    int pixelsToMove = SPEED * delta;//1000 / 60;
+    m_xVel = m_yVel = 0;
+    m_AABB->x = x;
+    m_AABB->y = y;
+    m_AABB->w = 32;
+    m_AABB->h = TILE_SIZE;
     
-    int yVel = 0, xVel = 0;
-    
-    switch (this->direction) {
-        case UP:
-            yVel = -pixelsToMove;
-            break;
-        case DOWN:
-            yVel = pixelsToMove;
-            break;
-        case LEFT:
-            xVel = -pixelsToMove;
-            break;
-        case RIGHT:
-            xVel = pixelsToMove;
-            break;
-        default:
-            break;
-    }
-    
-//      y -= (this->direction == UP)	* pixelsToMove;
-//		y += (this->direction == DOWN)	* pixelsToMove;
-//		x -= (this->direction == LEFT)	* pixelsToMove;
-//		x += (this->direction == RIGHT) * pixelsToMove;
-    
-    // Left here, with it not going well...
-    
-    m_AABB->y = y + yVel;
-    m_AABB->x = x + xVel;
-    
-    if (moving)
-    {
-        y += yVel;
-        x += xVel;
+    if (moving) {
+        int pixelsToMove = SPEED * delta;//1000 / 60;
         
-        Collidable::update(delta);
+        switch (this->direction) {
+            case UP:
+                m_yVel = -pixelsToMove;
+                m_AABB->y = y + m_yVel;
+                break;
+            case DOWN:
+                m_yVel = pixelsToMove;
+                break;
+            case LEFT:
+                m_xVel = -pixelsToMove;
+                m_AABB->x = x + m_xVel;
+                break;
+            case RIGHT:
+                m_xVel = pixelsToMove;
+                break;
+            default:
+                break;
+        }
+        
+        m_AABB->h += m_yVel;
+        m_AABB->w += m_xVel;
     }
+    
+    Collidable::update(delta);
 }
 
-
+void Player::render()
+{
+    // For debugging!
+    
+    // Draw the AABB, then the player
+//    SDL_Surface *test = g_resources->GetTestImage();
+//    
+//    SDL_Rect r = { 0, 0, m_AABB->w, m_AABB->h };
+//    SDL_Rect *rect = &r;
+//    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);
+    
+    Entity::render();
+}
 
 
 

@@ -25,7 +25,8 @@ void CollisionManager::Update(int delta)
     {
         if (c->m_IsMoveable) // Coin collisions
         {
-            if (m_Player->CollidesWith(c))
+            int collisionOverlap;
+            if (m_Player->CollidesWith(c, collisionOverlap))
             {
                 // I know it's bad design but whatever
                 Coin* coin = dynamic_cast<Coin*>(c);
@@ -37,18 +38,70 @@ void CollisionManager::Update(int delta)
         }
         else
         {
-            if (m_Player->WillCollideWith(c))
-            {
-                ImmovableCollision(c);
+            int collisionOverlap;
+            if (m_Player->WillCollideWith(c, collisionOverlap))
+            {   
+                // If we're not right next to a wall
+                if (collisionOverlap > 0)
+                {
+                    // Slow down by overlap amount
+                    if (m_Player->m_yVel > 0)
+                    {
+                        m_Player->m_yVel -= collisionOverlap;
+                        
+                        if (m_Player->m_yVel < 0)
+                        {
+                            m_Player->m_yVel = 0;
+                        }
+                    }
+                    else if (m_Player->m_yVel < 0)
+                    {
+                        m_Player->m_yVel += collisionOverlap;
+                        
+                        if (m_Player->m_yVel > 0)
+                        {
+                            m_Player->m_yVel = 0;
+                        }
+                    }
+                    
+                    if (m_Player->m_xVel > 0)
+                    {
+                        m_Player->m_xVel -= collisionOverlap;
+                        
+                        if (m_Player->m_xVel < 0)
+                        {
+                            m_Player->m_xVel = 0;
+                        }
+                    }
+                    else if (m_Player->m_xVel < 0)
+                    {
+                        m_Player->m_xVel += collisionOverlap;
+                        
+                        if (m_Player->m_xVel > 0)
+                        {
+                            m_Player->m_xVel = 0;
+                        }
+                    }
+                    
+                    // Do this movement before stopping player from moving
+                    m_Player->DoMove();
+                }
+                
                 shouldMove = false;
+                
+                ImmovableCollision(c);
             }
         }
     }
     
-    if (shouldMove && !m_Player->m_CanMove)
+    if (shouldMove)
     {
+        if (!m_Player->m_CanMove) {
 //        printf("move\n");
-//        m_Player->m_CanMove = true;
+            m_Player->SetCanMove(true);
+        }
+        
+        m_Player->DoMove();
     }
     
     DeleteCollidables();

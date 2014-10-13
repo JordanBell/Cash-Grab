@@ -9,7 +9,7 @@
 #include "Collidable.h"
 #include "Game.h"
 
-bool HitTest(SDL_Rect* first, SDL_Rect* second)
+bool HitTest(SDL_Rect* first, SDL_Rect* second, int &collisionOverlap)
 {
     int left = first->x;
     int right = left + first->w;
@@ -23,14 +23,33 @@ bool HitTest(SDL_Rect* first, SDL_Rect* second)
     
     bool collides = true;
     
-    if (otherBottom <= top)
+    if (otherBottom <= top) {
         collides = false;
-    if (otherTop >= bottom)
+    }
+    else {
+        collisionOverlap = otherBottom - top;
+    }
+    
+    if (otherTop >= bottom) {
         collides = false;
-    if (otherLeft >= right)
+    }
+    else {
+        collisionOverlap = bottom - otherTop;
+    }
+    
+    if (otherLeft >= right) {
         collides = false;
-    if (otherRight <= left)
+    }
+    else {
+        collisionOverlap = right - otherLeft;
+    }
+    
+    if (otherRight <= left) {
         collides = false;
+    }
+    else {
+        collisionOverlap = otherRight - left;
+    }
     
     return collides;
 }
@@ -38,6 +57,8 @@ bool HitTest(SDL_Rect* first, SDL_Rect* second)
 Collidable::Collidable(int x, int y) : Entity(x, y)
 {
     m_IsMoveable = true;
+    m_xVel = m_yVel = 0;
+    
     m_HitBox = new SDL_Rect();
     m_HitBox->x = x;
     m_HitBox->y = y;
@@ -60,14 +81,14 @@ Collidable::Collidable(int x, int y) : Entity(x, y)
     }
 }
 
-bool Collidable::CollidesWith(Collidable *other)
+bool Collidable::CollidesWith(Collidable *other, int &collisionOverlap)
 {
-    return HitTest(m_HitBox, other->m_HitBox);
+    return HitTest(m_HitBox, other->m_HitBox, collisionOverlap);
 }
 
-bool Collidable::WillCollideWith(Collidable *other)
+bool Collidable::WillCollideWith(Collidable *other, int &collisionOverlap)
 {
-    return HitTest(m_AABB, other->m_HitBox);
+    return HitTest(m_AABB, other->m_HitBox, collisionOverlap);
 }
 
 void Collidable::update(int delta)
@@ -79,8 +100,10 @@ void Collidable::update(int delta)
 }
 
 
-
-
+void Collidable::DoMove()
+{
+    // Must be implemented by classes that can move
+}
 
 
 

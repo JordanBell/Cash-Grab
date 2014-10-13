@@ -266,7 +266,6 @@ Machine::DispenseType Machine::RandomDispenseType(void)
 	if (n == 5) return RIGHT;
 	if (n == 6) return BOTH;
 	else return NORM;
-	
 }
 
 Machine::DispensePattern Machine::RandomDispensePattern(void)

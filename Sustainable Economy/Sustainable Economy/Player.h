@@ -38,6 +38,8 @@ public:
 	void stop_moving(void);
     void SetCanMove(bool canMove);
 	void update(int delta);
+    void render();
+    void DoMove();
 
 protected:
 	void IncCycle(void);

@@ -20,11 +20,14 @@ protected:
 public:
     bool m_IsMoveable; // Walls are not moveable
     
+    int m_xVel, m_yVel; // Number of pixels to move next frame (if it can move)
+    
     Collidable(int x, int y);
     
-    virtual bool CollidesWith(Collidable* other);
-    virtual bool WillCollideWith(Collidable* other);
+    virtual bool CollidesWith(Collidable* other, int &collisionOverlap);
+    virtual bool WillCollideWith(Collidable* other, int &collisionOverlap);
     virtual void update(int delta);
+    virtual void DoMove();
 };
 
 #endif

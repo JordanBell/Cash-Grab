@@ -18,7 +18,7 @@ using namespace std;
 class UI 
 {
 protected:
-//    SDL_Color textColor = { 255, 255, 255 };
+	//SDL_Color textColor = { 0, 0, 0 };
     
     int collectedX, collectedY;
     int requiredX, requiredY;
