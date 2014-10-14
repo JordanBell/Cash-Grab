@@ -242,7 +242,7 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 		} while (!valid);
 	}
 
-	SDL_Rect r_rect = { coin_slots[slotNum].first, coin_slots[slotNum].second, coinX, coinY };
+	SDL_Rect r_rect = { static_cast<Sint16>(coin_slots[slotNum].first), static_cast<Sint16>(coin_slots[slotNum].second), static_cast<Uint16>(coinX), static_cast<Uint16>(coinY) };
 	return r_rect;
 }
 

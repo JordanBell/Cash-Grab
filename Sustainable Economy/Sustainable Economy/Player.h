@@ -53,4 +53,6 @@ private:
 	void set_skin() { skin = (moving) ? sprites[direction][cycle/WALK_SPEED] : sprites[direction][STILL]; };
 };
 
+extern Player *g_Player;
+
 #endif

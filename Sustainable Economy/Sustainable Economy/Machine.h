@@ -29,7 +29,7 @@ public:
 	void update(int delta);
 	void dispense();
 
-	SDL_Rect Machine::CoinLaunchInfo(int slotNum);
+	SDL_Rect CoinLaunchInfo(int slotNum);
 
 private:    
 	struct XY { float x, y; };

@@ -12,13 +12,14 @@ using namespace std;
 
 Game* g_game = NULL;
 
-Game::Game() : running(true), wallet(START_MONEY), totalCollected(wallet)
+Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY)
 {
     delta = 0;
 	srand((unsigned int)time(NULL));
 
 	// Initialise all ENTITIES
 	player = new Player((9*TILE_SIZE)-1, (8*TILE_SIZE)-3);
+    g_Player = player;
 	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
 	prompt = new Prompt(machine);
     

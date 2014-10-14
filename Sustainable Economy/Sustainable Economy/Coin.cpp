@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
-{ 
+{
 	sprite_sheet = g_resources->GetCoinSheet();
 	m_HitBox->w = 16;
     m_HitBox->h = 16;
@@ -152,13 +152,21 @@ void Coin::update(int delta)
     IncCycle();
 	
 	if (moving) move();
-	else
-	{
-		x = end.x;
-		y = end.y;
+    else
+    {
+        if (sqrt(pow((g_Player->x - x), 2) + pow((g_Player->y - y), 2)) < 50)
+        {
+            x = x + 0.25 * (g_Player->x - x);
+            y = y + 0.25 * (g_Player->y - y);
+        }
+        else {
+            x = end.x;
+            y = end.y;
+        }
+        
         moving = false;
-	}
-    
+    }
+
     Collidable::update(delta);
 }
 
