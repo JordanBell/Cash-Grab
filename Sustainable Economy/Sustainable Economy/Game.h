@@ -9,6 +9,7 @@
 #include "Environment.h"
 #include "Prompt.h"
 #include "Timer.h"
+#include <memory>
 
 using namespace std;
 
@@ -42,9 +43,6 @@ public:
 	void IncWalletBy(int n) { wallet += n; totalCollected += n; }
 
 private:
-	//
-	/// Fields
-	//
 	KeyCode keys;
     CollisionManager* m_CollisionManager;
 	Timer m_FPSTimer;
@@ -56,7 +54,7 @@ private:
 	Machine *machine;
 	Prompt *prompt;
 	list<Entity*> m_Entities;
-    list<Entity*> m_EntityDeleteQueue;
+    list<unique_ptr<Entity>> m_EntityDeleteQueue;
 	bool running;
 
 	//

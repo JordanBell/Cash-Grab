@@ -53,6 +53,7 @@ void Game::run()
         
 		// Triumvirate Game loop processes
 		Update();
+		printf("Coins: %d\n", g_coins.size()); 
 		Render();
 		Poll();
         
@@ -191,7 +192,7 @@ void Game::addCollidable(Collidable* collidable, bool toFront)
 
 void Game::removeEntity(Entity* entity)
 {
-    m_EntityDeleteQueue.push_back(entity);
+    m_EntityDeleteQueue.emplace_back(unique_ptr<Entity>(entity)); // Warning: Will this in-line declaration delete the pointer when out of scope?
 }
 
 void Game::removeCollidable(Collidable *collidable)
@@ -202,11 +203,10 @@ void Game::removeCollidable(Collidable *collidable)
 
 void Game::DeleteEntities()
 {
-    for (Entity* entity : m_EntityDeleteQueue)
+    for (unique_ptr<Entity>& entity_ptr : m_EntityDeleteQueue)
     {
-        m_Entities.remove(entity);
-        //delete entity;
+        m_Entities.remove(entity_ptr.get());
     }
     
-    m_EntityDeleteQueue.clear();
+    m_EntityDeleteQueue.clear(); // Thus deleting the entities being pointed to
 }

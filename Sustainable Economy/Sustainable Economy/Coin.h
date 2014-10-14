@@ -2,6 +2,7 @@
 #define __SustainableEconomy__Coin__
 
 #include "Collidable.h"
+#include <list>
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
@@ -14,16 +15,16 @@ public:
 	bool moving;
 
 	Coin(int start_x, int start_y, int end_x, int end_y);
-	~Coin(void)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            delete sprites[i];
-        }
-    }
+	~Coin(void);
 
 	void update(int delta);
+	void LaunchTo(int _x, int _y);
 	virtual void OnCollect(void); // A coin's effect when collected
+	virtual void render(void) override final
+	{
+		printf("Rendering coin");
+		Entity::render();
+	}
 
 protected:
 	//Graphics
@@ -78,6 +79,8 @@ private:
 	float ComputeSpeedForDistance();
 	float ComputeVariableGravity();
 };
+
+extern std::list<Coin*> g_coins;
 
 #endif
 

@@ -8,26 +8,45 @@
 #include <stdlib.h>
 #include "Player.h"
 
+list<Coin*> g_coins;
+
 Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
 {
+	g_coins.push_back(this);
 	sprite_sheet = g_resources->GetCoinSheet();
 	m_HitBox->w = 16;
     m_HitBox->h = 16;
 
 	max_cycles = 8 * LOOP_SPEED;
 
-	// Coordinates
-	start.x = start_x;
-	start.y = start_y;
-	end.x = end_x;
-	end.y = end_y;
-
 	//Initialise the clips of the sprite_sheet
 	InitSheet();
+
+	LaunchTo(end_x, end_y);
+}
+
+Coin::~Coin(void)
+{
+	printf("Coin Deleted.\n");
+    for (int i = 0; i < 8; i++)
+    {
+       delete sprites[i];
+    }
+	g_coins.remove(this);
+}
+
+void Coin::LaunchTo(int _x, int _y)
+{
+	// Launch the coin towards the end coordinates
+	start.x = x;
+	start.y = y;
+	end.x = _x;
+	end.y = _y;
 	
 	//Initialise the kinematics fields
 	InitKin();
 }
+
 
 void Coin::InitSheet()
 {
