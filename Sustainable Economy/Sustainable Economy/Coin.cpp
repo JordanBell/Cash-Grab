@@ -6,6 +6,7 @@
 #include "Resources.h"
 #include <time.h>
 #include <stdlib.h>
+#include "Player.h"
 
 Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
 {

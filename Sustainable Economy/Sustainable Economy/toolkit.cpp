@@ -32,8 +32,8 @@ bool SDL_init()
 	//Init Screen
 	inFullScreen = true;
 	toggleScreenFormat();
-	SDL_WM_SetCaption("Sustainable Economy", NULL);
-	if (screen == NULL) return false;
+	SDL_WM_SetCaption("Sustainable Economy", nullptr);
+	if (screen == nullptr) return false;
     
 	//Init SDL_ttf
 	if (TTF_Init() == -1) return false;
@@ -72,16 +72,16 @@ bool load_files() //Load files, and check for the success of each one
 
 SDL_Surface* load_image(std::string filename)
 {
-	SDL_Surface* loadedImage = NULL;
-	SDL_Surface* optimizedImage = NULL;
+	SDL_Surface* loadedImage = nullptr;
+	SDL_Surface* optimizedImage = nullptr;
 
 	loadedImage = IMG_Load(filename.c_str());
-	if (loadedImage != NULL)
+	if (loadedImage != nullptr)
 	{
 		optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
 		SDL_FreeSurface(loadedImage);
 
-		if (optimizedImage != NULL)
+		if (optimizedImage != nullptr)
 		{
 			Uint32 colorkey = SDL_MapRGB(optimizedImage->format, 0, 0xFF, 0xFF);
 			SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);

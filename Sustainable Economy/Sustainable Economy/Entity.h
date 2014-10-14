@@ -11,7 +11,7 @@ public:
 	float x, y;
 
 	//Constructors
-	Entity(int x, int y) : cycle(0), x(x), y(y), skin(NULL) { }
+	Entity(int x, int y) : cycle(0), x(x), y(y), skin(nullptr) { }
 	virtual ~Entity(void)
     {
         SDL_FreeSurface(sprite_sheet);
@@ -29,7 +29,7 @@ protected:
 	SDL_Rect* skin;
 	SDL_Surface* sprite_sheet;
 	
-	virtual void set_skin() { skin = NULL; }
+	virtual void set_skin() { skin = nullptr; }
 	virtual void IncCycle(void) { cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1; }
 };
 

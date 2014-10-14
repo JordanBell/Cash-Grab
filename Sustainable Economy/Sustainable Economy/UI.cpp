@@ -10,13 +10,13 @@
 #include "toolkit.h"
 #include <sstream>
 
-UI* g_UI = NULL;
+UI* g_UI = nullptr;
 
 UI::UI()
 {
-    m_TotalCoinsLabel = NULL;
-    m_CollectedCoinsLabel = NULL;
-    m_RequiredCoinsLabel = NULL;
+    m_TotalCoinsLabel = nullptr;
+    m_CollectedCoinsLabel = nullptr;
+    m_RequiredCoinsLabel = nullptr;
     
     collectedX = requiredX = totalX = 0;
     collectedY = 0;
