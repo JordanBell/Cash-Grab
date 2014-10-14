@@ -25,7 +25,7 @@ private:
 
 	//SDL_Surface* entire_image; //The culmination of the total image made by the code in the constructor.
 
-	void set_skin() { skin = NULL; };
+	void set_skin() { skin = nullptr; };
 };
 
 extern Environment* g_environment;

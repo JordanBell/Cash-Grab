@@ -2,7 +2,6 @@
 #define __SustainableEconomy__Coin__
 
 #include "Collidable.h"
-#include "Player.h"
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)

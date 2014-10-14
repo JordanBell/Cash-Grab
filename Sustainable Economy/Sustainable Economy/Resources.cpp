@@ -8,7 +8,7 @@
 
 #include <stdexcept>
 
-Resources* g_resources = NULL;
+Resources* g_resources = nullptr;
 
 Resources::Resources(void)
 {
@@ -28,13 +28,13 @@ Resources::Resources(void)
     Mix_VolumeMusic(40);
     
 	// Check for failures.
-	if ((m_PlayerSheet		  == NULL)	||
-		(m_CoinSheet		  == NULL)	||
-		(m_EnvironmentImage   == NULL)	||
-		(m_MoneyMachineSheet  == NULL)	||
-		(m_Prompt			  == NULL)	||
-		(m_Font				  == NULL)  ||
-        (m_Square             == NULL))
+	if ((m_PlayerSheet		  == nullptr)	||
+		(m_CoinSheet		  == nullptr)	||
+		(m_EnvironmentImage   == nullptr)	||
+		(m_MoneyMachineSheet  == nullptr)	||
+		(m_Prompt			  == nullptr)	||
+		(m_Font				  == nullptr)  ||
+        (m_Square             == nullptr))
 		{
 			throw std::runtime_error("Some of the resources failed to initialise");
 		}

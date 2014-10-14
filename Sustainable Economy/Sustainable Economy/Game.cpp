@@ -10,12 +10,12 @@
 
 using namespace std;
 
-Game* g_game = NULL;
+Game* g_game = nullptr;
 
 Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY)
 {
     delta = 0;
-	srand((unsigned int)time(NULL));
+	srand((unsigned int)time(nullptr));
 
 	// Initialise all ENTITIES
 	player = new Player((9*TILE_SIZE)-1, (8*TILE_SIZE)-3);
@@ -98,7 +98,7 @@ void Game::RegulateFrameRate()
 void Game::HandleKeys()
 {
 	//Get the keystates
-	Uint8 *keystates = SDL_GetKeyState(NULL);
+	Uint8 *keystates = SDL_GetKeyState(nullptr);
 	
 	//If WASD, move player
 	if (keystates[SDLK_w] || keystates[SDLK_s] || keystates[SDLK_a] || keystates[SDLK_d])
@@ -139,7 +139,7 @@ void Game::Update()
 void Game::Render()
 {
     // Clear the screen
-    SDL_FillRect(screen,NULL,0x000000);
+    SDL_FillRect(screen,nullptr,0x000000);
     
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }

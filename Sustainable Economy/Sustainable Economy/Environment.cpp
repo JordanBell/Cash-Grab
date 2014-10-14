@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Wall.h"
 
-Environment* g_environment = NULL;
+Environment* g_environment = nullptr;
 
 Environment::Environment(int x, int y) : Entity(x, y)
 {

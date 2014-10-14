@@ -4,7 +4,7 @@
 Machine::Machine(int x, int y) : Entity(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
-	skin = NULL; //Use the entire image
+	skin = nullptr; //Use the entire image
 
     dispenser_pos = std::pair<int, int>(x, y + (2 * TILE_SIZE));
     

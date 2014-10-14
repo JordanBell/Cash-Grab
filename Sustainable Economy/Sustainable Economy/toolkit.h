@@ -23,7 +23,7 @@ class Entity;
 void toggleScreenFormat();
 void exitFullScreen();
 
-void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL);
+void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = nullptr);
 bool SDL_init();
 bool load_files();
 void SDL_deinit();

@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 
-Player *g_Player = NULL;
+Player *g_Player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
