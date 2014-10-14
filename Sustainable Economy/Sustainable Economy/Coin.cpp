@@ -139,6 +139,12 @@ float Coin::ComputeVariableGravity()
 	return (gravityStruct.gravityConstant * height * height / (speed * speed * sin(angle) * sin(angle)) + gravityStruct.mid) * /* Subtract a bit, because science */ (0.85 - 0.2);
 }
 
+void Coin::OnCollect(void) 
+{ 
+	// Base Coins do not have special collection effects, just increase money
+	g_game->IncWallet(); 
+} 
+
 void Coin::update(int delta)
 {
     IncCycle();

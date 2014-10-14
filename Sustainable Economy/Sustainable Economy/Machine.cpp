@@ -39,11 +39,7 @@ void Machine::update(int delta)
 				for (int slotNum = 0; (slotNum < 6) && (m_numDispensed < coinCost); slotNum++)
 				{
 					// Dispense a coin for each value of coinsPerSlot
-					for (int i = 0; (i < coinsPerSlot) && (m_numDispensed < coinCost); i++)
-					{
-						ShootCoinFrom(slotNum);
-						m_numDispensed++;
-					}
+					ShootCoinsFrom(slotNum, coinsPerSlot);
 				}
 			}
 			
@@ -64,13 +60,7 @@ void Machine::update(int delta)
 			}
 			for (int slotNum = 0; slotNum < 6; slotNum++)
 			{
-				int coinsPerSlot = coinCost / 6;
-				for (int coinsToShoot = slotAmounts[slotNum]; coinsToShoot > 0; coinsToShoot--)
-				{
-					ShootCoinFrom(slotNum);
-					m_numDispensed++;
-				}
-
+				ShootCoinsFrom(slotNum, slotAmounts[slotNum]);
 			}
 		}
 		else // Serpentine or Sputter. Both work similarly
@@ -91,17 +81,13 @@ void Machine::update(int delta)
 				slotNum = rand() % 6;
 
 			// Dispense!
-			for (int i = 0; (i < coinsPerSlot) && (m_numDispensed < coinCost); i++)
-			{
-				ShootCoinFrom(slotNum);
-				m_numDispensed++;
-			}
+			ShootCoinsFrom(slotNum, coinsPerSlot);
 		}
 
 
 		// Stop dispensing if all of the coins have now been dispensed
-		if (m_numDispensed == coinCost) FinishDispensing();
-		else if (m_numDispensed > coinCost) printf("Somehow dispensed too many.");
+		if (m_numDispensed > coinCost) printf("Somehow dispensed too many.\n");
+		if (m_numDispensed >= coinCost) FinishDispensing();
 	}
 }
 
@@ -121,7 +107,58 @@ void Machine::dispense()
 	}
 }
 
-void Machine::ShootCoinFrom(int slotNum)
+void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
+{
+	// Silver Coins (5) NOTE: For Gold coins, only dispense half the amount, leave some values for Silver coins
+	int setsOfTen = totalValue / 10;
+	for (int numGold = setsOfTen / 2; ((numGold > 0) && (m_numDispensed < coinCost)); numGold--)// (((totalValue / 10) >= 1) && (m_numDispensed < coinCost))
+	{
+		// Find this Coin's launch info
+		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+		// Create a new coin for that destination
+		CoinGold* coin = new CoinGold(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		// Add it to the collidables
+		g_game->addCollidable(coin);
+
+		m_numDispensed += 10;
+		totalValue -= 10;
+	}
+
+	// Silver Coins (5)
+	while (((totalValue / 5) >= 1) && (m_numDispensed < coinCost))
+	{
+
+		// Find this Coin's launch info
+		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+		// Create a new coin for that destination
+		CoinFive* coin = new CoinFive(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		// Add it to the collidables
+		g_game->addCollidable(coin);
+
+		m_numDispensed += 5;
+		totalValue -= 5;
+	}
+
+	// Bronze Coins (1)
+	while ((totalValue > 0) && (m_numDispensed < coinCost))
+	{
+		if (m_numDispensed > coinCost) 
+			printf("YO");
+
+		// Find this coin's launch info
+		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+		// Create a new coin for that destination
+		Coin* coin = new Coin(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		// Add it to the collidables
+		g_game->addCollidable(coin);
+
+		m_numDispensed++;
+		totalValue--;
+	}
+}
+
+
+SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 {
 	int coinX = 0;
 	int coinY = 0;
@@ -205,10 +242,8 @@ void Machine::ShootCoinFrom(int slotNum)
 		} while (!valid);
 	}
 
-	// Create a new coin for that destination
-	Coin *coin = new Coin(coin_slots[slotNum].first, coin_slots[slotNum].second, coinX, coinY);
-	// Add it to the collidables
-	g_game->addCollidable(coin);
+	SDL_Rect r_rect = { coin_slots[slotNum].first, coin_slots[slotNum].second, coinX, coinY };
+	return r_rect;
 }
 
 Machine::XY Machine::getLeftCircleCoords(bool addRightCoords)

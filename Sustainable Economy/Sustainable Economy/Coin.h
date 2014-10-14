@@ -16,7 +16,6 @@ public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
 	~Coin(void)
     {
-        // Maybe not hardcode number of sprites? (8)
         for (int i = 0; i < 8; i++)
         {
             delete sprites[i];
@@ -24,14 +23,18 @@ public:
     }
 
 	void update(int delta);
+	virtual void OnCollect(void); // A coin's effect when collected
 
 protected:
+	//Graphics
+    SDL_Rect* sprites[ 8 ];
+	
 	void set_skin() { skin = sprites[cycle/LOOP_SPEED]; };
+	virtual void InitSheet();
 
 private:
 	//Init
     
-	void InitSheet();
 	void InitKin();
 		void ComputeInitPlanar(void);
 		void ComputeInitXAngle(void);
@@ -56,9 +59,6 @@ private:
 					min(mid - (rangeRatio * mid / 2)),
 					gravityConstant(4 * (rangeRatio * mid) * mid) {}
 	} gravityStruct;
-
-	//Graphics
-    SDL_Rect* sprites[ 8 ];
 
 	//Kinematics
 	struct XY { float x, y; };

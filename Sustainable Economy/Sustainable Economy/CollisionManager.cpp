@@ -8,6 +8,7 @@
 
 #include "CollisionManager.h"
 #include "Game.h"
+#include "Resources.h"
 
 using namespace std;
 
@@ -116,7 +117,10 @@ void CollisionManager::AddCollidable(Collidable* collidable, bool toFront)
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
     m_Game->removeCollidable(collidable);
-    m_Game->collectCoin();
+    //m_Game->collectCoin(); // Moved to Coin::OnCollect()
+	
+    Mix_PlayMusic(g_resources->GetCoinSound(), 0);
+	((Coin*)collidable)->OnCollect();
 }
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)

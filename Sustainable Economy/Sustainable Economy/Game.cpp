@@ -18,8 +18,8 @@ Game::Game() : running(true), wallet(START_MONEY), totalCollected(wallet)
 	srand((unsigned int)time(NULL));
 
 	// Initialise all ENTITIES
-	player = new Player((9*32)-1, (8*32)-3);
-	machine = new Machine((7*32), (32));
+	player = new Player((9*TILE_SIZE)-1, (8*TILE_SIZE)-3);
+	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
 	prompt = new Prompt(machine);
     
 	m_CollisionManager = new CollisionManager(this);

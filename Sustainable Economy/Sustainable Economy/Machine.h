@@ -2,7 +2,8 @@
 #define machine_h
 
 #include "entity.h"
-#include "Coin.h"
+#include "CoinFive.h"
+#include "CoinGold.h"
 #include "Game.h"
 
 #include <vector>
@@ -14,7 +15,7 @@ using namespace std;
 #define COIN_INCREASE 1.2
 #define DISPENSING_STUTTER 35
 #define BURST_DELAY 5
-#define QUANTITY_THRESHOLD 50
+#define QUANTITY_THRESHOLD 20
 
 class Machine :
 	public Entity
@@ -27,6 +28,8 @@ public:
 	
 	void update(int delta);
 	void dispense();
+
+	SDL_Rect Machine::CoinLaunchInfo(int slotNum);
 
 private:    
 	struct XY { float x, y; };
@@ -54,7 +57,9 @@ private:
 	DispenseType RandomDispenseType(void);
 	DispensePattern RandomDispensePattern(void);
 	bool ValidLandingPosition(int _x, int _y);
-	void ShootCoinFrom(int slotNum);
+	void ShootCoinFrom(int slotNum) { ShootCoinsFrom(slotNum, 1, false); }
+	void ShootCoinsFrom(int slotNum, int totalValue) { ShootCoinsFrom(slotNum, totalValue, true); }
+	void ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins);
 	void FinishDispensing();
 	bool canAfford();
 };
