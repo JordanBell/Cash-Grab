@@ -20,11 +20,6 @@ public:
 	void update(int delta);
 	void LaunchTo(int _x, int _y);
 	virtual void OnCollect(void); // A coin's effect when collected
-	virtual void render(void) override final
-	{
-		printf("Rendering coin");
-		Entity::render();
-	}
 
 protected:
 	//Graphics

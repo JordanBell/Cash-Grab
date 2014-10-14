@@ -57,9 +57,6 @@ private:
     list<unique_ptr<Entity>> m_EntityDeleteQueue;
 	bool running;
 
-	//
-	/// Functions
-	//
 	void InitEnvironment();
 	void Update();
 	void HandleKeys();

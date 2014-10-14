@@ -53,7 +53,6 @@ void Game::run()
         
 		// Triumvirate Game loop processes
 		Update();
-		printf("Coins: %d\n", g_coins.size()); 
 		Render();
 		Poll();
         

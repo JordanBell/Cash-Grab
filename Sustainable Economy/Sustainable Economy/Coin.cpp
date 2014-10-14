@@ -27,7 +27,6 @@ Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Collidable(start_x,
 
 Coin::~Coin(void)
 {
-	printf("Coin Deleted.\n");
     for (int i = 0; i < 8; i++)
     {
        delete sprites[i];
