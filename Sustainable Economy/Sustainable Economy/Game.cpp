@@ -164,7 +164,6 @@ void Game::Poll()
 
 void Game::collectCoin()
 {
-    Mix_PlayMusic(g_resources->GetCoinSound(), 0);
     wallet++;
     totalCollected++;
 }

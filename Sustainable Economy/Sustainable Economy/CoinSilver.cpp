@@ -1,12 +1,15 @@
-#include "CoinFive.h"
+#include "CoinSilver.h"
 #include "Game.h"
+#include "Resources.h"
 
-void CoinFive::OnCollect(void)
+void CoinSilver::OnCollect(void)
 { 
+	// Play the basic coin sound
+    Mix_PlayMusic(g_resources->GetCoinSound_Silver(), 0);
 	g_game->IncWalletBy(5); 
 }
 
-void CoinFive::InitSheet(void)
+void CoinSilver::InitSheet(void)
 {
 	for (int i = 0; i < 8; i++)
 	{

@@ -131,7 +131,7 @@ void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 		// Find this Coin's launch info
 		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
 		// Create a new coin for that destination
-		CoinFive* coin = new CoinFive(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		CoinSilver* coin = new CoinSilver(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
 		// Add it to the collidables
 		g_game->addCollidable(coin);
 

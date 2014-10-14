@@ -2,7 +2,7 @@
 #define machine_h
 
 #include "entity.h"
-#include "CoinFive.h"
+#include "CoinSilver.h"
 #include "CoinGold.h"
 #include "Game.h"
 

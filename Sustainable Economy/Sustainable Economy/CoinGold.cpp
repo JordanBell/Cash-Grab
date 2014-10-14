@@ -1,8 +1,11 @@
 #include "CoinGold.h"
 #include "Game.h"
+#include "Resources.h"
 
 void CoinGold::OnCollect(void)
 { 
+	// Play the basic coin sound
+    Mix_PlayMusic(g_resources->GetCoinSound_Gold(), 0);
 	g_game->IncWalletBy(10); 
 }
 

@@ -26,7 +26,10 @@ public:
     TTF_Font* GetFont() { return m_Font; }
     
     // Get a random coin sound
-    Mix_Music* GetCoinSound() { return m_CoinSounds[0/*rand() % NUM_COIN_SOUNDS*/]; }
+    Mix_Music* GetCoinSound(int index) { return m_CoinSounds[index]; }
+    Mix_Music* GetCoinSound_Bronze(void) { return GetCoinSound(0); }
+    Mix_Music* GetCoinSound_Silver(void) { return GetCoinSound(1); }
+	Mix_Music* GetCoinSound_Gold(void)   { return GetCoinSound(2); }
 };
 
 extern Resources* g_resources;

@@ -119,7 +119,6 @@ void CollisionManager::MovableCollision(Collidable* collidable)
     m_Game->removeCollidable(collidable);
     //m_Game->collectCoin(); // Moved to Coin::OnCollect()
 	
-    Mix_PlayMusic(g_resources->GetCoinSound(), 0);
 	((Coin*)collidable)->OnCollect();
 }
 

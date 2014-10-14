@@ -141,6 +141,8 @@ float Coin::ComputeVariableGravity()
 
 void Coin::OnCollect(void) 
 { 
+	// Play the basic coin sound
+    Mix_PlayMusic(g_resources->GetCoinSound(0), 0);
 	// Base Coins do not have special collection effects, just increase money
 	g_game->IncWallet(); 
 } 
