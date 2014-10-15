@@ -12,8 +12,9 @@ using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY)
+Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), consoleCooldownCounter(0), m_muted(false)
 {
+	SDL_EnableUNICODE(SDL_ENABLE);
     delta = 0;
 	srand((unsigned int)time(nullptr));
 
@@ -98,26 +99,41 @@ void Game::HandleKeys()
 {
 	//Get the keystates
 	Uint8 *keystates = SDL_GetKeyState(nullptr);
-	
-	//If WASD, move player
-	if (keystates[SDLK_w] || keystates[SDLK_s] || keystates[SDLK_a] || keystates[SDLK_d])
-	{
-		if (keystates[SDLK_a])	keys.left();
-		if (keystates[SDLK_d])	keys.right();
-		if (keystates[SDLK_w])	keys.up();
-		if (keystates[SDLK_s])	keys.down();
-	}
-	else keys.no_direction();
-	
-	if (keystates[SDLK_RETURN]) keys.enter();
 
-	// Screen Formatting
-	if (keystates[SDLK_f]) toggleScreenFormat();
-	if (keystates[SDLK_ESCAPE]) exitFullScreen();
+	if (!testingConsole.IsActive())
+	{
+		//If WASD, move player
+		if (keystates[SDLK_w] || keystates[SDLK_s] || keystates[SDLK_a] || keystates[SDLK_d])
+		{
+			if (keystates[SDLK_a])	keys.left();
+			if (keystates[SDLK_d])	keys.right();
+			if (keystates[SDLK_w])	keys.up();
+			if (keystates[SDLK_s])	keys.down();
+		}
+		else keys.no_direction();
+	
+		if (keystates[SDLK_RETURN]) keys.enter();
+
+		// Screen Formatting
+		if (keystates[SDLK_f]) toggleScreenFormat();
+		if (keystates[SDLK_ESCAPE]) exitFullScreen();
+	}
+
+	// Testing console toggle
+	if ((keystates[SDLK_BACKQUOTE]) && (consoleCooldownCounter == 0)) 
+	{ 
+		// Reset cooldown
+		consoleCooldownCounter = CONSOLE_COOLDOWN;
+		// Toggle it
+		testingConsole.Toggle(); 
+	}
 }
 
 void Game::Update()
 {
+	// Decrement the cooldown for console activation
+	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
+
 	HandleKeys();
 	
 	for (Entity* e : m_Entities)
@@ -158,6 +174,12 @@ void Game::Poll()
 		if (event.type == SDL_QUIT)
 		{
 			running = false;
+		}
+		
+		if( event.type == SDL_KEYDOWN )
+		{
+			if (testingConsole.IsActive())
+				testingConsole.KeyIn(event.key.keysym);
 		}
 	}
 }

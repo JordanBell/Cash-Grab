@@ -5,7 +5,8 @@
 void CoinSilver::OnCollect(void)
 { 
 	// Play the basic coin sound
-    Mix_PlayMusic(g_resources->GetCoinSound_Silver(), 0);
+    if (!g_game->IsMuted())
+		Mix_PlayMusic(g_resources->GetCoinSound_Silver(), 0);
 	g_game->IncWalletBy(5); 
 }
 

@@ -9,6 +9,7 @@
 #include "Environment.h"
 #include "Prompt.h"
 #include "Timer.h"
+#include "TestingConsole.h"
 #include <memory>
 
 using namespace std;
@@ -20,6 +21,8 @@ using namespace std;
 class CollisionManager;
 class Machine;
 class Prompt;
+
+#define CONSOLE_COOLDOWN 10
 
 class Game
 {	
@@ -36,6 +39,9 @@ public:
     void removeEntity(Entity* entity);
     void removeCollidable(Collidable* collidable);
 	void addABunchOfCoins();
+	bool IsMuted(void) { return m_muted; }
+	void Mute(void) { m_muted = true; }
+	void Unmute(void) { m_muted = false; }
 
 	// Money Stuff
 	void collectCoin();
@@ -43,11 +49,14 @@ public:
 	void IncWalletBy(int n) { wallet += n; totalCollected += n; }
 
 private:
+	TestingConsole testingConsole;
+	int consoleCooldownCounter;
 	KeyCode keys;
     CollisionManager* m_CollisionManager;
 	Timer m_FPSTimer;
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking
+	bool m_muted;
 
 	//Entities
 	Environment *environment;

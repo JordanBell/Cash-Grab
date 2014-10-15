@@ -23,19 +23,13 @@ public:
 	virtual void OnCollect(void); // A coin's effect when collected
 
 protected:
-	//Graphics
     SDL_Rect* sprites[ 8 ];
 	
 	void set_skin() { skin = sprites[cycle/LOOP_SPEED]; };
 	virtual void InitSheet();
 
 private:
-	//Init
-    
 	void InitKin(bool suppressAngle = false);
-		//void ComputeInitPlanar(void); // Removed and all put into InitKin
-		//void ComputeInitXAngle(void);
-		//void ComputeInitVelocities(void);
 
 	// Values used in the calculation of variable gravity, used to create an Ease effect
 	const struct Gravity { 
