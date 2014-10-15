@@ -6,6 +6,7 @@
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
+#define THREEQ_ANGLE (3*M_PI/2)
 #define VARY_GRAVITY false // Setting this as true may cause instability with coin landing positions
 #define ADAPT_ANGLE false
 
@@ -18,7 +19,7 @@ public:
 	~Coin(void);
 
 	void update(int delta);
-	void LaunchTo(int _x, int _y);
+	void LaunchTo(int _x, int _y, bool suppressAngle = false);
 	virtual void OnCollect(void); // A coin's effect when collected
 
 protected:
@@ -31,10 +32,10 @@ protected:
 private:
 	//Init
     
-	void InitKin();
-		void ComputeInitPlanar(void);
-		void ComputeInitXAngle(void);
-		void ComputeInitVelocities(void);
+	void InitKin(bool suppressAngle = false);
+		//void ComputeInitPlanar(void); // Removed and all put into InitKin
+		//void ComputeInitXAngle(void);
+		//void ComputeInitVelocities(void);
 
 	// Values used in the calculation of variable gravity, used to create an Ease effect
 	const struct Gravity { 

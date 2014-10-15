@@ -34,8 +34,13 @@ Coin::~Coin(void)
 	g_coins.remove(this);
 }
 
-void Coin::LaunchTo(int _x, int _y)
+void Coin::LaunchTo(int _x, int _y, bool suppressAngle)
 {
+	// Coins spin faster in the air
+	LOOP_SPEED = 1;
+	max_cycles = 8 * LOOP_SPEED;
+
+	moving = true;
 	// Launch the coin towards the end coordinates
 	start.x = x;
 	start.y = y;
@@ -43,7 +48,7 @@ void Coin::LaunchTo(int _x, int _y)
 	end.y = _y;
 	
 	//Initialise the kinematics fields
-	InitKin();
+	InitKin(suppressAngle);
 }
 
 
@@ -60,21 +65,19 @@ void Coin::InitSheet()
 	}
 }
 
-void Coin::InitKin()
+void Coin::InitKin(bool suppressAngle)
 {
-	ComputeInitPlanar();
-	ComputeInitXAngle();
-	ComputeInitVelocities();
-}
+	/* Compute Planar Velocities (horizontal & vertical) */
 
-void Coin::ComputeInitPlanar(void)
-{
 	// Calculate the angle of the trajectory
 	if (ADAPT_ANGLE) angle = ComputeAngleForDistance();
 	else
 	{
 		// Get a reasonably random angle
-		angle = (rand() % 14) + 75;
+		if (suppressAngle)
+			angle = (rand() % 10) + 70;
+		else
+			angle = (rand() % 14) + 75;
 		angle *= (2 * M_PI) / 360;
 
 		// Get the planar x and y velocities (planar being the movement in a 3D space, where y is vertical and x is horizontal
@@ -83,12 +86,14 @@ void Coin::ComputeInitPlanar(void)
 
 	planar.x = speed * cos(angle);
 	planar.y = speed * sin(angle);
-} 
 
-void Coin::ComputeInitXAngle(void)
-{
-	//Angle of horizontal movement, with regards to the horizontal of the screen.
+
+
+	/* Computing Angle of horizontal planar motion */
+
+	//The angle travelled along the floor in 2D space, from start to end
 	bool aimingRight = start.x < end.x;
+	bool aimingUp  = start.y > end.y;
 
 	float dy = end.y - start.y; //The difference in y coordinates from start to end.
 	float dx = aimingRight ? (end.x - start.x) : (start.x - end.x); // The difference in x coordinates from start to end.
@@ -101,20 +106,27 @@ void Coin::ComputeInitXAngle(void)
 	else // Continue as planned
 	{
 		alpha = atan(dx / dy);
-		alpha = aimingRight ? (RIGHT_ANGLE - alpha) : (RIGHT_ANGLE + alpha);
-	}
-}
+		float relativeAngle = aimingUp ? THREEQ_ANGLE : RIGHT_ANGLE;
+		relativeAngle = RIGHT_ANGLE;
 
-void Coin::ComputeInitVelocities(void)
-{
+		bool posPol = ((!aimingRight && !aimingUp) || (aimingRight && aimingUp));
+		int polarity = posPol ? 1 : -1;
+		
+		alpha = relativeAngle + (polarity * alpha);
+	}
+
+
+
+	/* Initial Velocities */
+
 	//Use previous information to calculate the velocity.
 	angleInducedVelocity.x = planar.x * cos(alpha);
-	angleInducedVelocity.y = planar.x * sin(alpha);
+	angleInducedVelocity.y = planar.x * sin(aimingUp ? (alpha*-1) : alpha);
 
 	// Determine the on-screen velocities
 	velocity.x = angleInducedVelocity.x;
-	velocity.y = angleInducedVelocity.y + (planar.y* -3/4); // Multiply by a negative as the axis for the coordinates are swapped
-}
+	velocity.y = angleInducedVelocity.y + (planar.y * -3/4); // Multiply by a negative as the axis for the coordinates are swapped
+} 
 
 float Coin::ComputeAngleForDistance()
 {
@@ -173,10 +185,10 @@ void Coin::update(int delta)
 	if (moving) move();
     else
     {
-        if (sqrt(pow((g_Player->x - x), 2) + pow((g_Player->y - y), 2)) < 50)
+        if (sqrt(pow((g_player->x - x), 2) + pow((g_player->y - y), 2)) < 50)
         {
-            x = x + 0.25 * (g_Player->x - x);
-            y = y + 0.25 * (g_Player->y - y);
+            x = x + 0.25 * (g_player->x - x);
+            y = y + 0.25 * (g_player->y - y);
         }
         else {
             x = end.x;
@@ -205,7 +217,7 @@ void Coin::move()
 	if (height < 0) //Has hit the ground
 	{
 		moving = false;
-		LOOP_SPEED = 6;
+		LOOP_SPEED = 6; // Coins spin slower on the ground
 		max_cycles = 8 * LOOP_SPEED;
 		velocity.x = velocity.y = planar.x = planar.y = 0; //Stop all movement
 	}

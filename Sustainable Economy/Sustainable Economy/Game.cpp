@@ -19,7 +19,7 @@ Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY)
 
 	// Initialise all ENTITIES
 	player = new Player((9*TILE_SIZE)-1, (8*TILE_SIZE)-3);
-    g_Player = player;
+    g_player = player;
 	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
 	prompt = new Prompt(machine);
     
@@ -50,7 +50,6 @@ void Game::run()
     
 	while (running)
 	{
-        
 		// Triumvirate Game loop processes
 		Update();
 		Render();

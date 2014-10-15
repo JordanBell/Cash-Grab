@@ -1,27 +1,17 @@
 #include "KeyCode.h"
 #include "Machine.h"
+#include "Player.h"
 
-//void KeyCode::up(void)
-//{
-//	player->face_direction(Player::UP);
-//}
-//
-//void KeyCode::down(void)
-//{
-//	//Call code from all objects to respond
-//}
-//
-//void KeyCode::left(void)
-//{
-//	//Call code from all objects to respond
-//}
-//
-//void KeyCode::right(void)
-//{
-//	//Call code from all objects to respond
-//}
-//
 void KeyCode::enter(void)
 {
     machine->dispense();
+	for (Coin* c : g_coins)
+	{
+		if (!c->moving) {
+			int xChange = g_player->x - c->x;
+			int yChange = g_player->y - c->y;
+			c->LaunchTo(c->x+xChange, c->y+yChange, true);
+		}
+	}
+
 }
