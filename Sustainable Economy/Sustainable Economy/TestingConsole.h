@@ -9,7 +9,7 @@ using namespace std;
 class TestingConsole
 {
 public:
-	TestingConsole(void);
+	TestingConsole(void) : m_active(false), PROMPT("~: ") {}
 	~TestingConsole(void) {}
 	
 	void Toggle(void);
@@ -18,12 +18,7 @@ public:
 	void Enter(void);
 	void KeyIn(SDL_keysym& keysym); // Enter the keysym, which contains information on the SDLKey and unicode values
 
-private:
-	void Open(void);
-	void Close(void);
-	void NewLine(void) { m_line.clear(); printf("\n%s", PROMPT.c_str()); }
-	bool ValidationInput(SDL_keysym keysym);
-
+protected:
 	struct Command
 	{
 		Command(string _code, string _message, void (*_func)(void))
@@ -34,9 +29,16 @@ private:
 		void (*func)(void);	// The function that is run when the string is called
 	};
 
-	string PROMPT;
 	list<Command> commands; // All commands recognised by the testing console
-	bool m_active;
+
+private:
+	void Open(void);
+	void Close(void);
+	void NewLine(void) { m_line.clear(); printf("\n%s", PROMPT.c_str()); }
+	bool ValidationInput(SDL_keysym keysym);
+
+	string PROMPT;
 	string m_line;
+	bool m_active;
 };
 

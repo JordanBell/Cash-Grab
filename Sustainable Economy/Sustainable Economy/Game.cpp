@@ -14,7 +14,6 @@ Game* g_game = nullptr;
 
 Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), consoleCooldownCounter(0), m_muted(false)
 {
-	SDL_EnableUNICODE(SDL_ENABLE);
     delta = 0;
 	srand((unsigned int)time(nullptr));
 

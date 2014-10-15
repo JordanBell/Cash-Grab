@@ -9,7 +9,7 @@
 #include "Environment.h"
 #include "Prompt.h"
 #include "Timer.h"
-#include "TestingConsole.h"
+#include "SEConsole.h"
 #include <memory>
 
 using namespace std;
@@ -49,7 +49,7 @@ public:
 	void IncWalletBy(int n) { wallet += n; totalCollected += n; }
 
 private:
-	TestingConsole testingConsole;
+	SEConsole testingConsole;
 	int consoleCooldownCounter;
 	KeyCode keys;
     CollisionManager* m_CollisionManager;
