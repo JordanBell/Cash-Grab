@@ -1,0 +1,62 @@
+Sustainable Economy Ideas
+
+GRAPHICS:
+Change main character to higher resolution business man character
+change walls and floors to have a better theme and Higher resolutions
+Change the money machine to display the player's current number of coins(?), the total number of coins ever collected, and the number of coins required to buy the next batch.
+Create a store in which the player can spend their total number of coins caught (in the bank) on the new features.
+Display (+1), (+5) and (+10) above the character when collecting coins
+Display those same numbers simulataneously above the "bank" to highlight its increased value
+
+Upgrades and Effects:
+Upgrades:
+Increased movement speed
+Increased chance (0% and upward) of a particular dispense pattern
+
+Aesthetics:
+Better looking coins
+
+Effects:
+Player has one (not sure, arbitrary) "Effect" which is essentially a new feature that we add to the game in order to increase its "satisfaction"
+-Magnetism (player passively has a wider radius of collection)
+-Pull (player actively fires off a radial blast which pulls a collection of surrounding coins towards them. Hold for a wider radius. Radius is inproportional to the force with which they are pulled
+-Dash (player's movement speed is increased
+
+The wildcard:
+A wildcard item is dropped into the field at some point in the game. When the player collects it, it creates an effect that may be considered positive (75%) or otherwise interesting or inconvenient. In any case, makes the game more interesting.
+-All coins slowly (slowly!) gravitate toward the player for the duration of the round.
+-All coins bounce around on the floor, unable to pick up which they are in the air
+-Rainbow coins!
+-Coins make (???) sounds when picked up
+-Music change
+-Framerate increase (Speed up!)
+
+////////////////////////////////////////
+
+Stuff we discussed in the car:
+
+In order to buy upgrades, the machine occasionally dispenses tickets that can be used as a separate currency to buy upgrades from a store.
+
+The store can be accessed my moving into an adjacent room in the play area. Here, the player can view and purchase "prizes" in an arcade-style prize stall. These prizes are toys or items that can be used (mapped to hotkeys) to help collect money.
+
+Graphically, these new upgrades can be shown on the top of the screen with their corresponding hotkey (1-9) displayed above. Beside the upgrade bar, the number of collected tickets is displayed. Once on cooldown, these upgrade icons go transparent, and fill up in opacity until they are fully charged.
+
+Effects:
+Icy floor (unfortunate)
+Coin Repellant (unfortunate)
+
+Upgrades: 
+Ground Smash: Player holds down the [Space/whatever] key to increase a circle radius outward. Coins within the radius once that key is released get pulled toward the player with a force inproportional to the length of the radius (smaller the stronger, larger the weaker but more affected). All unaffected coins clatter to the ground.
+
+Copy: A copy of the player is made, which mirrors the player's movement in reverse. The copy can also collect coins for a limited time.
+
+
+New throwable: Crystal Coin
+This shimmering coin, when collected, invokes a random effect. This may be beneficial, interesting, or detrimental. The effect to be chosen is cycled through like a slot machine, and lands on an icon representing the randomly selected effect. All individually available effects can be selected, but there are a number of effects unique to the Crystal Coin.
+
+
+
+
+
+My note: Convert Coin into Throwable, add CoinBronze subclass
+Note: Magnets only affect coins, not effect tokens or tickets
