@@ -40,6 +40,7 @@ public:
 	void update(int delta);
     void render();
     void DoMove();
+	void Smash(int radius);
 
 protected:
 	void IncCycle(void);

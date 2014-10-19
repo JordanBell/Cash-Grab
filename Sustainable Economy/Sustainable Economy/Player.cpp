@@ -45,6 +45,12 @@ void Player::move(int direction)
     }
 }
 
+void Player::Smash(int radius)
+{
+	// Coming soon
+}
+
+
 void Player::DoMove()
 {
     if (moving)

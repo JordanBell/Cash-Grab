@@ -4,7 +4,7 @@
 #include "Game.h"
 
 /* Launch all coins at the player */
-void Pull(void)
+void Pull(vector<int> args)
 {
 	for (Coin* c : g_coins)
 	{
@@ -16,26 +16,28 @@ void Pull(void)
 	}
 }
 
+/* Forces a player's smash with specified argument */
+void Smash(vector<int> args)
+	{ g_player->Smash(args.front()); }
+
 /* Turn off all sounds */
-void Mute(void)
+void Mute(vector<int> args)
 	{ g_game->Mute(); }
 
 /* Turn on all sounds */
-void Unmute(void)
+void Unmute(vector<int> args)
 	{ g_game->Unmute(); }
 
-/* Increase the amount of money by 100 */
-void Add100(void)
-	{ g_game->IncWalletBy(100); }
+void AddCoins(vector<int> args)
+{
+	int numCoins = args.front();
+	g_game->IncWalletBy(numCoins);
+}
 
-/* Increase the amount of money by 1000 */
-void Add1000(void)
-	{ g_game->IncWalletBy(1000); }
 
 /* Doubles the player's coins */
-void DoubleCoins(void)
+void DoubleCoins(vector<int> args)
 	{ g_game->IncWalletBy(g_game->wallet); }
-
 
 
 SEConsole::SEConsole(void)
@@ -54,11 +56,11 @@ SEConsole::SEConsole(void)
 	);
 
 	commands.push_back( 
-		Command("add_100", "+100 Coins", Add100)
+		Command("add_coins", "Coins added.", AddCoins)
 	);
 
 	commands.push_back( 
-		Command("add_1000", "+1000 Coins", Add1000)
+		Command("smash", "Smashing", Smash)
 	);
 
 	commands.push_back( 
