@@ -1,5 +1,6 @@
 #include "TestingConsole.h"
 #include <cstdlib>
+#include <iostream>
 
 void TestingConsole::Open(void)  
 { 
@@ -26,11 +27,11 @@ void TestingConsole::KeyIn(SDL_keysym& keysym)
 	if (keysym.sym == SDLK_BACKSPACE)
 	{ // Backspace pops the last element of the string	
 		if (m_line.size() > 0) {
-			m_line.pop_back();
-		printf("\b \b"); // Backspace
+            m_line.pop_back();
+            printf("\b \b"); // Backspace
 		}
 	}
-	else if ((keysym.sym == SDLK_RETURN))
+	else if (keysym.sym == SDLK_RETURN)
 	{ // Enter enters the code into the console
 		printf("\n");
 		Enter();

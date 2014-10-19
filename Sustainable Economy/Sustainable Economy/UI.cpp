@@ -37,6 +37,10 @@ UI::~UI()
 
 void UI::Render()
 {
+    SDL_FreeSurface(m_CollectedCoinsLabel);
+    SDL_FreeSurface(m_RequiredCoinsLabel);
+    SDL_FreeSurface(m_TotalCoinsLabel);
+    
     m_CollectedCoinsLabel = TTF_RenderText_Solid(g_resources->GetFont(), m_CollectedCoins.c_str(), textColor);
     m_RequiredCoinsLabel = TTF_RenderText_Solid(g_resources->GetFont(), m_RequiredCoins.c_str(), textColor);
     m_TotalCoinsLabel = TTF_RenderText_Solid(g_resources->GetFont(), m_TotalCoins.c_str(), textColor);

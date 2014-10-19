@@ -6,7 +6,7 @@ void CoinGold::OnCollect(void)
 { 
 	// Play the basic coin sound
     if (!g_game->IsMuted())
-		Mix_PlayMusic(g_resources->GetCoinSound_Gold(), 0);
+		Mix_PlayChannel(-1, g_resources->GetCoinSound_Gold(), 0);
 	g_game->IncWalletBy(10); 
 }
 

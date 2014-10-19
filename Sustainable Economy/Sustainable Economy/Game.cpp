@@ -27,7 +27,8 @@ Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), 
 	m_CollisionManager = new CollisionManager(this);
 	
 	m_Entities.push_back(player);
-	m_Entities.push_back(machine);
+//	m_Entities.push_back(machine);
+    addCollidable(machine);
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);

@@ -1,7 +1,7 @@
 #ifndef machine_h
 #define machine_h
 
-#include "entity.h"
+#include "Collidable.h"
 #include "CoinSilver.h"
 #include "CoinGold.h"
 #include "Game.h"
@@ -18,7 +18,7 @@ using namespace std;
 #define QUANTITY_THRESHOLD 20
 
 class Machine :
-	public Entity
+	public Collidable
 {
 public:
 	int coinCost;

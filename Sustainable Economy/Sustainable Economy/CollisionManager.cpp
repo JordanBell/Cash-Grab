@@ -36,11 +36,6 @@ void CollisionManager::Update(int delta)
                     MovableCollision(c);
                 }
             }
-//            else if (sqrt(pow((m_Player->x - c->x), 2) + pow((m_Player->y - c->y), 2)) < 25)
-//            {
-//                c->x = c->x + 0.25 * (m_Player->x - c->x);
-//                c->y = c->y + 0.25 * (m_Player->y - c->y);
-//            }
         }
         else
         {

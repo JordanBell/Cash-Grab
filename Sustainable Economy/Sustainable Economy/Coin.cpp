@@ -199,7 +199,8 @@ void Coin::OnCollect(void)
 { 
 	// Play the basic coin sound
 	if (!g_game->IsMuted())
-		Mix_PlayMusic(g_resources->GetCoinSound(0), 0);
+        Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
+//		Mix_PlayMusic(g_resources->GetCoinSound(0), 0);
 	// Base Coins do not have special collection effects, just increase money
 	g_game->IncWallet(); 
 } 
