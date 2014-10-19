@@ -2,9 +2,11 @@
 #define __SustainableEconomy__Coin__
 
 #include "Collidable.h"
+#include <list>
 
 #define RIGHT_ANGLE (M_PI/2)
 #define HALF_ANGLE (M_PI)
+#define THREEQ_ANGLE (3*M_PI/2)
 #define VARY_GRAVITY false // Setting this as true may cause instability with coin landing positions
 #define ADAPT_ANGLE false
 
@@ -14,31 +16,20 @@ public:
 	bool moving;
 
 	Coin(int start_x, int start_y, int end_x, int end_y);
-	~Coin(void)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            delete sprites[i];
-        }
-    }
+	~Coin(void);
 
 	void update(int delta);
+	void LaunchTo(int _x, int _y, bool suppressAngle = false);
 	virtual void OnCollect(void); // A coin's effect when collected
 
 protected:
-	//Graphics
     SDL_Rect* sprites[ 8 ];
 	
 	void set_skin() { skin = sprites[cycle/LOOP_SPEED]; };
 	virtual void InitSheet();
 
 private:
-	//Init
-    
-	void InitKin();
-		void ComputeInitPlanar(void);
-		void ComputeInitXAngle(void);
-		void ComputeInitVelocities(void);
+	void InitKin(bool suppressAngle = false);
 
 	// Values used in the calculation of variable gravity, used to create an Ease effect
 	const struct Gravity { 
@@ -78,6 +69,8 @@ private:
 	float ComputeSpeedForDistance();
 	float ComputeVariableGravity();
 };
+
+extern std::list<Coin*> g_coins;
 
 #endif
 

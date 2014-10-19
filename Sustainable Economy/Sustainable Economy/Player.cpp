@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 
-Player *g_Player = nullptr;
+Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
@@ -44,6 +44,12 @@ void Player::move(int direction)
         this->direction = direction;
     }
 }
+
+void Player::Smash(int radius)
+{
+	// Coming soon
+}
+
 
 void Player::DoMove()
 {

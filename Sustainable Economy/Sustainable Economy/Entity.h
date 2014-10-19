@@ -14,7 +14,7 @@ public:
 	Entity(int x, int y) : cycle(0), x(x), y(y), skin(nullptr) { }
 	virtual ~Entity(void)
     {
-        SDL_FreeSurface(sprite_sheet);
+        //SDL_FreeSurface(sprite_sheet); // Doing this might delete the sprite_sheet while it is being used by other entities
         
         // Skin deletion should be managed by subclasses
     }

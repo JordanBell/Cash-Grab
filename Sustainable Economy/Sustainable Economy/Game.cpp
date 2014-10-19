@@ -12,14 +12,14 @@ using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY)
+Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), consoleCooldownCounter(0), m_muted(false)
 {
     delta = 0;
 	srand((unsigned int)time(nullptr));
 
 	// Initialise all ENTITIES
 	player = new Player((9*TILE_SIZE)-1, (8*TILE_SIZE)-3);
-    g_Player = player;
+    g_player = player;
 	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
 	prompt = new Prompt(machine);
     
@@ -51,7 +51,6 @@ void Game::run()
     
 	while (running)
 	{
-        
 		// Triumvirate Game loop processes
 		Update();
 		Render();
@@ -100,26 +99,41 @@ void Game::HandleKeys()
 {
 	//Get the keystates
 	Uint8 *keystates = SDL_GetKeyState(nullptr);
-	
-	//If WASD, move player
-	if (keystates[SDLK_w] || keystates[SDLK_s] || keystates[SDLK_a] || keystates[SDLK_d])
-	{
-		if (keystates[SDLK_a])	keys.left();
-		if (keystates[SDLK_d])	keys.right();
-		if (keystates[SDLK_w])	keys.up();
-		if (keystates[SDLK_s])	keys.down();
-	}
-	else keys.no_direction();
-	
-	if (keystates[SDLK_RETURN]) keys.enter();
 
-	// Screen Formatting
-	if (keystates[SDLK_f]) toggleScreenFormat();
-	if (keystates[SDLK_ESCAPE]) exitFullScreen();
+	if (!testingConsole.IsActive())
+	{
+		//If WASD, move player
+		if (keystates[SDLK_w] || keystates[SDLK_s] || keystates[SDLK_a] || keystates[SDLK_d])
+		{
+			if (keystates[SDLK_a])	keys.left();
+			if (keystates[SDLK_d])	keys.right();
+			if (keystates[SDLK_w])	keys.up();
+			if (keystates[SDLK_s])	keys.down();
+		}
+		else keys.no_direction();
+	
+		if (keystates[SDLK_RETURN]) keys.enter();
+
+		// Screen Formatting
+		if (keystates[SDLK_f]) toggleScreenFormat();
+		if (keystates[SDLK_ESCAPE]) exitFullScreen();
+	}
+
+	// Testing console toggle
+	if ((keystates[SDLK_BACKQUOTE]) && (consoleCooldownCounter == 0)) 
+	{ 
+		// Reset cooldown
+		consoleCooldownCounter = CONSOLE_COOLDOWN;
+		// Toggle it
+		testingConsole.Toggle(); 
+	}
 }
 
 void Game::Update()
 {
+	// Decrement the cooldown for console activation
+	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
+
 	HandleKeys();
 	
 	for (Entity* e : m_Entities)
@@ -161,6 +175,12 @@ void Game::Poll()
 		{
 			running = false;
 		}
+		
+		if( event.type == SDL_KEYDOWN )
+		{
+			if (testingConsole.IsActive())
+				testingConsole.KeyIn(event.key.keysym);
+		}
 	}
 }
 
@@ -192,7 +212,7 @@ void Game::addCollidable(Collidable* collidable, bool toFront)
 
 void Game::removeEntity(Entity* entity)
 {
-    m_EntityDeleteQueue.push_back(entity);
+    m_EntityDeleteQueue.emplace_back(unique_ptr<Entity>(entity)); // Warning: Will this in-line declaration delete the pointer when out of scope?
 }
 
 void Game::removeCollidable(Collidable *collidable)
@@ -203,11 +223,10 @@ void Game::removeCollidable(Collidable *collidable)
 
 void Game::DeleteEntities()
 {
-    for (Entity* entity : m_EntityDeleteQueue)
+    for (unique_ptr<Entity>& entity_ptr : m_EntityDeleteQueue)
     {
-        m_Entities.remove(entity);
-        //delete entity;
+        m_Entities.remove(entity_ptr.get());
     }
     
-    m_EntityDeleteQueue.clear();
+    m_EntityDeleteQueue.clear(); // Thus deleting the entities being pointed to
 }

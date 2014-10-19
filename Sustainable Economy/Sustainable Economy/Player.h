@@ -40,6 +40,7 @@ public:
 	void update(int delta);
     void render();
     void DoMove();
+	void Smash(int radius);
 
 protected:
 	void IncCycle(void);
@@ -53,6 +54,6 @@ private:
 	void set_skin() { skin = (moving) ? sprites[direction][cycle/WALK_SPEED] : sprites[direction][STILL]; };
 };
 
-extern Player *g_Player;
+extern Player *g_player;
 
 #endif

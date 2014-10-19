@@ -98,7 +98,6 @@ void CollisionManager::Update(int delta)
     if (shouldMove)
     {
         if (!m_Player->m_CanMove) {
-//        printf("move\n");
             m_Player->SetCanMove(true);
         }
         
@@ -117,7 +116,6 @@ void CollisionManager::AddCollidable(Collidable* collidable, bool toFront)
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
     m_Game->removeCollidable(collidable);
-    //m_Game->collectCoin(); // Moved to Coin::OnCollect()
 	
 	((Coin*)collidable)->OnCollect();
 }
