@@ -1,5 +1,6 @@
 #include "TestingConsole.h"
 #include <cstdlib>
+#include <iostream>
 
 void TestingConsole::Open(void)  
 { 
@@ -26,11 +27,11 @@ void TestingConsole::KeyIn(SDL_keysym& keysym)
 	if (keysym.sym == SDLK_BACKSPACE)
 	{ // Backspace pops the last element of the string	
 		if (m_line.size() > 0) {
-			m_line.pop_back();
-		printf("\b \b"); // Backspace
+            m_line.pop_back();
+            printf("\b \b"); // Backspace
 		}
 	}
-	else if ((keysym.sym == SDLK_RETURN))
+	else if (keysym.sym == SDLK_RETURN)
 	{ // Enter enters the code into the console
 		printf("\n");
 		Enter();
@@ -66,7 +67,7 @@ void TestingConsole::Enter(void)
 			catch (exception e)
 			{
 				// If, for some reason, the called function does not operate correctly and throws an exception, fail and notify the user. Don't crash the game.
-				printf("Error. Called function threw an exception: %s", e.what);
+				printf("Error. Called function threw an exception: %s", e.what());
 			}
 
 			// Reset the m_line
