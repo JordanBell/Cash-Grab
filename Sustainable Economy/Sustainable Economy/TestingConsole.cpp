@@ -1,5 +1,5 @@
 #include "TestingConsole.h"
-#include <iostream>
+#include <cstdlib>
 
 void TestingConsole::Open(void)  
 { 
@@ -56,10 +56,19 @@ void TestingConsole::Enter(void)
 	{
 		if (activationCode == possibleCommand.code)
 		{
-			// Execute the function
-			possibleCommand.func(arguments);
-			// Output the command's message, ie "Pull activated."
-			printf("%s", possibleCommand.message.c_str());
+			try
+			{
+				// Execute the function
+				possibleCommand.func(arguments);
+				// Output the command's message, ie "Pull activated."
+				printf("%s", possibleCommand.message.c_str());
+			}
+			catch (exception e)
+			{
+				// If, for some reason, the called function does not operate correctly and throws an exception, fail and notify the user. Don't crash the game.
+				printf("Error. Called function threw an exception: %s", e.what);
+			}
+
 			// Reset the m_line
 			m_line.clear();
 			// No point to continue searching
@@ -112,7 +121,7 @@ vector<int> TestingConsole::ExtractArguments(string argumentsString)
 		tail.erase(0, 1);
 
 		if (c == ' ') {
-			r_args.push_back(strToInt(head));
+			r_args.push_back(atoi(head.c_str()));
 			head = "";
 		}
 		else
@@ -123,52 +132,9 @@ vector<int> TestingConsole::ExtractArguments(string argumentsString)
 	}
 
 	// Add the last argument
-	r_args.push_back(strToInt(head));
+	r_args.push_back(atoi(head.c_str()));
 
 	return r_args;
-}
-
-
-int TestingConsole::charToInt(char c)
-{
-	switch (c)
-	{
-		case '0': return 0;
-		case '1': return 1;
-		case '2': return 2;
-		case '3': return 3;
-		case '4': return 4;
-		case '5': return 5;
-		case '6': return 6;
-		case '7': return 7;
-		case '8': return 8;
-		case '9': return 9;
-	}
-
-	throw runtime_error("Character given in charToInt is not a number.");
-	return -1;
-}
-
-int TestingConsole::strToInt(string str)
-{
-	int digit = pow(10, (str.size()-1)); // A multiplier for the selected digit
-	int r_int = 0;
-
-	for (char c : str)
-	{
-		try {
-			// Get the integer for that character
-			r_int += digit * charToInt(c);
-
-			// Move to the next digit
-			digit /= 10;
-		}
-		catch (runtime_error) {
-			throw runtime_error("The string passed to strToInt does not contain a valid number. All characters must be numerical digits.");
-		}
-	}
-
-	return r_int;
 }
 
 bool TestingConsole::ValidationInput(SDL_keysym keysym)

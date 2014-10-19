@@ -40,11 +40,6 @@ private:
 	static pair<string, string> SplitCommandCode(string line); // Return a pair of strings. The first being the activation code, the second being the arguments
 	static vector<int> ExtractArguments(string argumentsString); // Returns a vector of arguments from a string of suppose arguments
 	
-	// nobody told me about atoi
-	static int charToInt(char c);
-	// forgive me
-	static int strToInt(string str);
-	
 	string PROMPT;
 	string m_line;
 	bool m_active;
