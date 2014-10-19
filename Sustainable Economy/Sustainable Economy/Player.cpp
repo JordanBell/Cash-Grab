@@ -5,7 +5,7 @@
 Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
-Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
+Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_magnetic(INITIAL_MAGNETISM_ENABLED)
 {
     sprite_sheet = g_resources->GetPlayerSheet();
     m_HitBox->w = m_AABB->w = PLAYER_WIDTH;
@@ -47,9 +47,35 @@ void Player::move(int direction)
 
 void Player::Smash(int radius)
 {
-	// Coming soon
-}
+	// Get all coins in the radius
+	list<Coin*> radiusCoins = Coin::CoinsAroundPlayer(radius);
 
+	float forcePercentage;
+
+	const int MAX_RADIUS = 300;
+	const int MIN_RADIUS = 100;
+	const float MIN_PERCENTAGE = 0.35f;
+
+	if (radius <= MIN_RADIUS)	   forcePercentage = 1.0f;
+	else if (radius >= MAX_RADIUS) forcePercentage = MIN_PERCENTAGE;
+	else
+	{
+		float f1 = float(radius - MIN_RADIUS) / float(MAX_RADIUS - MIN_RADIUS);
+		float f2 = (f1 * 0.50f);
+		forcePercentage = 1.00f - f2;
+	}
+	printf("\nSmashing with %f%% force.\n", forcePercentage);
+	//forcePercentage = 1;
+
+	for (Coin* c : radiusCoins)
+	{
+		int dx = x - c->x;
+		int dy = y - c->y;
+		dx *= forcePercentage;
+		dy *= forcePercentage;
+		c->LaunchTo(c->x+dx, c->y+dy);
+	}
+}
 
 void Player::DoMove()
 {
@@ -103,6 +129,7 @@ void Player::IncCycle(void)
 void Player::update(int delta)
 {
     IncCycle();
+	SmashUpdate();
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;
@@ -138,6 +165,18 @@ void Player::update(int delta)
     
     Collidable::update(delta);
 }
+
+void Player::SmashUpdate(void)
+{
+	// Not fully complete
+	if (smashCount < SMASH_LIMIT)
+	{
+		smashCount++;
+		if (smashCount % SMASH_INTERVAL == 0)
+			Smash(smashCount/2);
+	}
+}
+
 
 void Player::render()
 {

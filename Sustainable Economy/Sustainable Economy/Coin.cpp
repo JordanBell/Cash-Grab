@@ -34,6 +34,31 @@ Coin::~Coin(void)
 	g_coins.remove(this);
 }
 
+std::list<Coin*> Coin::CoinsAround(int px, int py, int radius)
+{
+	std::list<Coin*> r_coins;
+
+	for (Coin* c : g_coins)
+	{
+		if (!c->moving) {
+			int dx = g_player->x - c->x;
+			int dy = g_player->y - c->y;
+			int distance = sqrt(dx*dx + dy*dy);
+
+			if (distance <= radius)
+				r_coins.push_back(c);
+		}
+	}
+
+	return r_coins;
+}
+
+std::list<Coin*> Coin::CoinsAroundPlayer(int radius) 
+{ 
+	return
+		CoinsAround(g_player->x, g_player->y, radius); 
+}
+
 void Coin::LaunchTo(int _x, int _y, bool suppressAngle)
 {
 	// Coins spin faster in the air
@@ -186,11 +211,13 @@ void Coin::update(int delta)
 	if (moving) move();
     else
     {
-        if (sqrt(pow((g_player->x - x), 2) + pow((g_player->y - y), 2)) < 50)
-        {
-            x = x + 0.25 * (g_player->x - x);
-            y = y + 0.25 * (g_player->y - y);
-        }
+		if ((g_player->IsMagnetic()) && (sqrt(pow((g_player->x - x), 2) + pow((g_player->y - y), 2)) < 50))
+		{
+			{
+				x = x + 0.25 * (g_player->x - x);
+				y = y + 0.25 * (g_player->y - y);
+			}
+		}
         else {
             x = end.x;
             y = end.y;

@@ -4,7 +4,7 @@
 void TestingConsole::Open(void)  
 { 
 	m_active = true;  
-	printf("Console Active"); 
+	printf("Console Active. Enter 'help' for a list of commands."); 
 	SDL_EnableUNICODE( SDL_ENABLE );
 }
 
@@ -52,6 +52,11 @@ void TestingConsole::Enter(void)
 	string activationCode = codeArgumentsPair.first;
 	vector<int> arguments = ExtractArguments(codeArgumentsPair.second);
 
+	if (m_line == "help") {
+		CommandHelp();
+		return;
+	}
+
 	for (Command possibleCommand : commands)
 	{
 		if (activationCode == possibleCommand.code)
@@ -66,7 +71,7 @@ void TestingConsole::Enter(void)
 			catch (exception e)
 			{
 				// If, for some reason, the called function does not operate correctly and throws an exception, fail and notify the user. Don't crash the game.
-				printf("Error. Called function threw an exception: %s", e.what);
+				printf("Error. Called function threw an exception: %s", e.what());
 			}
 
 			// Reset the m_line
@@ -80,6 +85,20 @@ void TestingConsole::Enter(void)
 	printf("Command [%s] not recognised.", activationCode.c_str());
 	m_line.clear();
 }
+
+void TestingConsole::CommandHelp(void)
+{
+	printf("Available commands:\n\n");
+
+	for (Command c : commands)
+	{
+		printf("[%s] = \t\t%s\n", 
+				c.code.c_str(), 
+				c.help.c_str());
+	}
+	NewLine();
+}
+
 
 pair<string, string> TestingConsole::SplitCommandCode(string line)
 {

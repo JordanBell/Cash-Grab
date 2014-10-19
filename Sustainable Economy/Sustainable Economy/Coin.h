@@ -20,6 +20,8 @@ public:
 
 	void update(int delta);
 	void LaunchTo(int _x, int _y, bool suppressAngle = false);
+	static std::list<Coin*> CoinsAround(int x, int y, int radius);
+	static std::list<Coin*> CoinsAroundPlayer(int radius);
 	virtual void OnCollect(void); // A coin's effect when collected
 
 protected:
