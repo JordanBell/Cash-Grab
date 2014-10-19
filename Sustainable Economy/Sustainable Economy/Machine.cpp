@@ -4,7 +4,7 @@
 Machine::Machine(int x, int y) : Collidable(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
-	skin = NULL; //Use the entire image
+	skin = nullptr; //Use the entire image
     
     m_IsMoveable = false;
     m_HitBox->w = TILE_SIZE * 6;
