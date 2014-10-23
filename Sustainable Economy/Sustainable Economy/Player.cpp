@@ -4,6 +4,8 @@
 
 Player *g_player = nullptr;
 
+#define MAGNETISM_DISTANCE 50
+
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_magnetic(INITIAL_MAGNETISM_ENABLED)
 {
@@ -11,15 +13,15 @@ Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false),
     m_HitBox->w = m_AABB->w = PLAYER_WIDTH;
     
     delay = 200;
-    max_cycles = 3 * WALK_SPEED;
+    max_cycles = WALK_CYCLE_LENGTH * WALK_SPEED;
     
     //Initialise the clips of the sprite_sheet
-    int clip_w = (sprite_sheet->w / 3);
+    int clip_w = (sprite_sheet->w / WALK_CYCLE_LENGTH);
     int clip_h = (sprite_sheet->h / 4);
     
     for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < WALK_CYCLE_LENGTH; j++)
         {
             SDL_Rect* clip = new SDL_Rect();
             
@@ -30,6 +32,17 @@ Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false),
             clip->h = clip_h;
             
             sprites[i][j] = clip;
+        }
+    }
+}
+
+Player::~Player(void)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            delete sprites[i][j];
         }
     }
 }
@@ -133,10 +146,10 @@ void Player::update(int delta)
 
 	if (m_magnetic) // Only if magnetism is enabled
 	{
-		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(50);
+		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
 		// Magnetism Effect (Coming Soon)
-		/*for (Coin* c : closeCoins)
-			c->SetHoming(true);*/
+		for (Coin* c : closeCoins)
+			c->SetHoming(MAGNETISM_DISTANCE, 5);
 
 		// Evasion Effect 1
 		/*for (Coin* c : closeCoins)
@@ -159,6 +172,7 @@ void Player::update(int delta)
     
     if (moving) {
         int pixelsToMove = SPEED * delta;//1000 / 60;
+        //pixelsToMove = 0;
         
         switch (this->direction) {
             case UP:

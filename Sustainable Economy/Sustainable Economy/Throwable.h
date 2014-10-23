@@ -7,6 +7,7 @@
 #define THREEQ_ANGLE (3*M_PI/2)
 #define VARY_GRAVITY false // Unstable feature - Setting this as true may cause instability with coin landing positions
 #define ADAPT_ANGLE false
+using namespace std;
 
 class Throwable : public Collidable
 {
@@ -14,10 +15,15 @@ public:
 	bool moving;
 
 	Throwable(int start_x, int start_y, int end_x, int end_y);
+	~Throwable(void);
 
 	virtual void update(int delta);
 	void LaunchTo(int _x, int _y, int angleSuppression = 0);
 	virtual void OnCollect(void) = 0; // A throwable's effect when collected
+	void SetHoming(int distance, int speed) { m_homingDistance = distance; m_homingSpeed = speed; }
+
+	static list<Throwable*> ThrowablesAround(int x, int y, int radius);
+	static list<Throwable*> ThrowablesAroundPlayer(int radius);
 
 protected:
 	int LOOP_SPEED;
@@ -49,6 +55,8 @@ private:
 	struct XY { float x, y; };
 	XY start, end, planar, velocity, angleInducedVelocity;
 	float initial_vertical;
+	int m_homingDistance; // The distance at which the throwable will stop homing
+	int m_homingSpeed; // The pixels by which the throwable homes in each frame
 
 	float angle;	//The trajectory angle, from the ground horizontal
 	float alpha;	//The angle between start and end position
@@ -62,3 +70,5 @@ private:
 	float ComputeSpeedForDistance();
 	float ComputeVariableGravity();
 };
+
+extern list<Throwable*> g_throwables;

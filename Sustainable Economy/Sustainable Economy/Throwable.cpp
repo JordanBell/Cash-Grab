@@ -8,9 +8,16 @@
 #include <stdlib.h>
 #include "Player.h"
 
+#define HOMING_THRESHOLD 450.0f
+#define HOMING_SPEED 1.0f
+
+list<Throwable*> g_throwables;
+
 Throwable::Throwable(int start_x, int start_y, int end_x, int end_y) 
-	: Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1)
+	: Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1), m_homingDistance(0), m_homingSpeed(0)
 {
+	g_throwables.push_back(this);
+
 	// Default hitbox values may be overriden later
 	m_HitBox->w = 32;
     m_HitBox->h = 32;
@@ -18,6 +25,11 @@ Throwable::Throwable(int start_x, int start_y, int end_x, int end_y)
 	max_cycles = 8 * LOOP_SPEED;
 
 	LaunchTo(end_x, end_y);
+}
+
+Throwable::~Throwable(void) 
+{ 
+	g_throwables.remove(this); 
 }
 
 void Throwable::LaunchTo(int _x, int _y, int angleSuppression)
@@ -152,14 +164,65 @@ float Throwable::ComputeVariableGravity()
 	return (gravityStruct.gravityConstant * height * height / (speed * speed * sin(angle) * sin(angle)) + gravityStruct.mid) * /* Subtract a bit, because science */ (0.85 - 0.2);
 }
 
+list<Throwable*> Throwable::ThrowablesAround(int px, int py, int radius)
+{
+	list<Throwable*> r_throwables;
+
+	for (Throwable* t : g_throwables)
+	{
+		if (!t->moving) {
+			int dx = g_player->x - t->x;
+			int dy = g_player->y - t->y;
+			int distance = sqrt(dx*dx + dy*dy);
+
+			if (distance <= radius)
+				r_throwables.push_back(t);
+		}
+	}
+
+	return r_throwables;
+}
+
+list<Throwable*> Throwable::ThrowablesAroundPlayer(int radius) 
+{ 
+	return
+		ThrowablesAround(g_player->x, g_player->y, radius); 
+}
+
 void Throwable::update(int delta)
 {
 	if (moving) move();
-    else
+    else if (m_homingDistance > 0)
     {
-        x = end.x;
-        y = end.y;
+		// Home in on player
+		XY dif;
+		dif.x = (g_player->x - x);
+		dif.y = (g_player->y - y);
+
+		float angle = atan(dif.y / dif.x);
+
+		XY vel;
+		float distance = sqrt(dif.x*dif.x + dif.y*dif.y);
+
+		vel.x = m_homingSpeed * cos(angle);
+		vel.y = m_homingSpeed * sin(angle);
+
+		// Trigonometry is unkind; here's a lazy fix
+		vel.x *= (dif.x < 0) ? -1 : 1;
+		vel.y *= (dif.x < 0) ? -1 : 1;
+
+		x += vel.x;
+		y += vel.y;
+		
+		// Stop homing if out of range.
+		if (distance > m_homingDistance)
+			m_homingDistance = 0;
     }
+	else
+	{
+		m_homingDistance = 0;
+	}
+
 
     Collidable::update(delta);
 }
@@ -180,6 +243,11 @@ void Throwable::move()
 	if (height < 0) //Has hit the ground
 	{
 		moving = false;
+
+		// Snap the coin to its target position
+		x = end.x;
+        y = end.y;
+
 		LOOP_SPEED = 6; // Coins spin slower on the ground
 		max_cycles = 8 * LOOP_SPEED;
 		velocity.x = velocity.y = planar.x = planar.y = 0; //Stop all movement

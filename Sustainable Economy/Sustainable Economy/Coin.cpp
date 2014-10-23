@@ -59,22 +59,6 @@ std::list<Coin*> Coin::CoinsAroundPlayer(int radius)
 void Coin::update(int delta)
 {
     Throwable::update(delta);
+
     IncCycle();
-    
-	if (!moving) // Only take effect when on the ground
-    {
-		// Soon: Refactor magnetism to the player's update
-
-		//if (g_player->IsMagnetic()) // Only if magnetism is enabled
-		//{
-		//	if (sqrt(pow((g_player->x - x), 2) + pow((g_player->y - y), 2)) < 50)
-		//	{
-		//		{
-		//			x = x + 0.25 * (g_player->x - x);
-		//			y = y + 0.25 * (g_player->y - y);
-		//		}
-		//	}
-		//}
-    }
-
 }

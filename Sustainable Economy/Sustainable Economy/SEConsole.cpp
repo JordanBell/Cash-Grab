@@ -9,10 +9,26 @@
 void Pull(vector<int> args)
 {
 	int suppression = args.empty() ? 0 : args.front();
-	for (Coin* c : g_coins)
+
+	for (Throwable* t : g_throwables)
 	{
-		if (!c->moving) {
-			c->LaunchTo(g_player->x, g_player->y, suppression);
+		if (!t->moving) {
+			t->LaunchTo(g_player->x, g_player->y, suppression);
+		}
+	}
+}
+
+/* Launch all coins at the player */
+void HomeIn(vector<int> args)
+{
+	int distance = args.size() > 0 ? args.at(0) : 400;
+	int speed    = args.size() > 1 ? args.at(1) : 10;
+
+	list<Throwable*> closeThrowables = Throwable::ThrowablesAroundPlayer(distance);
+	for (Throwable* t : closeThrowables)
+	{
+		if (!t->moving) {
+			t->SetHoming(distance, speed);
 		}
 	}
 }
@@ -139,5 +155,12 @@ SEConsole::SEConsole(void)
 		"Dispensing...", 
 		"Dispenses a specified number of coins directly into the game. May be unstable.",
 		Dispense)
+	);
+
+	commands.push_back( 
+		Command("home", 
+		"Homing in on player.", 
+		"Sets all collectables' homing property to true.",
+		HomeIn)
 	);
 }

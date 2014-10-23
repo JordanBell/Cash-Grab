@@ -10,7 +10,7 @@ using namespace std;
 class TestingConsole
 {
 public:
-	TestingConsole(void) : m_active(false), PROMPT("~: ") {}
+	TestingConsole(void) : m_active(false), PROMPT("~: "), memoryIterator(commandMemory.begin()) { }
 	~TestingConsole(void) {}
 	
 	void Toggle(void);
@@ -37,6 +37,12 @@ protected:
 	list<Command> commands; // All commands recognised by the testing console
 
 private:
+	list<string> commandMemory;
+	list<string>::iterator memoryIterator;
+	string PROMPT;
+	string m_line;
+	bool m_active;
+
 	void Open(void);
 	void Close(void);
 	void NewLine(void) { m_line.clear(); printf("\n%s", PROMPT.c_str()); }
@@ -44,9 +50,6 @@ private:
 	void CommandHelp(void);
 	static pair<string, string> SplitCommandCode(string line); // Return a pair of strings. The first being the activation code, the second being the arguments
 	static vector<int> ExtractArguments(string argumentsString); // Returns a vector of arguments from a string of suppose arguments
-	
-	string PROMPT;
-	string m_line;
-	bool m_active;
+	void OverrideLine(string _line);
 };
 

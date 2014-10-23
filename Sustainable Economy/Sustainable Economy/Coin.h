@@ -2,6 +2,9 @@
 #include "Collidable.h"
 #include <list>
 #include "Throwable.h"
+using namespace std;
+class Coin;
+extern list<Coin*> g_coins;
 
 class Coin : public Throwable
 {
@@ -10,8 +13,8 @@ public:
 	~Coin(void);
 
 	void update(int delta);
-	static std::list<Coin*> CoinsAround(int x, int y, int radius);
-	static std::list<Coin*> CoinsAroundPlayer(int radius);
+	static list<Coin*> CoinsAround(int x, int y, int radius);
+	static list<Coin*> CoinsAroundPlayer(int radius);
 
 	virtual void OnCollect(void) override = 0;
 
@@ -21,5 +24,3 @@ protected:
 	void set_skin() { skin = sprites[cycle/LOOP_SPEED]; }
 	virtual void InitSheet() {}
 };
-
-extern std::list<Coin*> g_coins;
