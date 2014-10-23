@@ -8,10 +8,11 @@
 /* Launch all coins at the player */
 void Pull(vector<int> args)
 {
+	int suppression = args.empty() ? 0 : args.front();
 	for (Coin* c : g_coins)
 	{
 		if (!c->moving) {
-			c->LaunchTo(g_player->x, g_player->y, true);
+			c->LaunchTo(g_player->x, g_player->y, suppression);
 		}
 	}
 }

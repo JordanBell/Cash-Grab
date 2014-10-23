@@ -24,14 +24,14 @@ void CollisionManager::Update(int delta)
     
     for (Collidable* c : m_Collidables)
     {
-        if (c->m_IsMoveable) // Coin collisions
+        if (c->m_IsMoveable) // Throwable collisions
         {
             int collisionOverlap;
             if (m_Player->CollidesWith(c, collisionOverlap))
             {
                 // I know it's bad design but whatever
-                Coin* coin = dynamic_cast<Coin*>(c);
-                if (coin && !coin->moving)
+                Throwable* throwable = dynamic_cast<Throwable*>(c);
+                if (throwable && !throwable->moving)
                 {
                     MovableCollision(c);
                 }
@@ -117,7 +117,7 @@ void CollisionManager::MovableCollision(Collidable* collidable)
 {
     m_Game->removeCollidable(collidable);
 	
-	((Coin*)collidable)->OnCollect();
+	((Throwable*)collidable)->OnCollect();
 }
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)

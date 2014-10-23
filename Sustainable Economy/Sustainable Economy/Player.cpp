@@ -130,6 +130,26 @@ void Player::update(int delta)
 {
     IncCycle();
 	SmashUpdate();
+
+	if (m_magnetic) // Only if magnetism is enabled
+	{
+		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(50);
+		// Magnetism Effect (Coming Soon)
+		/*for (Coin* c : closeCoins)
+			c->SetHoming(true);*/
+
+		// Evasion Effect 1
+		/*for (Coin* c : closeCoins)
+			c->LaunchTo(x + (rand()%50 - 25), y + (rand()%50 - 25), 0);*/
+
+		// Evasion Effect 2
+		/*for (Coin* c : closeCoins) 
+		{
+			int coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+			int coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE;
+			c->LaunchTo(coinX, coinY, 2);
+		}*/
+	}
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;

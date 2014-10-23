@@ -2,6 +2,7 @@
 #define machine_h
 
 #include "Collidable.h"
+#include "CoinBronze.h"
 #include "CoinSilver.h"
 #include "CoinGold.h"
 #include "Game.h"
