@@ -172,7 +172,7 @@ void Player::update(int delta)
     
     if (moving) {
         int pixelsToMove = SPEED * delta;//1000 / 60;
-        //pixelsToMove = 0;
+        pixelsToMove = 0;
         
         switch (this->direction) {
             case UP:
