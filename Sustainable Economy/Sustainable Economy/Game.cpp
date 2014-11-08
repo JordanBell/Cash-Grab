@@ -7,12 +7,13 @@
 #include "UI.h"
 #include <time.h>
 #include <sstream>
+#include "Wallet.h"
 
 using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), consoleCooldownCounter(0), m_muted(false)
+Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 {
     delta = 0;
 	srand((unsigned int)time(nullptr));
@@ -27,7 +28,6 @@ Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), 
 	m_CollisionManager = new CollisionManager(this);
 	
 	m_Entities.push_back(player);
-//	m_Entities.push_back(machine);
     addCollidable(machine);
 
 	// Set up the key responses
@@ -147,9 +147,9 @@ void Game::Update()
     
 	m_CollisionManager->Update(delta);
     
-    g_UI->SetCollectedCoins(wallet);
+    g_UI->SetCollectedCoins(Wallet::GetCoins());
     g_UI->SetRequiredCoins(machine->coinCost);
-    g_UI->SetTotalCoins(totalCollected);
+    g_UI->SetTotalCoins(Wallet::GetTotalCoins());
 }
 
 void Game::Render()
@@ -183,12 +183,6 @@ void Game::Poll()
 				testingConsole.KeyIn(event.key.keysym);
 		}
 	}
-}
-
-void Game::collectCoin()
-{
-    wallet++;
-    totalCollected++;
 }
 
 void Game::addEntity(Entity* entity, bool toFront)

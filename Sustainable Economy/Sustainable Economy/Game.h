@@ -16,7 +16,6 @@ using namespace std;
 
 #define TILE_SIZE 32
 #define FRAME_RATE 60
-#define START_MONEY 200
 
 class CollisionManager;
 class Machine;
@@ -28,8 +27,6 @@ class Game
 {	
 public:
 	Player *player;
-	int wallet;
-    int totalCollected;
     
 	Game();
 	~Game(void);
@@ -38,15 +35,9 @@ public:
     void addCollidable(Collidable* collidable, bool toFront = false);
     void removeEntity(Entity* entity);
     void removeCollidable(Collidable* collidable);
-	void addABunchOfCoins();
 	bool IsMuted(void) { return m_muted; }
 	void Mute(void) { m_muted = true; }
 	void Unmute(void) { m_muted = false; }
-
-	// Money Stuff
-	void collectCoin();
-	void IncWallet(void) { wallet++; totalCollected++; }
-	void IncWalletBy(int n) { wallet += n; totalCollected += n; }
 
 private:
 	SEConsole testingConsole;

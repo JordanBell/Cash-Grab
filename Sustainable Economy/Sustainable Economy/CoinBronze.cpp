@@ -1,6 +1,7 @@
 #include "CoinSilver.h"
 #include "Game.h"
 #include "Resources.h"
+#include "Wallet.h"
 
 void CoinBronze::OnCollect(void)
 { 
@@ -9,7 +10,7 @@ void CoinBronze::OnCollect(void)
         Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
 //		Mix_PlayMusic(g_resources->GetCoinSound(0), 0);
 	// Base Coins do not have special collection effects, just increase money
-	g_game->IncWallet(); 
+	Wallet::IncCoins(); 
 }
 
 void CoinBronze::InitSheet(void)

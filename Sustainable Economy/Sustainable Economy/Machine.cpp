@@ -1,5 +1,6 @@
 #include "Machine.h"
 #include "Resources.h"
+#include "Wallet.h"
 
 Machine* g_machine = nullptr;
 
@@ -102,7 +103,7 @@ void Machine::dispense()
 	{
 		m_dispensing = true;
 		// Take the player's money
-		g_game->wallet -= coinCost;
+		Wallet::Remove(coinCost);
 		// Increase the cost of the next coin set by the increase constant.
 		coinCost *= COIN_INCREASE; 
 		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
@@ -297,14 +298,12 @@ void Machine::FinishDispensing()
 
 bool Machine::canAfford()
 {
-    return (g_game->wallet >= coinCost);
+    return (Wallet::GetCoins() >= coinCost);
 }
 
 Machine::DispenseType Machine::RandomDispenseType(void)
 {
 	int n = rand() % 20;
-	
-	//return INSERT_TEST_VALUE;
 
 	// 10% chance for each non-normal dispense type
 	if (n == 0) return POINT;

@@ -2,6 +2,7 @@
 #include "Coin.h"
 #include "Player.h"
 #include "Game.h"
+#include "Wallet.h"
 
 // HAX
 
@@ -62,18 +63,16 @@ void Unmute(vector<int> args)
 void AddCoins(vector<int> args)
 {
 	int numCoins = args.front();
-	g_game->IncWalletBy(numCoins);
+	Wallet::IncCoinsBy(numCoins);
 }
 
 /* Add a ludicrous number of coins to the wallet */
 void AddCoins_Large(vector<int> args)
-{
-	g_game->IncWalletBy(999999999);
-}
+	{ Wallet::IncCoinsBy(999999999); }
 
 /* Doubles the player's coins */
 void DoubleCoins(vector<int> args)
-	{ g_game->IncWalletBy(g_game->wallet); }
+	{ Wallet::IncCoinsBy(Wallet::GetCoins()); }
 
 
 
