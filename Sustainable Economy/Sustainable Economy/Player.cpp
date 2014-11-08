@@ -77,8 +77,6 @@ void Player::Smash(int radius)
 		float f2 = (f1 * 0.50f);
 		forcePercentage = 1.00f - f2;
 	}
-	printf("\nSmashing with %f%% force.\n", forcePercentage);
-	//forcePercentage = 1;
 
 	for (Coin* c : radiusCoins)
 	{
@@ -172,7 +170,6 @@ void Player::update(int delta)
     
     if (moving) {
         int pixelsToMove = SPEED * delta;//1000 / 60;
-        pixelsToMove = 0;
         
         switch (this->direction) {
             case UP:
