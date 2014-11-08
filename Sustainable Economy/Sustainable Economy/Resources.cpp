@@ -63,6 +63,4 @@ Resources::~Resources(void)
     {
         Mix_FreeChunk(m_CoinSounds[i]);
     }
-    
-    Mix_CloseAudio();
 }
