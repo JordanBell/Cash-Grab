@@ -18,7 +18,7 @@ void Pull(vector<int> args)
 	}
 }
 
-/* Launch all coins at the player */
+/* Home coins toward the player */
 void HomeIn(vector<int> args)
 {
 	int distance = args.size() > 0 ? args.at(0) : 400;
