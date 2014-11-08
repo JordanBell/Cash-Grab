@@ -1,11 +1,11 @@
 #pragma once
 #include "Coin.h"
 
-class CoinSilver :
+class CoinBronze :
 	public Coin
 {
 public:
-	CoinSilver(int start_x, int start_y, int end_x, int end_y) 
+	CoinBronze(int start_x, int start_y, int end_x, int end_y) 
 		: Coin(start_x, start_y, end_x, end_y) { InitSheet(); }
 
 	void OnCollect(void) override final;
@@ -13,4 +13,3 @@ public:
 protected:
 	void InitSheet(void) override final;
 };
-

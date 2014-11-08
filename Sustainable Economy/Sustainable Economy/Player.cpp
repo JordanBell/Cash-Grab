@@ -4,22 +4,24 @@
 
 Player *g_player = nullptr;
 
+#define MAGNETISM_DISTANCE 50
+
 //Initialise the size and position of each sprite clip
-Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true)
+Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_magnetic(INITIAL_MAGNETISM_ENABLED)
 {
     sprite_sheet = g_resources->GetPlayerSheet();
     m_HitBox->w = m_AABB->w = PLAYER_WIDTH;
     
     delay = 200;
-    max_cycles = 3 * WALK_SPEED;
+    max_cycles = WALK_CYCLE_LENGTH * WALK_SPEED;
     
     //Initialise the clips of the sprite_sheet
-    int clip_w = (sprite_sheet->w / 3);
+    int clip_w = (sprite_sheet->w / WALK_CYCLE_LENGTH);
     int clip_h = (sprite_sheet->h / 4);
     
     for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < WALK_CYCLE_LENGTH; j++)
         {
             SDL_Rect* clip = new SDL_Rect();
             
@@ -30,6 +32,17 @@ Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false),
             clip->h = clip_h;
             
             sprites[i][j] = clip;
+        }
+    }
+}
+
+Player::~Player(void)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            delete sprites[i][j];
         }
     }
 }
@@ -47,9 +60,35 @@ void Player::move(int direction)
 
 void Player::Smash(int radius)
 {
-	// Coming soon
-}
+	// Get all coins in the radius
+	list<Coin*> radiusCoins = Coin::CoinsAroundPlayer(radius);
 
+	float forcePercentage;
+
+	const int MAX_RADIUS = 300;
+	const int MIN_RADIUS = 100;
+	const float MIN_PERCENTAGE = 0.35f;
+
+	if (radius <= MIN_RADIUS)	   forcePercentage = 1.0f;
+	else if (radius >= MAX_RADIUS) forcePercentage = MIN_PERCENTAGE;
+	else
+	{
+		float f1 = float(radius - MIN_RADIUS) / float(MAX_RADIUS - MIN_RADIUS);
+		float f2 = (f1 * 0.50f);
+		forcePercentage = 1.00f - f2;
+	}
+	printf("\nSmashing with %f%% force.\n", forcePercentage);
+	//forcePercentage = 1;
+
+	for (Coin* c : radiusCoins)
+	{
+		int dx = x - c->x;
+		int dy = y - c->y;
+		dx *= forcePercentage;
+		dy *= forcePercentage;
+		c->LaunchTo(c->x+dx, c->y+dy);
+	}
+}
 
 void Player::DoMove()
 {
@@ -103,6 +142,27 @@ void Player::IncCycle(void)
 void Player::update(int delta)
 {
     IncCycle();
+	SmashUpdate();
+
+	if (m_magnetic) // Only if magnetism is enabled
+	{
+		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
+		// Magnetism Effect (Coming Soon)
+		for (Coin* c : closeCoins)
+			c->SetHoming(MAGNETISM_DISTANCE, 5);
+
+		// Evasion Effect 1
+		/*for (Coin* c : closeCoins)
+			c->LaunchTo(x + (rand()%50 - 25), y + (rand()%50 - 25), 0);*/
+
+		// Evasion Effect 2
+		/*for (Coin* c : closeCoins) 
+		{
+			int coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+			int coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE;
+			c->LaunchTo(coinX, coinY, 2);
+		}*/
+	}
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;
@@ -112,6 +172,7 @@ void Player::update(int delta)
     
     if (moving) {
         int pixelsToMove = SPEED * delta;//1000 / 60;
+        //pixelsToMove = 0;
         
         switch (this->direction) {
             case UP:
@@ -138,6 +199,18 @@ void Player::update(int delta)
     
     Collidable::update(delta);
 }
+
+void Player::SmashUpdate(void)
+{
+	// Not fully complete
+	if (smashCount < SMASH_LIMIT)
+	{
+		smashCount++;
+		if (smashCount % SMASH_INTERVAL == 0)
+			Smash(smashCount/2);
+	}
+}
+
 
 void Player::render()
 {

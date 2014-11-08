@@ -1,6 +1,8 @@
 #include "Machine.h"
 #include "Resources.h"
 
+Machine* g_machine = nullptr;
+
 Machine::Machine(int x, int y) : Collidable(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
 {
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
@@ -23,8 +25,6 @@ Machine::Machine(int x, int y) : Collidable(x, y), coins(), m_dispensing(false),
 
 void Machine::update(int delta)
 {
-	//printf("Coins: %d, Cost: %d\n", g_game->wallet, coinCost);
-
 	m_timeElapsed += delta;
 
     if ((m_dispensing) && (m_timeElapsed >= DISPENSING_STUTTER))
@@ -111,48 +111,58 @@ void Machine::dispense()
 	}
 }
 
+void Machine::ForceDispense(int coinNum)
+{
+	m_dispensing = true;
+	coinCost = coinNum;
+	
+	ShootCoinsFrom(3, coinNum, false);
+
+	FinishDispensing();
+}
+
 void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 {
-	// Silver Coins (5) NOTE: For Gold coins, only dispense half the amount, leave some values for Silver coins
-	int setsOfTen = totalValue / 10;
-	for (int numGold = setsOfTen / 2; ((numGold > 0) && (m_numDispensed < coinCost)); numGold--)// (((totalValue / 10) >= 1) && (m_numDispensed < coinCost))
+	if (intervalCoins)
 	{
-		// Find this Coin's launch info
-		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
-		// Create a new coin for that destination
-		CoinGold* coin = new CoinGold(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
-		// Add it to the collidables
-		g_game->addCollidable(coin);
+		// Silver Coins (5) NOTE: For Gold coins, only dispense half the amount, leave some values for Silver coins
+		int setsOfTen = totalValue / 10;
+		for (int numGold = setsOfTen / 2; ((numGold > 0) && (m_numDispensed < coinCost)); numGold--)// (((totalValue / 10) >= 1) && (m_numDispensed < coinCost))
+		{
+			// Find this Coin's launch info
+			SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+			// Create a new coin for that destination
+			CoinGold* coin = new CoinGold(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+			// Add it to the collidables
+			g_game->addCollidable(coin);
 
-		m_numDispensed += 10;
-		totalValue -= 10;
-	}
+			m_numDispensed += 10;
+			totalValue -= 10;
+		}
 
-	// Silver Coins (5)
-	while (((totalValue / 5) >= 1) && (m_numDispensed < coinCost))
-	{
+		// Silver Coins (5)
+		while (((totalValue / 5) >= 1) && (m_numDispensed < coinCost))
+		{
 
-		// Find this Coin's launch info
-		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
-		// Create a new coin for that destination
-		CoinSilver* coin = new CoinSilver(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
-		// Add it to the collidables
-		g_game->addCollidable(coin);
+			// Find this Coin's launch info
+			SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+			// Create a new coin for that destination
+			CoinSilver* coin = new CoinSilver(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+			// Add it to the collidables
+			g_game->addCollidable(coin);
 
-		m_numDispensed += 5;
-		totalValue -= 5;
+			m_numDispensed += 5;
+			totalValue -= 5;
+		}
 	}
 
 	// Bronze Coins (1)
 	while ((totalValue > 0) && (m_numDispensed < coinCost))
 	{
-		if (m_numDispensed > coinCost) 
-			printf("YO");
-
 		// Find this coin's launch info
 		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
 		// Create a new coin for that destination
-		Coin* coin = new Coin(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		Coin* coin = new CoinBronze(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
 		// Add it to the collidables
 		g_game->addCollidable(coin);
 

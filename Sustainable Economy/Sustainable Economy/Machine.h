@@ -2,6 +2,7 @@
 #define machine_h
 
 #include "Collidable.h"
+#include "CoinBronze.h"
 #include "CoinSilver.h"
 #include "CoinGold.h"
 #include "Game.h"
@@ -29,6 +30,8 @@ public:
 	void update(int delta);
 	void dispense();
 
+	void ForceDispense(int coinNum);
+
 	SDL_Rect CoinLaunchInfo(int slotNum);
 
 private:    
@@ -53,15 +56,18 @@ private:
 	
 	XY getLeftCircleCoords(bool addRightCoords = false);
 	XY getRightCircleCoords() { return getLeftCircleCoords(true); }
-	
-	DispenseType RandomDispenseType(void);
-	DispensePattern RandomDispensePattern(void);
-	bool ValidLandingPosition(int _x, int _y);
+
 	void ShootCoinFrom(int slotNum) { ShootCoinsFrom(slotNum, 1, false); }
 	void ShootCoinsFrom(int slotNum, int totalValue) { ShootCoinsFrom(slotNum, totalValue, true); }
 	void ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins);
 	void FinishDispensing();
+	
+	DispenseType RandomDispenseType(void);
+	DispensePattern RandomDispensePattern(void);
+	bool ValidLandingPosition(int _x, int _y);
 	bool canAfford();
 };
+
+extern Machine* g_machine;
 
 #endif

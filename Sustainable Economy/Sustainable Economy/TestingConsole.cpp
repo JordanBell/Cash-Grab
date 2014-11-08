@@ -5,7 +5,7 @@
 void TestingConsole::Open(void)  
 { 
 	m_active = true;  
-	printf("Console Active"); 
+	printf("Console Active. Enter 'help' for a list of commands."); 
 	SDL_EnableUNICODE( SDL_ENABLE );
 }
 
@@ -24,18 +24,49 @@ void TestingConsole::Toggle(void)
 
 void TestingConsole::KeyIn(SDL_keysym& keysym)
 {
-	if (keysym.sym == SDLK_BACKSPACE)
-	{ // Backspace pops the last element of the string	
+	if (keysym.sym == SDLK_BACKSPACE) // Backspace pops the last element of the string
+	{ 
 		if (m_line.size() > 0) {
             m_line.pop_back();
             printf("\b \b"); // Backspace
 		}
 	}
-	else if (keysym.sym == SDLK_RETURN)
-	{ // Enter enters the code into the console
+	else if (keysym.sym == SDLK_RETURN) // Enter enters the code into the console
+	{ 
 		printf("\n");
 		Enter();
 		NewLine();
+	}
+	else if (keysym.sym == SDLK_UP) // Traverse UP along the command memory
+	{ 
+		string commandStr = "";
+
+		if (!commandMemory.empty())
+		{
+			if (memoryIterator != commandMemory.begin()) {
+				memoryIterator--;
+				commandStr = *memoryIterator;
+			}
+		}
+
+		if (commandStr != "")
+			OverrideLine(commandStr);
+	}
+	else if (keysym.sym == SDLK_DOWN) // Traverse UP along the command memory
+	{ 
+		string commandStr = "";
+
+		if (!commandMemory.empty())
+		{
+			if (memoryIterator != commandMemory.end())
+			{
+				memoryIterator++;
+				if (memoryIterator != commandMemory.end())
+					commandStr = *memoryIterator;
+			}
+		}
+		
+		OverrideLine(commandStr);
 	}
 	else 
 	{ // Otherwise, just input the character
@@ -44,14 +75,37 @@ void TestingConsole::KeyIn(SDL_keysym& keysym)
 	}
 }
 
+void TestingConsole::OverrideLine(string _line)
+{
+	// Replace the output on the command line with the new string
+	int strSize = m_line.size();
+	for (int i = 0; i < strSize; i++)
+		printf("\b \b");
+
+	// Set the new line
+	m_line = _line;
+	// Print it
+	printf("%s", m_line.c_str());
+}
+
 
 /* Enter the current m_line into the console, invoking any corresponding functions. */
 void TestingConsole::Enter(void)
 { 
+	// Add this line to the list of entered command strings
+	commandMemory.remove(m_line);
+	commandMemory.push_back(m_line);
+	memoryIterator = commandMemory.end();
+
 	// Separate the activation command from its arguments, if any
 	pair<string, string> codeArgumentsPair = SplitCommandCode(m_line);
 	string activationCode = codeArgumentsPair.first;
 	vector<int> arguments = ExtractArguments(codeArgumentsPair.second);
+
+	if (m_line == "help") {
+		CommandHelp();
+		return;
+	}
 
 	for (Command possibleCommand : commands)
 	{
@@ -81,6 +135,21 @@ void TestingConsole::Enter(void)
 	printf("Command [%s] not recognised.", activationCode.c_str());
 	m_line.clear();
 }
+
+void TestingConsole::CommandHelp(void)
+{
+	printf("Available commands:\n\n");
+
+	for (Command c : commands)
+	{
+		printf("[%s] = \t\t%s\n", 
+				c.code.c_str(), 
+				c.help.c_str());
+	}
+
+	NewLine();
+}
+
 
 pair<string, string> TestingConsole::SplitCommandCode(string line)
 {
