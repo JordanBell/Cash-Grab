@@ -1,6 +1,7 @@
 #include "CoinSilver.h"
 #include "Game.h"
 #include "Resources.h"
+#include "Wallet.h"
 
 #include "SmashEffect.h"
 

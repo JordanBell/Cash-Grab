@@ -1,6 +1,7 @@
 #include "CoinSilver.h"
 #include "Game.h"
 #include "Resources.h"
+#include "Wallet.h"
 
 #include "MagnetismEffect.h"
 
@@ -13,7 +14,7 @@ void CoinBronze::OnCollect(void)
     g_game->AddEffect(new MagnetismEffect());
     
 	// Base Coins do not have special collection effects, just increase money
-	g_game->IncWallet(); 
+	Wallet::IncCoins(); 
 }
 
 void CoinBronze::InitSheet(void)
