@@ -13,7 +13,7 @@ void CoinSilver::OnCollect(void)
 //		Mix_PlayMusic(g_resources->GetCoinSound_Silver(), 0);
     
     g_game->AddEffect(new SmashEffect(50));
-	g_game->IncWalletBy(5);
+	Wallet::IncCoinsBy(5);
 }
 
 void CoinSilver::InitSheet(void)
