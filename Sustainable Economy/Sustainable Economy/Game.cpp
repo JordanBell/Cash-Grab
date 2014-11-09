@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "SDL.h"
 #include "CollisionManager.h"
-#include "Prompt.h"
 #include "Machine.h"
 #include "Resources.h"
 #include "UI.h"
@@ -24,10 +23,11 @@ Game::Game() : running(true), wallet(START_MONEY), totalCollected(START_MONEY), 
 	g_machine = machine;
 	prompt = new Prompt(machine);
     
+    m_EffectManager = new EffectManager();
+    
 	m_CollisionManager = new CollisionManager(this);
 	
 	m_Entities.push_back(player);
-//	m_Entities.push_back(machine);
     addCollidable(machine);
 
 	// Set up the key responses
@@ -41,11 +41,17 @@ Game::~Game(void)
     {
         delete *it;
     }
+    
+    delete m_EffectManager;
+    delete m_CollisionManager;
 }
 
 void Game::run()
 {    
 	InitEnvironment();
+    
+    Mix_PlayMusic(g_resources->GetMusic()
+                  , -1);
     
     m_FPSTimer.start();
     lastUpdate = m_FPSTimer.get_ticks();
@@ -63,6 +69,8 @@ void Game::run()
 		// Regulate the framerate, and save the delta time.
 		RegulateFrameRate();
 	}
+    
+    Mix_HaltMusic();
 }
 
 void Game::InitEnvironment(void)
@@ -135,6 +143,7 @@ void Game::Update()
 	// Decrement the cooldown for console activation
 	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
 
+//    if (consoleCooldownCounter == 0) g_player->Smash(50);
 	HandleKeys();
 	
 	for (Entity* e : m_Entities)
@@ -146,6 +155,7 @@ void Game::Update()
     m_Entities.sort(entity_compare);
     
 	m_CollisionManager->Update(delta);
+    m_EffectManager->Update(delta);
     
     g_UI->SetCollectedCoins(wallet);
     g_UI->SetRequiredCoins(machine->coinCost);
@@ -155,7 +165,7 @@ void Game::Update()
 void Game::Render()
 {
     // Clear the screen
-    SDL_FillRect(screen,nullptr,0x000000);
+    SDL_FillRect(screen,NULL,0x000000);
     
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }
@@ -209,6 +219,11 @@ void Game::addCollidable(Collidable* collidable, bool toFront)
 {
     addEntity(collidable, toFront);
     m_CollisionManager->AddCollidable(collidable, toFront);
+}
+
+void Game::AddEffect(Effect *effect)
+{
+    m_EffectManager->AddEffect(effect);
 }
 
 void Game::removeEntity(Entity* entity)

@@ -143,7 +143,6 @@ void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 		// Silver Coins (5)
 		while (((totalValue / 5) >= 1) && (m_numDispensed < coinCost))
 		{
-
 			// Find this Coin's launch info
 			SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
 			// Create a new coin for that destination

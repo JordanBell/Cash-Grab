@@ -10,6 +10,7 @@
 #include "Prompt.h"
 #include "Timer.h"
 #include "SEConsole.h"
+#include "EffectManager.h"
 #include <memory>
 
 using namespace std;
@@ -36,6 +37,7 @@ public:
 	void run();
     void addEntity(Entity* entity, bool toFront = false);
     void addCollidable(Collidable* collidable, bool toFront = false);
+    void AddEffect(Effect* effect);
     void removeEntity(Entity* entity);
     void removeCollidable(Collidable* collidable);
 	void addABunchOfCoins();
@@ -53,6 +55,7 @@ private:
 	int consoleCooldownCounter;
 	KeyCode keys;
     CollisionManager* m_CollisionManager;
+    EffectManager* m_EffectManager;
 	Timer m_FPSTimer;
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking

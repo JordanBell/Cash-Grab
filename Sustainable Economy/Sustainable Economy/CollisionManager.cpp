@@ -115,9 +115,9 @@ void CollisionManager::AddCollidable(Collidable* collidable, bool toFront)
 
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
+    ((Throwable*)collidable)->OnCollect();
+    
     m_Game->removeCollidable(collidable);
-	
-	((Throwable*)collidable)->OnCollect();
 }
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)
