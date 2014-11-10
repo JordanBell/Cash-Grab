@@ -10,11 +10,13 @@
 
 void MagnetismEffect::OnStart()
 {
-    g_player->SetMagnetic(true);
-    m_IsDone = true;
+    m_Duration = 5000;
+    
+    if (!g_player->IsMagnetic())
+        g_player->SetMagnetic(true);
 }
 
 void MagnetismEffect::OnEnd()
 {
-    // Left empty; nothing to do
+    g_player->SetMagnetic(false);
 }

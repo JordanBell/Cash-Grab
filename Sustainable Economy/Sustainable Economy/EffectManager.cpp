@@ -31,6 +31,7 @@ void EffectManager::Update(int delta)
         e->OnUpdate(delta);
         
         if (e->m_IsDone) {
+            e->OnEnd();
             removeQueue.push_back(e);
         }
     }

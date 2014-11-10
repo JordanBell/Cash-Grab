@@ -11,7 +11,8 @@ void CoinBronze::OnCollect(void)
 	if (!g_game->IsMuted())
         Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
     
-    g_game->AddEffect(new MagnetismEffect());
+    // For testing
+//    g_game->AddEffect(new MagnetismEffect());
     
 	// Base Coins do not have special collection effects, just increase money
 	Wallet::IncCoins(); 
