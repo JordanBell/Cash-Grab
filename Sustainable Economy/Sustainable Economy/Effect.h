@@ -18,13 +18,14 @@
 class Effect {
 protected:
     /* Duration of this effect, in ms */
-    int m_Duration = 0;
+    int m_Duration;
     /* Time elapsed while running: to know when to stop effect */
-    int m_ElapsedTime = 0;
+    int m_ElapsedTime;
     
 public:
-    bool m_IsDone = false;
+    bool m_IsDone;
     
+	Effect() : m_Duration(0), m_ElapsedTime(0), m_IsDone(false)  {}
     virtual ~Effect() { }
     
     /**
