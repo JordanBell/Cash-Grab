@@ -140,9 +140,6 @@ void Machine::ForceDispense(int coinNum)
 
 void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 {
-	/*if (totalValue > (coinCost - m_numDispensed))
-		printf("Problem not within shootCoinsFrom()\n");*/
-	
 	int numBronze, numSilver, numGold; // Number of each kind of coin
 	numBronze = numSilver = numGold = 0; // Intialise counts
 	// Initialise Values

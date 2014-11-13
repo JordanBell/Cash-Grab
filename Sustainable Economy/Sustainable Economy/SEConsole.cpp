@@ -34,7 +34,7 @@ void Calc(vector<int> args)
 void TogglePull(vector<int> args)
 	{ KeyCode::ToggleBool1(); }
 
-/* Launch all coins at the player */
+/* Home coins toward the player */
 void HomeIn(vector<int> args)
 {
 	int distance = args.size() > 0 ? args.at(0) : 400;

@@ -28,7 +28,7 @@ A wildcard item is dropped into the field at some point in the game. When the pl
 -All coins bounce around on the floor, unable to pick up which they are in the air
 -Rainbow coins!
 -Coins make (???) sounds when picked up
--Music change
+-Music change (backwards? sped up?)
 -Framerate increase (Speed up!)
 
 ////////////////////////////////////////

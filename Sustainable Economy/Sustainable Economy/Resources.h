@@ -10,6 +10,7 @@ class Resources
 private:
 	SDL_Surface* m_PlayerSheet, *m_CoinSheet, *m_EnvironmentImage, *m_MoneyMachineSheet, *m_Prompt, *m_Square;
 	TTF_Font* m_Font;
+    Mix_Music* m_Music;
     Mix_Chunk* m_CoinSounds[NUM_COIN_SOUNDS];
 
 public:
@@ -24,6 +25,8 @@ public:
     SDL_Surface* GetTestImage() { return m_Square; }
     
     TTF_Font* GetFont() { return m_Font; }
+    
+    Mix_Music* GetMusic(void) { return m_Music; }
     
     // Get a random coin sound
     Mix_Chunk* GetCoinSound(int index)   { return m_CoinSounds[index]; }

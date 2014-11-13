@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 #include "Wallet.h"
-
+#include "MagnetismEffect.h"
 
 int CoinBronze::value = 1;
 
@@ -11,8 +11,10 @@ void CoinBronze::OnCollect(void)
 	// Play the basic coin sound
 	if (!g_game->IsMuted())
         Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
-//		Mix_PlayMusic(g_resources->GetCoinSound(0), 0);
-	// Base Coins do not have special collection effects, just increase money
+    
+    // For testing
+//    g_game->AddEffect(new MagnetismEffect());
+    
 	Wallet::IncCoinsBy(value); 
 }
 

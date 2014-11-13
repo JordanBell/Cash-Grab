@@ -10,7 +10,7 @@
 #define STILL 1
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
-#define INITIAL_MAGNETISM_ENABLED true
+#define INITIAL_MAGNETISM_ENABLED false
 
 
 class Player : public Collidable {
@@ -18,7 +18,6 @@ public:
 	
 	//De/Constructors
 	Player(int x, int y);
-    // TODO: move into .cpp
 	~Player(void);
     
     // For collision detection

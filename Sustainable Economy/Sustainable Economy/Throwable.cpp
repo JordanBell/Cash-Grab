@@ -37,6 +37,7 @@ void Throwable::LaunchTo(int _x, int _y, int angleSuppression)
 	// Coins spin faster in the air
 	LOOP_SPEED = 1;
 	max_cycles = 8 * LOOP_SPEED;
+    cycle = 0;
 
 	moving = true;
 	// Launch the coin towards the end coordinates
