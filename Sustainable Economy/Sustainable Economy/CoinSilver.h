@@ -10,6 +10,7 @@ public:
 
 	void OnCollect(void) override final;
 
+	static int value;
 protected:
 	void InitSheet(void) override final;
 };

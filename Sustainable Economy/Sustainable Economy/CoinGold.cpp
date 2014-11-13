@@ -3,12 +3,14 @@
 #include "Resources.h"
 #include "Wallet.h"
 
+int CoinGold::value = 10;
+
 void CoinGold::OnCollect(void)
 { 
 	// Play the basic coin sound
     if (!g_game->IsMuted())
 		Mix_PlayChannel(-1, g_resources->GetCoinSound_Gold(), 0);
-	Wallet::IncCoinsBy(10);
+	Wallet::IncCoinsBy(value);
 }
 
 void CoinGold::InitSheet(void)

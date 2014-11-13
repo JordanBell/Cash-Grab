@@ -3,6 +3,9 @@
 #include "Resources.h"
 #include "Wallet.h"
 
+
+int CoinBronze::value = 1;
+
 void CoinBronze::OnCollect(void)
 { 
 	// Play the basic coin sound
@@ -10,7 +13,7 @@ void CoinBronze::OnCollect(void)
         Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
 //		Mix_PlayMusic(g_resources->GetCoinSound(0), 0);
 	// Base Coins do not have special collection effects, just increase money
-	Wallet::IncCoins(); 
+	Wallet::IncCoinsBy(value); 
 }
 
 void CoinBronze::InitSheet(void)

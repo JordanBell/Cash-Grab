@@ -142,7 +142,7 @@ void TestingConsole::CommandHelp(void)
 
 	for (Command c : commands)
 	{
-		printf("[%s] = \t\t%s\n", 
+		printf("[%s] = %s\n", 
 				c.code.c_str(), 
 				c.help.c_str());
 	}

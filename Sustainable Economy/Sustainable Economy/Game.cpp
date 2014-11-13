@@ -114,6 +114,7 @@ void Game::HandleKeys()
 		else keys.no_direction();
 	
 		if (keystates[SDLK_RETURN]) keys.enter();
+		if (keystates[SDLK_1])		keys._1();
 
 		// Screen Formatting
 		if (keystates[SDLK_f]) toggleScreenFormat();

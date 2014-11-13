@@ -6,6 +6,7 @@
 #include "CoinSilver.h"
 #include "CoinGold.h"
 #include "Game.h"
+#include "LaunchData.h"
 
 #include <vector>
 #include <iostream>
@@ -13,7 +14,6 @@
 using namespace std;
 
 #define NUM_SLOTS 6
-#define COIN_INCREASE 1.2
 #define DISPENSING_STUTTER 35
 #define BURST_DELAY 5
 #define QUANTITY_THRESHOLD 20
@@ -37,14 +37,9 @@ public:
 private:    
 	struct XY { float x, y; };
 	
-	enum DispenseType {
-		NORM, POINT, CORNERS, LINES_H, LINES_V, LEFT, RIGHT, BOTH
-	};
-	enum DispensePattern{
-		BURST, SERPENTINE, SPUTTER, DUMP
-	};
-	DispenseType m_dispenseType;
-	DispensePattern m_dispensePattern;
+	LaunchData::CoinType m_coinType;
+	LaunchData::DispenseStyle m_dispenseStyle;
+	LaunchData::DispensePattern m_dispensePattern;
 
     pair<int, int> dispenser_pos;
     pair<int, int> coin_slots[NUM_SLOTS];
@@ -54,16 +49,18 @@ private:
 	int m_ticker;
     vector<Coin*> coins;
 	
-	XY getLeftCircleCoords(bool addRightCoords = false);
-	XY getRightCircleCoords() { return getLeftCircleCoords(true); }
+	XY GetLeftCircleCoords(bool addRightCoords = false);
+	XY GetRightCircleCoords() { return GetLeftCircleCoords(true); }
 
 	void ShootCoinFrom(int slotNum) { ShootCoinsFrom(slotNum, 1, false); }
 	void ShootCoinsFrom(int slotNum, int totalValue) { ShootCoinsFrom(slotNum, totalValue, true); }
 	void ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins);
 	void FinishDispensing();
+
+	// Launch a particular type of coin
+	template <class Coin_Type>
+	void LaunchCoin(int count, int slotNum);
 	
-	DispenseType RandomDispenseType(void);
-	DispensePattern RandomDispensePattern(void);
 	bool ValidLandingPosition(int _x, int _y);
 	bool canAfford();
 };

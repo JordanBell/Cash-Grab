@@ -4,8 +4,13 @@
 
 Machine* g_machine = nullptr;
 
-Machine::Machine(int x, int y) : Collidable(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_dispenseType(NORM)
+Machine::Machine(int x, int y) 
+	: Collidable(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0),
+	coinCost(START_MONEY), m_timeElapsed(0), m_coinType(LaunchData::BRONZE), m_dispensePattern(LaunchData::NORM), m_dispenseStyle(LaunchData::SPUTTER)
 {
+	// Initialise launch data
+	LaunchData::Notify(0);
+
 	sprite_sheet = g_resources->GetMoneyMachineSheet();
 	skin = nullptr; //Use the entire image
     
@@ -31,20 +36,23 @@ void Machine::update(int delta)
     if ((m_dispensing) && (m_timeElapsed >= DISPENSING_STUTTER))
 	{
 		m_timeElapsed = 0;
-		
 
-		if (m_dispensePattern == BURST)
+		if (m_dispenseStyle == LaunchData::BURST)
 		{
 			if (m_ticker == 0)
 			{
 				// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-				int coinsPerSlot = (coinCost / (QUANTITY_THRESHOLD*6/BURST_DELAY)) + 1;
+				const int maxCoinsPerSlot = (coinCost / (QUANTITY_THRESHOLD*6/BURST_DELAY)) + 1;
+				int yetToBeShot, coinsPerSlot;
 
 				// Dispense a set of coins for each row
 				for (int slotNum = 0; (slotNum < 6) && (m_numDispensed < coinCost); slotNum++)
 				{
+					yetToBeShot = (coinCost - m_numDispensed);
+					coinsPerSlot = (yetToBeShot >= maxCoinsPerSlot) ? maxCoinsPerSlot : yetToBeShot;
 					// Dispense a coin for each value of coinsPerSlot
 					ShootCoinsFrom(slotNum, coinsPerSlot);
+					if (m_numDispensed > coinCost) printf("OVERSHOT: After Shooting in Burst Mode");
 				}
 			}
 			
@@ -53,11 +61,12 @@ void Machine::update(int delta)
 			if (m_ticker == BURST_DELAY) // Reset at max
 				m_ticker = 0;
 		}
-		else if (m_dispensePattern == DUMP)
+		else if (m_dispenseStyle == LaunchData::DUMP)
 		{
 			int slotAmounts[6];
 			slotAmounts[0] = slotAmounts[1] = slotAmounts[2] = slotAmounts[3] = slotAmounts[4] = slotAmounts[5] = 0;
 			int coinCounter = coinCost;
+
 			for (int i = 0; coinCounter > 0; i = (i==5) ? 0 : i+1)
 			{
 				slotAmounts[i]++;
@@ -66,32 +75,35 @@ void Machine::update(int delta)
 			for (int slotNum = 0; slotNum < 6; slotNum++)
 			{
 				ShootCoinsFrom(slotNum, slotAmounts[slotNum]);
+				if (m_numDispensed > coinCost) printf("OVERSHOT: After Shooting in Dump mode at index/slotnum: %d\n", slotNum);
 			}
 		}
-		else // Serpentine or Sputter. Both work similarly
+		else // Serpentine or Sputter. Both work similarly. Differentiate within.
 		{
 			
 			// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-			int coinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
-			// Choose the slot number, in a serpentine pattern.
-			int n = m_numDispensed/coinsPerSlot % (NUM_SLOTS*2);
+			int maxCoinsPerSlot = (coinCost / QUANTITY_THRESHOLD) + 1;
+			int yetToBeShot = (coinCost - m_numDispensed);
+			int coinsPerSlot = (yetToBeShot >= maxCoinsPerSlot) ? maxCoinsPerSlot : yetToBeShot;
+
 			int slotNum = 0;
-			if (m_dispensePattern == SERPENTINE)
+			if (m_dispenseStyle == LaunchData::SERPENTINE) // Choose the slot number, in a serpentine pattern.
 			{
+				int n = m_numDispensed/coinsPerSlot % (NUM_SLOTS*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
 				slotNum = (n < NUM_SLOTS) ?
 						   n :
 						   ((NUM_SLOTS*2)-1) - n;
 			}
-			else if (m_dispensePattern == SPUTTER)
+			else if (m_dispenseStyle == LaunchData::SPUTTER) // Choose the slot randomly
 				slotNum = rand() % 6;
 
 			// Dispense!
 			ShootCoinsFrom(slotNum, coinsPerSlot);
+			if (m_numDispensed > coinCost) printf("OVERSHOT: After Shooting in serpentine/sputter mode.\n");
 		}
 
 
 		// Stop dispensing if all of the coins have now been dispensed
-		if (m_numDispensed > coinCost) printf("Somehow dispensed too many.\n");
 		if (m_numDispensed >= coinCost) FinishDispensing();
 	}
 }
@@ -107,8 +119,12 @@ void Machine::dispense()
 		// Increase the cost of the next coin set by the increase constant.
 		coinCost *= COIN_INCREASE; 
 		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
-		m_dispenseType = RandomDispenseType();
-		m_dispensePattern = RandomDispensePattern();
+		
+		// Set the launch data
+		LaunchData::DataPacket launchData = LaunchData::GetDataPacket();
+		m_coinType = launchData.coinType;
+		m_dispensePattern = launchData.pattern;
+		m_dispenseStyle = launchData.style;
 	}
 }
 
@@ -124,54 +140,78 @@ void Machine::ForceDispense(int coinNum)
 
 void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 {
-	if (intervalCoins)
+	/*if (totalValue > (coinCost - m_numDispensed))
+		printf("Problem not within shootCoinsFrom()\n");*/
+	
+	int numBronze, numSilver, numGold; // Number of each kind of coin
+	numBronze = numSilver = numGold = 0; // Intialise counts
+	// Initialise Values
+
+	// When evenly divided, across all currently set coin types, this is the value that one of each would equal
+	int totalEnumCoinTypeValue;
+	if (m_coinType == LaunchData::BRONZE) totalEnumCoinTypeValue = CoinBronze::value;
+	if (m_coinType == LaunchData::BS)	  totalEnumCoinTypeValue = CoinBronze::value + CoinSilver::value;
+	if (m_coinType == LaunchData::SILVER) totalEnumCoinTypeValue = CoinSilver::value;
+	if (m_coinType == LaunchData::SG)	  totalEnumCoinTypeValue = CoinSilver::value + CoinGold::value;
+	if (m_coinType == LaunchData::GOLD)   totalEnumCoinTypeValue = CoinGold::value;
+			
+	// Total integer divisions of that value into the total value
+	int numSets = totalValue / totalEnumCoinTypeValue;
+
+	// Set the number of each type to be shot 
+	if (m_coinType == LaunchData::BRONZE) 
 	{
-		// Silver Coins (5) NOTE: For Gold coins, only dispense half the amount, leave some values for Silver coins
-		int setsOfTen = totalValue / 10;
-		for (int numGold = setsOfTen / 2; ((numGold > 0) && (m_numDispensed < coinCost)); numGold--)// (((totalValue / 10) >= 1) && (m_numDispensed < coinCost))
-		{
-			// Find this Coin's launch info
-			SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
-			// Create a new coin for that destination
-			CoinGold* coin = new CoinGold(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
-			// Add it to the collidables
-			g_game->addCollidable(coin);
-
-			m_numDispensed += 10;
-			totalValue -= 10;
-		}
-
-		// Silver Coins (5)
-		while (((totalValue / 5) >= 1) && (m_numDispensed < coinCost))
-		{
-
-			// Find this Coin's launch info
-			SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
-			// Create a new coin for that destination
-			CoinSilver* coin = new CoinSilver(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
-			// Add it to the collidables
-			g_game->addCollidable(coin);
-
-			m_numDispensed += 5;
-			totalValue -= 5;
-		}
+		numBronze = numSets;
+	}
+	if (m_coinType == LaunchData::BS)
+	{
+		numBronze = numSets;
+		numSilver = numSets;
+	}
+	if (m_coinType == LaunchData::SILVER)
+	{
+		numSilver = numSets;
+	}
+	if (m_coinType == LaunchData::SG)
+	{
+		numSilver = numSets;
+		numGold = numSets;
+	}
+	if (m_coinType == LaunchData::GOLD)
+	{
+		numGold = numSets;
 	}
 
-	// Bronze Coins (1)
-	while ((totalValue > 0) && (m_numDispensed < coinCost))
+	// Find the remainder value that was not evenly divided into the sets
+	int remainder = totalValue % totalEnumCoinTypeValue;
+	if (remainder > 0)
 	{
-		// Find this coin's launch info
-		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
-		// Create a new coin for that destination
-		Coin* coin = new CoinBronze(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
-		// Add it to the collidables
-		g_game->addCollidable(coin);
-
-		m_numDispensed++;
-		totalValue--;
+		int& fillerCoinCount = (remainder%10 == 0) ? numGold : (remainder%5 == 0) ? numSilver : numBronze;
+		int  fillerCoinValue = (remainder%10 == 0) ? CoinGold::value : (remainder%5 == 0) ? CoinSilver::value : CoinBronze::value;
+		fillerCoinCount += remainder / fillerCoinValue;
 	}
+
+	LaunchCoin<CoinBronze>(numBronze, slotNum);
+	LaunchCoin<CoinSilver>(numSilver, slotNum);
+	LaunchCoin<CoinGold>(numGold, slotNum);
 }
 
+template <class Coin_Type>
+void Machine::LaunchCoin(int count, int slotNum)
+{
+	// DEBUG: Loop does not check for transgressions against: (m_numDispensed < coinCost). At time of coding - not sure if necessary
+	for (count; count > 0 ; count--)
+	{
+		// Find this Coin's launch info
+		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+		// Create a new coin for that destination
+		Coin_Type* coin = new Coin_Type(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		// Add it to the collidables list
+		g_game->addCollidable(coin);
+
+		m_numDispensed += Coin_Type::value;
+	}
+}
 
 SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 {
@@ -180,12 +220,12 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 	bool valid;
 
 	// Find a landing position based on the type of dispensing
-	if (m_dispenseType == POINT)
+	if (m_dispensePattern == LaunchData::POINT)
 	{
 		coinX = (screen->w / 2) - (TILE_SIZE/2);
 		coinY = (screen->h / 2);
 	}
-	else if (m_dispenseType == CORNERS)
+	else if (m_dispensePattern == LaunchData::CORNERS)
 	{
 		coinX = (screen->w / 2);
 		coinY = (screen->h / 2) + (TILE_SIZE/2);
@@ -221,27 +261,27 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 		coinY -= (n==7) * (TILE_SIZE*3);
 
 	}
-	else if (m_dispenseType == LINES_H)
+	else if (m_dispensePattern == LaunchData::LINES_H)
 	{
 		coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
 		coinY = (rand() % 5) * (2 * TILE_SIZE) + (4 * TILE_SIZE);
 	}
-	else if (m_dispenseType == LINES_V)
+	else if (m_dispensePattern == LaunchData::LINES_V)
 	{
 		coinX = (rand() % 9) * (2 * TILE_SIZE) + (2 * TILE_SIZE);
 		coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE; 
 	}
-	else if ((m_dispenseType == LEFT) || (m_dispenseType == RIGHT) || (m_dispenseType == BOTH))
+	else if ((m_dispensePattern == LaunchData::LEFT) || (m_dispensePattern == LaunchData::RIGHT) || (m_dispensePattern == LaunchData::BOTH))
 	{
 		XY coords;
 
-		if (m_dispenseType == LEFT) coords = getLeftCircleCoords();
-		else if (m_dispenseType == RIGHT) coords = getRightCircleCoords();
-		else // (m_dispenseType == BOTH)
+		if (m_dispensePattern == LaunchData::LEFT) coords = GetLeftCircleCoords();
+		else if (m_dispensePattern == LaunchData::RIGHT) coords = GetRightCircleCoords();
+		else // (m_dispensePattern == LaunchData::BOTH)
 		{
 			// Get either of the circle's coordinates
 			bool b = rand() % 2;
-			coords = b? getLeftCircleCoords() : getRightCircleCoords();
+			coords = b? GetLeftCircleCoords() : GetRightCircleCoords();
 		}
 
 		coinX = coords.x;
@@ -261,7 +301,7 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 	return r_rect;
 }
 
-Machine::XY Machine::getLeftCircleCoords(bool addRightCoords)
+Machine::XY Machine::GetLeftCircleCoords(bool addRightCoords)
 {
 	XY r_coords;
 
@@ -293,39 +333,9 @@ void Machine::FinishDispensing()
 	m_dispensing = false;
 	m_numDispensed = 0;
 	m_ticker = 0;
-	m_dispenseType = NORM;
 }
 
 bool Machine::canAfford()
 {
     return (Wallet::GetCoins() >= coinCost);
-}
-
-Machine::DispenseType Machine::RandomDispenseType(void)
-{
-	int n = rand() % 20;
-
-	// 10% chance for each non-normal dispense type
-	if (n == 0) return POINT;
-	if (n == 1) return CORNERS;
-	if (n == 2) return LINES_H;
-	if (n == 3) return LINES_V;
-	if (n == 4) return LEFT;
-	if (n == 5) return RIGHT;
-	if (n == 6) return BOTH;
-	else return NORM;
-}
-
-Machine::DispensePattern Machine::RandomDispensePattern(void)
-{
-	int n = rand() % 10;
-	
-	//return INSERT_TEST_VALUE;
-
-	// 10% chance for each non-normal dispense type
-	if (n <= 2)		 return BURST;		// %30 Chance
-	else if (n <= 5) return SERPENTINE; // %30 Chance
-	else if (n <= 8) return SPUTTER;	// %30 Chance
-	else			 return DUMP;		// %10 Chance
-	
 }

@@ -18,9 +18,9 @@ public:
 	~Throwable(void);
 
 	virtual void update(int delta);
-	void LaunchTo(int _x, int _y, int angleSuppression = 0);
 	virtual void OnCollect(void) = 0; // A throwable's effect when collected
 	void SetHoming(int distance, int speed) { m_homingDistance = distance; m_homingSpeed = speed; }
+	void LaunchTo(int _x, int _y, int angleSuppression = 0);
 
 	static list<Throwable*> ThrowablesAround(int x, int y, int radius);
 	static list<Throwable*> ThrowablesAroundPlayer(int radius);

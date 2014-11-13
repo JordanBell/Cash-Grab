@@ -9,6 +9,7 @@ public:
 
 	void OnCollect(void) override final;
 
+	static int value;
 public:
 
 protected:

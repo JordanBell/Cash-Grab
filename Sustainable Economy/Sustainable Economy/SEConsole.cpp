@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Game.h"
 #include "Wallet.h"
+#include "LaunchData.h"
 
 // HAX
 
@@ -18,6 +19,20 @@ void Pull(vector<int> args)
 		}
 	}
 }
+
+/* Temporary calculation function for printing arbitrary calculations used in debugging. 
+Override the contents of this function for your own calculations when appropriate. */
+void Calc(vector<int> args)
+{
+	// Prints calculated activation levels
+	LaunchData::ComputeActivationLevels(true);
+}
+
+
+
+/* Enables Abilty: Pull. Press 1 to use. */
+void TogglePull(vector<int> args)
+	{ KeyCode::ToggleBool1(); }
 
 /* Launch all coins at the player */
 void HomeIn(vector<int> args)
@@ -80,6 +95,27 @@ void DoubleCoins(vector<int> args)
 void Dispense(vector<int> args)
 	{ g_machine->ForceDispense(args.front()); }
 
+/* Force Launch Tier */
+void ForceTier(vector<int> args)
+	{ LaunchData::ForceTier(args.front()); }
+
+/* Print Information about the Tier's Launch Info */
+void PrintLaunchInfo(vector<int> args)
+	{ LaunchData::PrintLaunchInfo(); }
+
+
+/* Jordan's debug preset */
+void j(vector<int> args)
+{
+	TogglePull(args);
+	ToggleMagnetism(args);
+
+	// Toggle Mute
+	if (g_game->IsMuted()) 
+		Unmute(args);
+	else
+		Mute(args);
+}
 
 
 
@@ -91,6 +127,13 @@ SEConsole::SEConsole(void)
 		"Pulling all coins toward the player.", 
 		"Launches all coins to the player.", 
 		Pull)
+	);
+	
+	commands.push_back( 
+		Command("toggle_pull", 
+		"Pull toggled. When enabled, press 1 to pull all coins toward the player.", 
+		"Toggles the pull ability. Activate by pressing hotkey: 1", 
+		TogglePull)
 	);
 
 	commands.push_back( 
@@ -161,5 +204,33 @@ SEConsole::SEConsole(void)
 		"Homing in on player.", 
 		"Sets all collectables' homing property to true.",
 		HomeIn)
+	);
+
+	commands.push_back( 
+		Command("force_tier", 
+		"Setting launch tier to manual value. WARNING: Collecting a coin will reset it.", 
+		"Overrides the launch tier, which determines the possible launch patterns and styles unlocked. Also affects the type of coins launched.",
+		ForceTier)
+	);
+
+	commands.push_back( 
+		Command("print_launch_info", 
+		"", 
+		"Prints the kind of launch info available at the currently set tier.",
+		PrintLaunchInfo)
+	);
+
+	commands.push_back( 
+		Command("calc", 
+		"Calculating: ", 
+		"Performs a calculation. May change depending on the developer's choice of debug calculation.",
+		Calc)
+	);
+
+	commands.push_back( 
+		Command("j", 
+		"Yes sir.", 
+		"Jordan's preset of debug calls. Changes upon his mood. Originally [mag], [toggle_pull] and [mute].",
+		j)
 	);
 }
