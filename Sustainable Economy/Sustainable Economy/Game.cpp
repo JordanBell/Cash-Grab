@@ -18,7 +18,7 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 	srand((unsigned int)time(nullptr));
 
 	// Initialise all ENTITIES
-	player = new Player((9*TILE_SIZE)-1, (8*TILE_SIZE)-3);
+	player = new Player((9*TILE_SIZE), (8*TILE_SIZE));
     g_player = player;
 	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
 	g_machine = machine;
