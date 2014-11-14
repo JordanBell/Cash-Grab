@@ -16,7 +16,7 @@ Machine::Machine(int x, int y)
     
     m_IsMoveable = false;
     m_HitBox->w = TILE_SIZE * 6;
-    m_HitBox->h = TILE_SIZE * 3;
+    m_HitBox->h = TILE_SIZE * 2;
 
     dispenser_pos = std::pair<int, int>(x, y + (2 * TILE_SIZE));
     
@@ -266,7 +266,7 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 	else if (m_dispensePattern == LaunchData::LINES_V)
 	{
 		coinX = (rand() % 9) * (2 * TILE_SIZE) + (2 * TILE_SIZE);
-		coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE; 
+		coinY = rand() % (screen->h - 7*TILE_SIZE) + 4*TILE_SIZE; 
 	}
 	else if ((m_dispensePattern == LaunchData::LEFT) || (m_dispensePattern == LaunchData::RIGHT) || (m_dispensePattern == LaunchData::BOTH))
 	{
@@ -289,7 +289,7 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 		do
 		{
 			coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
-			coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE; 
+			coinY = rand() % (screen->h - 7*TILE_SIZE) + 4*TILE_SIZE; 
 			valid = ValidLandingPosition(coinX, coinY);
 		} while (!valid);
 	}

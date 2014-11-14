@@ -23,8 +23,8 @@ UI::UI()
 	int machineX = (7*TILE_SIZE); // I'm so sorry
 	int machineY = (TILE_SIZE); // It's hard coded, pls forgive
 
-    totalX = machineX + TILE_SIZE;
-    totalY = TILE_SIZE/2;
+    totalX = machineX + TILE_SIZE + 16;
+    totalY = TILE_SIZE/4;
 
 	collectedX = requiredX = machineX + (TILE_SIZE * 3) - 3;
 	collectedY = machineY + 13;

@@ -14,14 +14,17 @@ public:
 	void render();
 
 private:
-	static int const square_size = 32;
-	
-	SDL_Rect* sprites[ 8 ][ 5 ]; //All of the clip positions
+	SDL_Rect* sprites[4][3]; //All of the clip positions
 	// Sprite identifiers for certain objects' clips.
-	SDL_Rect* floor;
-	SDL_Rect* floorBrown;
-	SDL_Rect* wall;
-	SDL_Rect* shiny_block;
+	SDL_Rect* rect_floor;
+	SDL_Rect* rect_floorBrown;
+	SDL_Rect* rect_wall;
+	SDL_Rect* rect_wallDoor;
+	SDL_Rect* rect_wallTop;
+	SDL_Rect* rect_clock1;
+	SDL_Rect* rect_clock2;
+	SDL_Rect* rect_paper1;
+	SDL_Rect* rect_paper2;
 
 	//SDL_Surface* entire_image; //The culmination of the total image made by the code in the constructor.
 

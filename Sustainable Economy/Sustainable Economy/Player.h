@@ -6,7 +6,6 @@
 #define SPEED 0.3 // The movement speed (independent of framerate)
 #define WALK_SPEED 10 // The number of frames between cycle changes
 #define WALK_CYCLE_LENGTH 4
-#define PLAYER_WIDTH 16 // Width of 16px on screen
 #define STILL 1
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
