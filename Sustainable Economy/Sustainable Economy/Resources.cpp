@@ -29,9 +29,11 @@ Resources::Resources(void)
     
 //    Mix_VolumeMusic(40);
     
-    for (int i = 0; i < NUM_COIN_SOUNDS; i++) {
-        Mix_VolumeChunk(m_CoinSounds[i], 10);
-    }
+//    for (int i = 0; i < NUM_COIN_SOUNDS; i++) {
+//        Mix_VolumeChunk(m_CoinSounds[i], 10);
+//    }
+    Mix_Volume(-1, 10);
+    
     
 	// Check for failures.
 	if ((!m_PlayerSheet)	||

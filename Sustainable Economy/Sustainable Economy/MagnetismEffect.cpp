@@ -7,6 +7,7 @@
 //
 
 #include "MagnetismEffect.h"
+#include "Player.h"
 
 void MagnetismEffect::OnStart()
 {

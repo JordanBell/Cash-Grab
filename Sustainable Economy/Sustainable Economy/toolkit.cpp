@@ -47,6 +47,22 @@ bool SDL_init()
     if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
         return false;
     
+    Mix_AllocateChannels(50);
+    
+    for (int i = 0; i < 50; ++i) {
+        int offset = 50 - i * 2;
+        int left = 127 + offset;
+        
+        if (i % 2 == 0) {
+            left = 127 - offset;
+        }
+        
+//        printf("Panning for channel %d: left = %d, right = %d\n", i, left, 254-left);
+        if (!Mix_SetPanning(i, left, 254-left)) {
+            printf("Couldn't set panning for channel %d: %s\n", i, Mix_GetError());
+        }
+    }
+    
 	return load_files();
 }
 

@@ -10,7 +10,7 @@ void KeyCode::_1(void)
 	{
 		// Pull (code originally taken from SEConsole)
 		//int suppression = 0; // Change this based on what we feel is most effective
-		int suppression = 2;
+		int suppression = 0;
 
 		for (Throwable* t : g_throwables)
 		{

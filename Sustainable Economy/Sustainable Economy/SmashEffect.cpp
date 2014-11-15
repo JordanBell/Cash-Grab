@@ -7,6 +7,7 @@
 //
 
 #include "SmashEffect.h"
+#include "Player.h"
 
 SmashEffect::SmashEffect(int smashRadius) : m_SmashRadius(smashRadius)
 {   }

@@ -11,10 +11,8 @@ void CoinSilver::OnCollect(void)
 	// Play the basic coin sound
     if (!g_game->IsMuted())
         Mix_PlayChannel(-1, g_resources->GetCoinSound_Silver(), 0);
-	Wallet::IncCoinsBy(value);
     
-    // For testing
-//    g_game->AddEffect(new SmashEffect(100));
+	Wallet::IncCoinsBy(value);
 }
 
 void CoinSilver::InitSheet(void)
