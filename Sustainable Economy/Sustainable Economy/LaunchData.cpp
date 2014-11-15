@@ -1,40 +1,7 @@
 #include "LaunchData.h"
 #include "Wallet.h"
-//int activationLevels[] = {0, 
-//						  250, 
-//						  500,
-//						  2000,
-//						  5000,
-//						  10000,
-//						  20000,
-//						  30000,
-//						  50000,
-//						  100000};
 
-// Activation Levels for a round increase value of 75%
-//int activationLevels[] = {73, 
-//						  222, 
-//						  679,
-//						  2079,
-//						  3638,
-//						  11140,
-//						  34116,
-//						  104480,
-//						  559947};
-
-// Activation Levels for a round increase value of 50%
-//int activationLevels[] = {73, 
-//						  222, 
-//						  679,
-//						  2079,
-//						  3638,
-//						  11140,
-//						  34116,
-//						  104480,
-//						  559947};
-//
-//int* activationLevels = LaunchData::ComputeActivationLevels();
-//const vector<int> LaunchData::tierActivationLevels(activationLevels, activationLevels + sizeof(activationLevels) / sizeof(int) );
+#include <random>
 
 const vector<int> LaunchData::tierActivationLevels = LaunchData::ComputeActivationLevels();
 
