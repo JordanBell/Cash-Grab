@@ -20,7 +20,9 @@ public:
 	virtual void update(int delta);
 	virtual void OnCollect(void) = 0; // A throwable's effect when collected
 	void SetHoming(int distance, int speed) { m_homingDistance = distance; m_homingSpeed = speed; }
+	void SetBouncy(bool bouncy) { m_isBouncy = bouncy; }
 	void LaunchTo(int _x, int _y, int angleSuppression = 0);
+	void BounceUp(void);
 
 	static list<Throwable*> ThrowablesAround(int x, int y, int radius);
 	static list<Throwable*> ThrowablesAroundPlayer(int radius);
@@ -29,7 +31,7 @@ protected:
 	int LOOP_SPEED;
 
 private:
-	void InitKin(int angleSuppression = 0);
+	void InitKin(int angleSuppression = 0, int speedOverride = -1);
 
 	// Values used in the calculation of variable gravity, used to create an Ease effect
 	const struct Gravity { 
@@ -51,12 +53,15 @@ private:
 					gravityConstant(4 * (rangeRatio * mid) * mid) {}
 	} gravityStruct;
 
+	// Effects
+	int m_homingDistance; // The distance at which the throwable will stop homing
+	int m_homingSpeed; // The pixels by which the throwable homes in each frame
+	bool m_isBouncy;
+
 	//Kinematics
 	struct XY { float x, y; };
 	XY start, end, planar, velocity, angleInducedVelocity;
 	float initial_vertical;
-	int m_homingDistance; // The distance at which the throwable will stop homing
-	int m_homingSpeed; // The pixels by which the throwable homes in each frame
 
 	float angle;	//The trajectory angle, from the ground horizontal
 	float alpha;	//The angle between start and end position

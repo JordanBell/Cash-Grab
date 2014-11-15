@@ -21,6 +21,7 @@ public:
 
 	virtual void update(int delta) = 0;
 	virtual void render();
+	SDL_Rect GetCenter();
 
 protected:
 	int delay; //The Delay before cycling through each sprite. Make smaller to speed up the animation

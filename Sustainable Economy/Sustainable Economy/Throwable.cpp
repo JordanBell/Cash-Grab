@@ -14,7 +14,7 @@
 list<Throwable*> g_throwables;
 
 Throwable::Throwable(int start_x, int start_y, int end_x, int end_y) 
-	: Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1), m_homingDistance(0), m_homingSpeed(0)
+	: Collidable(start_x, start_y), moving(true), speed(16), height(0), LOOP_SPEED(1), m_homingDistance(0), m_homingSpeed(0), m_isBouncy(false)
 {
 	g_throwables.push_back(this);
 
@@ -50,7 +50,25 @@ void Throwable::LaunchTo(int _x, int _y, int angleSuppression)
 	InitKin(angleSuppression);
 }
 
-void Throwable::InitKin(int angleSuppression)
+void Throwable::BounceUp(void)
+{
+	/// Repeat code from LaunchTo
+    cycle /= LOOP_SPEED;
+	LOOP_SPEED = 1;
+	max_cycles = 8 * LOOP_SPEED;
+
+	moving = true;
+	// Launch the coin towards the end coordinates
+	start.x = x;
+	start.y = y;
+	end.x = x;
+	end.y = y;
+	
+	//Initialise the kinematics fields
+	InitKin(-1, (rand()%15) + 5);
+}
+
+void Throwable::InitKin(int angleSuppression, int speedOverride)
 {
 	/* Compute Planar Velocities (horizontal & vertical) */
 
@@ -59,7 +77,9 @@ void Throwable::InitKin(int angleSuppression)
 	else
 	{
 		// Get a reasonably random angle
-		if (angleSuppression <= 0)
+		if (angleSuppression <= -1)
+			angle = 90; // Straight Up
+		if (angleSuppression == 0)
 			angle = (rand() % 14) + 75;
 		else if (angleSuppression == 1)
 			angle = (rand() % 10) + 70;
@@ -76,7 +96,10 @@ void Throwable::InitKin(int angleSuppression)
 		angle *= (2 * M_PI) / 360;
 
 		// Get the planar x and y velocities (planar being the movement in a 3D space, where y is vertical and x is horizontal
-		speed = ComputeSpeedForDistance();
+		if (speedOverride <= -1)
+			speed = ComputeSpeedForDistance();
+		else
+			speed = speedOverride;
 	}
 
 	planar.x = speed * cos(angle);
@@ -193,12 +216,15 @@ list<Throwable*> Throwable::ThrowablesAroundPlayer(int radius)
 void Throwable::update(int delta)
 {
 	if (moving) move();
+	else if (m_isBouncy) BounceUp();
     else if (m_homingDistance > 0)
     {
 		// Home in on player
+		SDL_Rect playerCenter = g_player->GetCenter();
+		SDL_Rect thisCenter = this->GetCenter();
 		XY dif;
-		dif.x = (g_player->x - x);
-		dif.y = (g_player->y - y);
+		dif.x = (playerCenter.x - thisCenter.x);
+		dif.y = (playerCenter.y - thisCenter.y);
 
 		float angle = atan(dif.y / dif.x);
 

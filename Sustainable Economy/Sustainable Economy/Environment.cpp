@@ -31,6 +31,7 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	rect_floor = sprites[2][0];
 	rect_wallTop = sprites[3][0];
 	rect_wallDoor = sprites[0][1];
+	rect_wallBottom = sprites[1][1];
 	rect_clock1 = sprites[0][2];
 	rect_clock2 = sprites[1][2];
 	rect_paper1 = sprites[2][2];
@@ -92,6 +93,7 @@ Environment::~Environment()
     
     delete rect_floor;
     delete rect_wall;
+    delete rect_wallBottom;
 	delete rect_wallDoor;
     delete rect_wallTop;
 	delete rect_floorBrown;
@@ -174,7 +176,7 @@ void Environment::render()
 
 		// Sometimes the bottom of a wall, sometimes a door
 		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*15))
-			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wall); // Bottom Wall
+			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wallBottom); // Bottom Wall
 		else
 		{
 			apply_surface(_x, 0*TILE_SIZE, sprite_sheet, screen, rect_wallTop); // Top WallTop

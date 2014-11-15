@@ -19,6 +19,7 @@ private:
 	SDL_Rect* rect_floor;
 	SDL_Rect* rect_floorBrown;
 	SDL_Rect* rect_wall;
+	SDL_Rect* rect_wallBottom;
 	SDL_Rect* rect_wallDoor;
 	SDL_Rect* rect_wallTop;
 	SDL_Rect* rect_clock1;

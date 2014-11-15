@@ -9,8 +9,7 @@
 #define STILL 1
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
-#define INITIAL_MAGNETISM_ENABLED false
-
+#define INITIAL_MAGNETISM_ENABLED true
 
 class Player : public Collidable {
 public:
@@ -46,6 +45,8 @@ protected:
 
 private:
 	bool m_magnetic;
+	bool m_evasion1;
+	bool m_evasion2;
 	int direction; //The direction being faced by the player
 	int smashCount;
 	bool moving;
