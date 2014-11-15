@@ -4,13 +4,15 @@
 
 Player *g_player = nullptr;
 
-#define MAGNETISM_DISTANCE 50
+#define MAGNETISM_DISTANCE 30
+#define MAGNETISM_SPEED 5
 
 //Initialise the size and position of each sprite clip
-Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_magnetic(INITIAL_MAGNETISM_ENABLED)
+Player::Player(int x, int y) 
+	: Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), 
+	m_magnetic(INITIAL_MAGNETISM_ENABLED), m_evasion1(false), m_evasion2(false)
 {
     sprite_sheet = g_resources->GetPlayerSheet();
-    m_HitBox->w = m_AABB->w = PLAYER_WIDTH;
     
     delay = 200;
     max_cycles = WALK_CYCLE_LENGTH * WALK_SPEED;
@@ -18,7 +20,8 @@ Player::Player(int x, int y) : Collidable(x, y), direction(DOWN), moving(false),
     //Initialise the clips of the sprite_sheet
     int clip_w = (sprite_sheet->w / WALK_CYCLE_LENGTH);
     int clip_h = (sprite_sheet->h / 4);
-    
+    m_HitBox->w = m_AABB->w = clip_w;
+
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < WALK_CYCLE_LENGTH; j++)
@@ -141,32 +144,41 @@ void Player::update(int delta)
 {
     IncCycle();
 	SmashUpdate();
-
-	if (m_magnetic) // Only if magnetism is enabled
+	
+	/// Could this next block be moved to their corresponding Effect classes?
+	if (m_evasion1)
 	{
+		// Evasion Effect 1 -- Bounce around the player
 		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
-		// Magnetism Effect (Coming Soon)
+
 		for (Coin* c : closeCoins)
-			c->SetHoming(MAGNETISM_DISTANCE, 5);
+			c->LaunchTo(x + (rand()%50 - 25), y + (rand()%50 - 25), 0);
+	}
+	else if (m_evasion2)
+	{
+		// Evasion Effect 2 -- Bounce around the map
+		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
 
-		// Evasion Effect 1
-		/*for (Coin* c : closeCoins)
-			c->LaunchTo(x + (rand()%50 - 25), y + (rand()%50 - 25), 0);*/
-
-		// Evasion Effect 2
-		/*for (Coin* c : closeCoins) 
+		for (Coin* c : closeCoins) 
 		{
 			int coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
-			int coinY = rand() % (screen->h - 6*TILE_SIZE) + 4*TILE_SIZE;
+			int coinY = rand() % (screen->h - 7*TILE_SIZE) + 4*TILE_SIZE;
 			c->LaunchTo(coinX, coinY, 2);
-		}*/
+		}
+	}
+	else if (m_magnetic) // Only if magnetism is enabled
+	{
+		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
+		// Magnetise the coins
+		for (Coin* c : closeCoins)
+			c->SetHoming(MAGNETISM_DISTANCE, MAGNETISM_SPEED);
 	}
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;
     m_AABB->y = y;
-    m_AABB->w = 32;
-    m_AABB->h = TILE_SIZE;
+    m_AABB->w = sprites[0][0]->w;
+    m_AABB->h = sprites[0][0]->h;
     
     if (moving) {
         int pixelsToMove = SPEED * delta;//1000 / 60;
@@ -214,11 +226,11 @@ void Player::render()
     // For debugging!
     
     // Draw the AABB, then the player
-//    SDL_Surface *test = g_resources->GetTestImage();
-//    
-//    SDL_Rect r = { 0, 0, m_AABB->w, m_AABB->h };
-//    SDL_Rect *rect = &r;
-//    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);
+    /*SDL_Surface *test = g_resources->GetTestImage();
+    
+    SDL_Rect r = { 0, 0, m_AABB->w, m_AABB->h };
+    SDL_Rect *rect = &r;
+    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);*/
     
     Entity::render();
 }

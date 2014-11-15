@@ -20,6 +20,22 @@ void Pull(vector<int> args)
 	}
 }
 
+/* Make all coins bounce in place */
+void BounceUp(vector<int> args)
+{
+	for (Throwable* t : g_throwables)
+		if (!t->moving)
+			t->BounceUp();
+}
+
+/* Make all coins bounce in place */
+void SetBouncy(vector<int> args)
+{
+	for (Throwable* t : g_throwables)
+		if (!t->moving)
+			t->SetBouncy(args.front());
+}
+
 /* Temporary calculation function for printing arbitrary calculations used in debugging. 
 Override the contents of this function for your own calculations when appropriate. */
 void Calc(vector<int> args)
@@ -127,6 +143,20 @@ SEConsole::SEConsole(void)
 		"Pulling all coins toward the player.", 
 		"Launches all coins to the player.", 
 		Pull)
+	);
+
+	commands.push_back( 
+		Command("bounce", 
+		"Bouncing.", 
+		"Bounces all throwables up into the air.", 
+		BounceUp)
+	);
+
+	commands.push_back( 
+		Command("set_bounce", 
+		"Bouncing set.", 
+		"Pass an int boolean to set the bounciness of all throwables.", 
+		SetBouncy)
 	);
 	
 	commands.push_back( 

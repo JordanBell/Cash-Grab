@@ -13,6 +13,7 @@
 
 extern SDL_Surface* screen;
 extern SDL_Color textColor;
+extern SDL_Color machineTextColor;
 extern SDL_Event event;
 
 // Functions

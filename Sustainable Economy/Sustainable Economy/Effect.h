@@ -13,15 +13,37 @@
 #ifndef __SustainableEconomy__Effect__
 #define __SustainableEconomy__Effect__
 
-#include "Player.h"
-
 class Effect {
 protected:
     /* Duration of this effect, in ms */
     int m_Duration;
     /* Time elapsed while running: to know when to stop effect */
     int m_ElapsedTime;
-    
+
+	
+	/* Static, Passive Effect Booleans */
+	// Positive Effects
+	static bool s_magnetismLong;
+	static bool s_magnetismShort;
+	static bool s_frameRateIncrease;
+
+	// Negative Effects
+	static bool s_icyFloor;
+	static bool s_reversedDirections;
+	static bool s_evasive1;
+	static bool s_evasive2;
+	static bool s_bouncyCoins;
+
+	// Neutral Effects
+	static bool s_musicChange;
+	static bool s_coinSFXChange;
+	static bool s_coinColorsChange;
+
+	/*
+
+	Note: These can be publicly read, but only overwritten in subclass implmentations
+
+	*/
 public:
     bool m_IsDone;
     
@@ -56,6 +78,22 @@ public:
      */
     virtual void OnEnd() = 0;
     
+	// Get Positive Effect Bool
+	static bool GetMagnetismLong(void) { return s_magnetismLong; }
+	static bool GetMagnetismShort(void) { return s_magnetismShort; }
+	static bool GetFrameRateIncrease(void) { return s_frameRateIncrease; }
+
+	// Get Negative Effects Bool
+	static bool GetIcyFloor(void) { return s_icyFloor; }
+	static bool GetReversedDirections(void) { return s_reversedDirections; }
+	static bool GetEvasive1(void) { return s_evasive1; }
+	static bool GetEvasive2(void) { return s_evasive2; }
+	static bool GetBouncyCoins(void) { return s_bouncyCoins; }
+
+	// Get Neutral Effects Bool
+	static bool GetMusicChange(void) { return s_musicChange; }
+	static bool GetCoinSFXChange(void) { return s_coinSFXChange; }
+	static bool GetCoinColorsChange(void) { return s_coinColorsChange; }
 };
 
 #endif /* defined(__SustainableEconomy__Effect__) */

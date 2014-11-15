@@ -59,6 +59,6 @@ std::list<Coin*> Coin::CoinsAroundPlayer(int radius)
 void Coin::update(int delta)
 {
     Throwable::update(delta);
-
-    IncCycle();
+    
+	IncCycle();
 }

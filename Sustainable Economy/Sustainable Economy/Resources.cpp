@@ -19,7 +19,7 @@ Resources::Resources(void)
 	m_MoneyMachineSheet =	load_image("moneyMachine.png");
 	m_Prompt =				load_image("Press Enter.png");
     m_Square =              load_image("Square.png");
-	m_Font =				TTF_OpenFont("joystix monospace.ttf", 28); //Custom font import; size 28
+	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size 28
     
     m_Music = Mix_LoadMUS("Main2.wav");
     
