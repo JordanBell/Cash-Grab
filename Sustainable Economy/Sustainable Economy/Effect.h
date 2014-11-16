@@ -23,6 +23,8 @@ protected:
 	
 	/* Static, Passive Effect Booleans */
 	// Positive Effects
+	// Pull
+	// Smash
 	static bool s_magnetismLong;
 	static bool s_magnetismShort;
 	static bool s_frameRateIncrease;
