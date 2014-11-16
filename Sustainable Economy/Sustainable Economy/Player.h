@@ -9,7 +9,6 @@
 #define STILL 1
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
-#define INITIAL_MAGNETISM_ENABLED true
 
 class Player : public Collidable {
 public:
@@ -36,15 +35,12 @@ public:
     void DoMove();
 	void Smash(int radius);
 	void SmashWave() { smashCount = 0; }
-	bool IsMagnetic(void) { return m_magnetic; }
-	void SetMagnetic(bool mag) { m_magnetic = mag; }
 
 protected:
 	void IncCycle(void);
     void SnapToGrid(void);
 
 private:
-	bool m_magnetic;
 	bool m_evasion1;
 	bool m_evasion2;
 	int direction; //The direction being faced by the player

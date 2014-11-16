@@ -55,7 +55,7 @@ private:
 
 	// Effects
 	int m_homingDistance; // The distance at which the throwable will stop homing
-	int m_homingSpeed; // The pixels by which the throwable homes in each frame
+	float m_homingSpeed; // The pixels by which the throwable homes in each frame
 	bool m_isBouncy;
 
 	//Kinematics

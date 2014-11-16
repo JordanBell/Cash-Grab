@@ -17,6 +17,7 @@ Resources::Resources(void)
 	m_CoinSheet =			load_image("coinSheet.png");
 	m_EnvironmentImage =	load_image("environment.png");
 	m_MoneyMachineSheet =	load_image("moneyMachine.png");
+    m_PowerupSheet =        load_image("powerupSheet.png");
 	m_Prompt =				load_image("Press Enter.png");
     m_Square =              load_image("Square.png");
 	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size 28
@@ -27,22 +28,18 @@ Resources::Resources(void)
     m_CoinSounds[1] = Mix_LoadWAV("Coin2.wav");
     m_CoinSounds[2] = Mix_LoadWAV("Coin3.wav");
     
-//    Mix_VolumeMusic(40);
-    
-//    for (int i = 0; i < NUM_COIN_SOUNDS; i++) {
-//        Mix_VolumeChunk(m_CoinSounds[i], 10);
-//    }
     Mix_Volume(-1, 10);
     
     
 	// Check for failures.
-	if ((!m_PlayerSheet)	||
-		(!m_CoinSheet)	||
+	if ((!m_PlayerSheet)        ||
+		(!m_CoinSheet)          ||
 		(!m_EnvironmentImage)	||
 		(!m_MoneyMachineSheet)	||
-		(!m_Prompt)	||
-		(!m_Font)  ||
-        (!m_Square) ||
+        (!m_PowerupSheet)       ||
+		(!m_Prompt)             ||
+		(!m_Font)               ||
+        (!m_Square)             ||
         (!m_Music))
 		{
 			throw std::runtime_error("Some of the resources failed to initialise");

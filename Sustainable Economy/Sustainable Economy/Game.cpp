@@ -7,6 +7,7 @@
 #include <time.h>
 #include <sstream>
 #include "Wallet.h"
+#include "EffectMagnetism.h"
 
 using namespace std;
 
@@ -25,6 +26,8 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 	prompt = new Prompt(machine);
     
     m_EffectManager = new EffectManager();
+    // Add persisting magnetism effect (should only be one of this throughout the duration of the game)
+    AddEffect(new EffectMagnetism(nullptr));
     
 	m_CollisionManager = new CollisionManager(this);
 	

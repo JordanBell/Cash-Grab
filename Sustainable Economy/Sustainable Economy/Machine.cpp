@@ -1,6 +1,7 @@
 #include "Machine.h"
 #include "Resources.h"
 #include "Wallet.h"
+#include "PowerupMagnetism.h"
 
 Machine* g_machine = nullptr;
 
@@ -188,7 +189,12 @@ void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 		fillerCoinCount += remainder / fillerCoinValue;
 	}
 
-	LaunchCoin<CoinBronze>(numBronze, slotNum);
+    // For testing dispensing powerups
+//    if (rand() % 5 == 0)
+//        LaunchCoin<PowerupMagnetism>(numBronze, slotNum);
+//    else
+        LaunchCoin<CoinBronze>(numBronze, slotNum);
+    
 	LaunchCoin<CoinSilver>(numSilver, slotNum);
 	LaunchCoin<CoinGold>(numGold, slotNum);
 }

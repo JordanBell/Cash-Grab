@@ -2,6 +2,7 @@
 #include "Resources.h"
 #include "Game.h"
 #include "Wallet.h"
+
 Prompt::Prompt(Machine* _machine) : Entity((SCREEN_WIDTH - 472) / 2, 5*TILE_SIZE), visible(false), timeSinceFlash(0), machine(_machine)
 {
 	sprite_sheet = g_resources->GetPromptImage();

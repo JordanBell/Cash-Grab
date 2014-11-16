@@ -1,23 +1,23 @@
 //
-//  SmashEffect.cpp
+//  EffectSmash.cpp
 //  SustainableEconomy
 //
 //  Created by Tristan Bell on 08/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#include "SmashEffect.h"
+#include "EffectSmash.h"
 #include "Player.h"
 
-SmashEffect::SmashEffect(int smashRadius) : m_SmashRadius(smashRadius)
+EffectSmash::EffectSmash(Entity* parent, int smashRadius) : Effect(parent), m_SmashRadius(smashRadius)
 {   }
 
-void SmashEffect::OnStart()
+void EffectSmash::OnStart()
 {
     g_player->Smash(m_SmashRadius);
 }
 
-void SmashEffect::OnEnd()
+void EffectSmash::OnEnd()
 {
     // Left blank; nothing to be done
 }

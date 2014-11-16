@@ -76,7 +76,8 @@ void SmashWave(vector<int> args)
 
 /* Toggles coin magnetism */
 void ToggleMagnetism(vector<int> args)
-	{ g_player->SetMagnetic( !g_player->IsMagnetic() ); }
+	{ //g_player->SetMagnetic( !g_player->IsMagnetic() );
+    }
 
 
 

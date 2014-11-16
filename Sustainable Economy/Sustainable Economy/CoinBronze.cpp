@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 #include "Wallet.h"
-#include "MagnetismEffect.h"
+#include "EffectMagnetism.h"
 
 int CoinBronze::value = 1;
 

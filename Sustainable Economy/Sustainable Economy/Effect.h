@@ -13,8 +13,19 @@
 #ifndef __SustainableEconomy__Effect__
 #define __SustainableEconomy__Effect__
 
+#include "Entity.h"
+
+#define MAGNETISM_DISTANCE_DEFAULT 30
+#define MAGNETISM_DISTANCE_SHORT 50
+#define MAGNETISM_DISTANCE_LONG 100
+#define MAGNETISM_SPEED_DEFAULT 5
+#define MAGNETISM_SPEED_LONG 1
+
 class Effect {
 protected:
+    /* Powerup that owns this effect */
+    Entity* m_Parent;
+    
     /* Duration of this effect, in ms */
     int m_Duration;
     /* Time elapsed while running: to know when to stop effect */
@@ -49,7 +60,7 @@ protected:
 public:
     bool m_IsDone;
     
-	Effect() : m_Duration(0), m_ElapsedTime(0), m_IsDone(false)  {}
+	Effect(Entity* parent) : m_Parent(parent), m_Duration(0), m_ElapsedTime(0), m_IsDone(false)  {}
     virtual ~Effect() { }
     
     /**
@@ -67,7 +78,7 @@ public:
     {
         m_ElapsedTime += delta;
         
-        if (m_ElapsedTime >= m_Duration) {
+        if (m_Duration != -1 && m_ElapsedTime >= m_Duration) {
             m_ElapsedTime = 0;
             m_IsDone = true;
         }

@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 #include "Wallet.h"
-#include "SmashEffect.h"
+#include "EffectSmash.h"
 
 int CoinSilver::value = 5;
 
