@@ -38,6 +38,7 @@ void PowerupMagnetism::InitSheet(void)
         SDL_Rect* clip = new SDL_Rect();
         
         clip->x = TILE_SIZE * i;
+        clip->y = 4 * TILE_SIZE;
         clip->w = clip->h = TILE_SIZE;
         
         sprites[i] = clip;

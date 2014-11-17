@@ -213,13 +213,24 @@ void Player::SmashUpdate(void)
 void Player::render()
 {
     // For debugging!
-    
     // Draw the AABB, then the player
     /*SDL_Surface *test = g_resources->GetTestImage();
     
+    switch (this->direction) {
+        case UP:
+            m_AABB->y = y + m_yVel;
+            break;
+        case LEFT:
+            m_AABB->x = x + m_xVel;
+            break;
+        default:
+            break;
+    }
+    
     SDL_Rect r = { 0, 0, m_AABB->w, m_AABB->h };
     SDL_Rect *rect = &r;
-    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);*/
+    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);
+    printf("x diff: %f\n", x - m_AABB->x);*/
     
     Entity::render();
 }
