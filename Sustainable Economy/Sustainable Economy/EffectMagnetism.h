@@ -17,11 +17,11 @@ private:
     static int s_MagnetismSpeed;
     
     /* How long powerups last for */
-    const int k_PowerupTimeout = 5000;
+    const int k_PowerupTimeout;
     
 public:
     EffectMagnetism(Entity* parent) :
-    Effect(parent) {  }
+		Effect(parent), k_PowerupTimeout(5000) {  }
     
     void OnStart() override;
     void OnUpdate(int delta) override;
