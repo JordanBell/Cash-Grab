@@ -19,7 +19,7 @@ bool inFullScreen;
 void toggleScreenFormat()
 {
 	screen = inFullScreen ? 
-			 SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE) :
+		SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE) :
 			 SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN);
 	inFullScreen = !inFullScreen;
 }
