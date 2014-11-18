@@ -9,7 +9,7 @@
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
-#define SCREEN_BPP 16
+#define SCREEN_BPP 32
 
 extern SDL_Surface* screen;
 extern SDL_Color textColor;

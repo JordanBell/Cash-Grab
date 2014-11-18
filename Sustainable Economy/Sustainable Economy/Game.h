@@ -1,12 +1,18 @@
 #ifndef game_h
 #define game_h
 
+#define TILE_SIZE 32
+#define FRAME_RATE 60
+
+#define CONSOLE_COOLDOWN 10
+#define TRANSITION_SPEED 10
+
 #include <list>
 #include "KeyCode.h"
 #include "Entity.h"
 #include "Player.h"
 #include "Coin.h"
-#include "Environment.h"
+#include "EnvironmentUpper.h"
 #include "Prompt.h"
 #include "Timer.h"
 #include "SEConsole.h"
@@ -14,12 +20,6 @@
 #include <memory>
 
 using namespace std;
-
-#define TILE_SIZE 32
-#define FRAME_RATE 60
-
-#define CONSOLE_COOLDOWN 10
-#define TRANSITION_SPEED 10
 
 class CollisionManager;
 class Machine;

@@ -80,6 +80,7 @@ void Game::InitEnvironment(void)
 {
 	// Environment stuff has a few steps
 	g_environment = new Environment(0, 0);
+	g_environmentUpper = new EnvironmentUpper(0, 0);
 	environment = g_environment;
 	m_Entities.push_front(environment);
 
@@ -208,6 +209,10 @@ void Game::Render()
 	// Render all of the entities
 	for (Entity* e : m_Entities) { e->render(); }
     
+	// Render the upper environment layer
+	g_environmentUpper->render();
+
+	// Render the UI above everything
     g_UI->Render();
 
 	// Flip (update) the screen

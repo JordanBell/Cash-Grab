@@ -30,17 +30,25 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	rect_floorBrown = sprites[1][0];
 	rect_floor = sprites[2][0];
 	rect_wallTop = sprites[3][0];
-	rect_wallTopOpen = sprites[3][1];
-	rect_wallDoor = sprites[0][1];
-	rect_wallBottom = sprites[1][1];
+	rect_wallDoor_Left = sprites[0][1];
+	rect_wallDoor_Right = sprites[1][1];
+	rect_wallTopOpen_Left = sprites[2][1];
+	rect_wallTopOpen_Right = sprites[3][1];
+	rect_wallDoorShadow = sprites[1][3];
+	rect_wallBottom = sprites[0][3];
 	rect_clock1 = sprites[0][2];
 	rect_clock2 = sprites[1][2];
 	rect_paper1 = sprites[2][2];
 	rect_paper2 = sprites[3][2];
+
+	BuildWalls();
+}
 	
+void Environment::BuildWalls(void)
+{
 	//Build the walls
 	// Left and Right Walls (Bottom)
-	for (int _y = TILE_SIZE; _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
+	for (int _y = 0; _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
 	{
 		// Initialise Left and Right
         Wall* leftWall = new Wall(0, _y, sprite_sheet, rect_wallTop);
@@ -70,7 +78,7 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
 	{
 		// Don't put walls in the doorways
-		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*15))
+		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
 		{
 			// Initialise Top and Bottom
 			Wall* topWallTop = new Wall(_x, yVal, sprite_sheet, rect_wallTop);
@@ -102,18 +110,16 @@ Environment::Environment(int x, int y) : Entity(x, y)
 		g_game->addCollidable(topWall0, true);
 		g_game->addCollidable(topWall1, true);
 		
-		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*15))
+		/*if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
 		{
-			Wall* bottomWall = new Wall(_x, yVal + screen->h - TILE_SIZE, sprite_sheet, rect_wallTop);
+			Wall* bottomWall = new Wall(_x, yVal + screen->h - TILE_SIZE, sprite_sheet, rect_wall);
 			g_game->addCollidable(bottomWall, true);
-		}
+		}*/
 	}
 
 	// Top Room's item stations
 	BuildStationWalls(TILE_SIZE * 4, TILE_SIZE * 5 - screen->h);
 	BuildStationWalls(TILE_SIZE * 12, TILE_SIZE * 5 - screen->h);
-	/*BuildStation(TILE_SIZE * 4, TILE_SIZE * 5);
-	BuildStation(TILE_SIZE * 12, TILE_SIZE * 5);*/
 
 	// Left and Right Walls
 	for (int _y = (TILE_SIZE*4); _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
@@ -137,8 +143,11 @@ Environment::~Environment()
     delete rect_floor;
     delete rect_wall;
     delete rect_wallBottom;
-	delete rect_wallDoor;
+	delete rect_wallDoor_Left;
+	delete rect_wallDoor_Right;
     delete rect_wallTop;
+    delete rect_wallTopOpen_Left;
+    delete rect_wallTopOpen_Right;
 	delete rect_floorBrown;
 	delete rect_clock1;
 	delete rect_clock2;
@@ -150,11 +159,9 @@ void Environment::BuildStationWalls(const int _x, const int _y)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 1; j < 3; j++)
-		{
-			Wall* bottomWall = new Wall(i*TILE_SIZE + _x, j*TILE_SIZE + _y, sprite_sheet, sprites[i+4][j]);
-			g_game->addCollidable(bottomWall, true);
-		}
+		int j = 2;
+		Wall* bottomWall = new Wall(i*TILE_SIZE + _x, j*TILE_SIZE + _y, sprite_sheet, sprites[i+4][j]);
+		g_game->addCollidable(bottomWall, true);
 	}
 }
 
@@ -162,15 +169,12 @@ void Environment::BuildStationRest(const int _x, const int _y)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		int j = 0;
-		apply_surface(i*TILE_SIZE + _x, j*TILE_SIZE + _y, sprite_sheet, screen, sprites[i+4][j]);
-		j = 3;
-		apply_surface(i*TILE_SIZE + _x, j*TILE_SIZE + _y, sprite_sheet, screen, sprites[i+4][j]);
+		apply_surface(i*TILE_SIZE + _x, 3*TILE_SIZE + _y, sprite_sheet, screen, sprites[i+4][3]);
 	}
 }
 
 
-void Environment::render()
+void Environment::render(void) 
 {
 	//Build the floor
 	for (int i = 0; i < screen->w; i += TILE_SIZE)
@@ -286,33 +290,28 @@ void Environment::render()
 	// Station Sections that the player can walk through
 	BuildStationRest(TILE_SIZE * 4, roomOffset + TILE_SIZE * 5);
 	BuildStationRest(TILE_SIZE * 12, roomOffset + TILE_SIZE * 5);
+
 	// Walls that aren't walls
 	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
 	{
-		// Sometimes the bottom of a wall, sometimes a door
-		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*15))
-			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wallBottom); // Bottom Wall
-		else
-		{
-			apply_surface(_x, -1*TILE_SIZE, sprite_sheet, screen, rect_wallTopOpen); // Top Screen's WallTop
-			apply_surface(_x, 0*TILE_SIZE, sprite_sheet, screen, rect_wallTop); // Top WallTop
-			apply_surface(_x, 1*TILE_SIZE, sprite_sheet, screen, rect_wall); // Top Wall
-			apply_surface(_x, 2*TILE_SIZE, sprite_sheet, screen, rect_wall); // Mid Wall
-			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wallDoor); // Door
-		}
+		// Sometimes the bottom of a wall, sometimes a door. Door is on upper layers, so leave room.
+		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
+			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wallBottom); // Bottom Wall, Bottom Room
+		
+		// Bottom Wall, Top room
+		apply_surface(_x, 3*TILE_SIZE - screen->h, sprite_sheet, screen, rect_wallBottom); 
 
-		// Bottom overhang
-		apply_surface(_x, (screen->h - 2*TILE_SIZE), sprite_sheet, screen, rect_wallTop);
+		// Left side of door
+		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14)) {
+			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wallDoor_Left); // Door
+		}
+		// Right side of door
+		if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15)) {
+			apply_surface(_x, 3*TILE_SIZE, sprite_sheet, screen, rect_wallDoor_Right); // Door
+		}
 	}
 
-	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
-		apply_surface(_x, 3*TILE_SIZE - screen->h, sprite_sheet, screen, rect_wallBottom); // Bottom Wall
-
-		// Bottom Room
-	// Clocks
-	apply_surface(TILE_SIZE*4, 1.5*TILE_SIZE, sprite_sheet, screen, rect_clock1); // Clock above left doorway
-	apply_surface(TILE_SIZE*15, 1.5*TILE_SIZE, sprite_sheet, screen, rect_clock2); // Clock above left doorway
-	
+		// Bottom Room	
 	// Papers
 	apply_surface(TILE_SIZE * 3, TILE_SIZE * 12, sprite_sheet, screen, rect_paper1);
 	apply_surface(TILE_SIZE * 4, TILE_SIZE * 6, sprite_sheet, screen, rect_paper2);
@@ -321,11 +320,7 @@ void Environment::render()
 	apply_surface(TILE_SIZE * 12, TILE_SIZE * 5, sprite_sheet, screen, rect_paper1);
 	apply_surface(TILE_SIZE * 18, TILE_SIZE * 7, sprite_sheet, screen, rect_paper2);
 
-		// Top Room
-	// Clocks
-	apply_surface(TILE_SIZE*4, roomOffset + 1.5*TILE_SIZE, sprite_sheet, screen, rect_clock1); // Clock above left doorway
-	apply_surface(TILE_SIZE*15, roomOffset + 1.5*TILE_SIZE, sprite_sheet, screen, rect_clock2); // Clock above left doorway
-	
+		// Top Room	
 	// Papers
 	apply_surface(TILE_SIZE * 3, roomOffset + TILE_SIZE * 12, sprite_sheet, screen, rect_paper1);
 	apply_surface(TILE_SIZE * 4, roomOffset + TILE_SIZE * 6, sprite_sheet, screen, rect_paper2);
