@@ -95,6 +95,34 @@ void Player::DoMove()
         x += m_xVel;
         m_AABB->x = x;
         m_AABB->y = y;
+
+		// The boundaries for the screen, player and his trespassings in any four directions
+		int screenLeft, playerLeft;
+		int screenRight, playerRight;
+		int screenTop, playerTop;
+		int screenBottom, playerBottom;
+		bool offLeft, offRight, offTop, offBottom;
+
+        // Player Boundaries
+		playerLeft = x, playerTop = y;
+		playerRight = x + skin->w;
+		playerBottom = y + skin->h;
+
+        // Screen Boundaries
+		screenLeft = -s_renderingOffset_x, screenTop = -s_renderingOffset_y;
+		screenRight = screen->w - s_renderingOffset_x;
+		screenBottom = screen->h - s_renderingOffset_y;
+
+		// Check for boundary passes
+		offLeft   = (direction == LEFT) && (playerLeft < screenLeft);
+		offRight  = (direction == RIGHT) && (playerRight > screenRight);
+		offTop	  = (direction == UP) && (playerTop < screenTop);
+		offBottom = (direction == DOWN) && (playerBottom > screenBottom);
+
+		if (offLeft)   g_game->TransitionScreen(LEFT);
+		if (offRight)  g_game->TransitionScreen(RIGHT);
+		if (offTop)	   g_game->TransitionScreen(UP);
+		if (offBottom) g_game->TransitionScreen(DOWN);
     }
 }
 
@@ -171,7 +199,7 @@ void Player::update(int delta)
     
     if (moving) {
         int pixelsToMove = SPEED * delta;//1000 / 60;
-        
+
         switch (this->direction) {
             case UP:
                 m_yVel = -pixelsToMove;

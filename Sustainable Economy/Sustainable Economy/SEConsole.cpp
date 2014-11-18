@@ -135,6 +135,14 @@ void j(vector<int> args)
 }
 
 
+/* Set the rendering offset values */
+void SetRenderOffset(vector<int> args)
+{
+	s_renderingOffset_x = args.at(0);
+	s_renderingOffset_y = args.at(1);
+}
+
+
 
 SEConsole::SEConsole(void)
 {
@@ -256,6 +264,13 @@ SEConsole::SEConsole(void)
 		"Calculating: ", 
 		"Performs a calculation. May change depending on the developer's choice of debug calculation.",
 		Calc)
+	);
+
+	commands.push_back( 
+		Command("offset", 
+		"Setting the offset ", 
+		"Gives a manual value to the rendering offset values, x and y respectively.",
+		SetRenderOffset)
 	);
 
 	commands.push_back( 

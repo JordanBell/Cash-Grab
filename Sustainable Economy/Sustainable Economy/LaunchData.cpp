@@ -233,7 +233,8 @@ LaunchData::DispensePattern LaunchData::ComputePattern(void)
 void LaunchData::UpdateTier(void)
 {
 	// Find the tier index that the total of coins is between
-	for (int i = 0; i < tierActivationLevels.size(); i++)
+	int size = tierActivationLevels.size();
+	for (int i = 0; i < size; i++)
 	{
 		if (tierActivationLevels.at(i) > recordedTotal) 
 		{

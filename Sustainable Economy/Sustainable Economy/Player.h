@@ -20,11 +20,12 @@ public:
     // For collision detection
     bool m_CanMove;
 	
-	enum {
+	enum Direction {
 		UP,
 		RIGHT,
 		DOWN,
-		LEFT
+		LEFT,
+		NULLDIR
 	} Directions;
 
 	void move(int direction);

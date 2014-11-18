@@ -14,6 +14,11 @@ TTF_Font* font;
 SDL_Color machineTextColor = { 60, 175, 60 }; // Text color on the machine's displays
 SDL_Color textColor = { 120, 10, 20 };
 SDL_Event event;
+
+// Rendering offset are not applicable at the beginning
+float s_renderingOffset_x = 0; 
+float s_renderingOffset_y = 0;
+
 bool inFullScreen;
 
 void toggleScreenFormat()
@@ -116,8 +121,8 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 {
 	SDL_Rect offset;
 
-	offset.x = x;
-	offset.y = y;
+	offset.x = x + s_renderingOffset_x;
+	offset.y = y + s_renderingOffset_y;
 
 	SDL_BlitSurface(source, clip, destination, &offset);
 }

@@ -15,6 +15,7 @@ extern SDL_Surface* screen;
 extern SDL_Color textColor;
 extern SDL_Color machineTextColor;
 extern SDL_Event event;
+extern float s_renderingOffset_x, s_renderingOffset_y;
 
 // Functions
 SDL_Surface* load_image(std::string filename);

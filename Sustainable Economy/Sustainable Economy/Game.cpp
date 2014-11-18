@@ -13,7 +13,7 @@ using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
+Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false), m_transitionDirection(Player::Direction::NULLDIR)
 {
     delta = 0;
 	srand((unsigned int)time(nullptr));
@@ -54,8 +54,7 @@ void Game::run()
 {    
 	InitEnvironment();
     
-    /*Mix_PlayMusic(g_resources->GetMusic()
-                  , -1);*/
+    //Mix_PlayMusic(g_resources->GetMusic(), -1);
     
     m_FPSTimer.start();
     lastUpdate = m_FPSTimer.get_ticks();
@@ -147,6 +146,40 @@ void Game::Update()
 {
 	// Decrement the cooldown for console activation
 	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
+	
+	// Increment the screen transition
+	if (m_transitionDirection != Player::Direction::NULLDIR)
+	{
+		if (m_transitionDirection == Player::Direction::UP)
+		{
+			if (s_renderingOffset_y != screen->h)
+				s_renderingOffset_y += TRANSITION_SPEED;
+			else
+				m_transitionDirection = Player::Direction::NULLDIR;
+		}
+        if (m_transitionDirection == Player::Direction::DOWN)
+		{
+			if (s_renderingOffset_y != 0)
+				s_renderingOffset_y -= TRANSITION_SPEED;
+			else
+				m_transitionDirection = Player::Direction::NULLDIR;
+		}
+        if (m_transitionDirection == Player::Direction::LEFT)
+		{
+			if (s_renderingOffset_x != 0)
+				s_renderingOffset_x += TRANSITION_SPEED;
+			else
+				m_transitionDirection = Player::Direction::NULLDIR;
+		}
+        if (m_transitionDirection == Player::Direction::RIGHT)
+		{
+			if (s_renderingOffset_x != -screen->w)
+				s_renderingOffset_x -= TRANSITION_SPEED;
+			else
+				m_transitionDirection = Player::Direction::NULLDIR;
+        }
+	}
+
 
 //    if (consoleCooldownCounter == 0) g_player->Smash(50);
 	HandleKeys();

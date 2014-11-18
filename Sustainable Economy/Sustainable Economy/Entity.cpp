@@ -3,6 +3,8 @@
 void Entity::render()
 {
 	set_skin();
+
+	// Render this entity at its position, plus the current rendering offset
 	apply_surface(x, y, sprite_sheet, screen, skin);    
 }
 

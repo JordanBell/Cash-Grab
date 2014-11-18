@@ -18,11 +18,12 @@ using namespace std;
 #define TILE_SIZE 32
 #define FRAME_RATE 60
 
+#define CONSOLE_COOLDOWN 10
+#define TRANSITION_SPEED 10
+
 class CollisionManager;
 class Machine;
 class Prompt;
-
-#define CONSOLE_COOLDOWN 10
 
 class Game
 {	
@@ -41,6 +42,8 @@ public:
 	void Mute(void) { m_muted = true; }
 	void Unmute(void) { m_muted = false; }
 
+	void TransitionScreen(Player::Direction direction) { m_transitionDirection = direction; }
+
 private:
 	SEConsole testingConsole;
 	int consoleCooldownCounter;
@@ -51,6 +54,7 @@ private:
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking
 	bool m_muted;
+	Player::Direction m_transitionDirection;
 
 	//Entities
 	Environment *environment;
