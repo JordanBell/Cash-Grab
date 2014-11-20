@@ -3,7 +3,7 @@
 
 #include "entity.h"
 #define SHEET_WIDTH 8
-#define SHEET_HEIGHT 4
+#define SHEET_HEIGHT 8
 
 class Environment :
 	public Entity
@@ -26,13 +26,23 @@ protected:
 	SDL_Rect* rect_wallDoorShadow;
 	SDL_Rect* rect_wallDoor_Left;
 	SDL_Rect* rect_wallDoor_Right;
-	SDL_Rect* rect_wallTop;
 	SDL_Rect* rect_wallTopOpen_Left;
 	SDL_Rect* rect_wallTopOpen_Right;
 	SDL_Rect* rect_clock1;
 	SDL_Rect* rect_clock2;
 	SDL_Rect* rect_paper1;
 	SDL_Rect* rect_paper2;
+
+	// Different wall tops
+	SDL_Rect* rect_wallTop;
+	SDL_Rect* rect_wallTop_Top;
+	SDL_Rect* rect_wallTop_Bottom;
+	SDL_Rect* rect_wallTop_Left;
+	SDL_Rect* rect_wallTop_Right;
+	SDL_Rect* rect_wallTop_BRCorner;
+	SDL_Rect* rect_wallTop_BLCorner;
+	SDL_Rect* rect_wallTop_TRCorner;
+	SDL_Rect* rect_wallTop_TLCorner;
 
 	// Build a station object starting at a given top left position
 	void BuildStationWalls(const int x, const int y);

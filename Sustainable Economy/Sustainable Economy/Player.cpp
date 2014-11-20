@@ -6,7 +6,7 @@ Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) 
-	: Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false)
+	: Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED)
 {
     sprite_sheet = g_resources->GetPlayerSheet();
     
@@ -164,10 +164,43 @@ void Player::IncCycle(void)
     cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1;
 }
 
+void Player::IncSpeed(const float amount) 
+{ 
+	// Increase the player's speed
+	m_speed += amount; 
+
+	//// Limit to MIN if fallen below
+	//m_speed = (m_speed < MIN_SPEED)? 
+	//		  MIN_SPEED 
+	//		  : m_speed; 
+
+	// Limit to MIN and MAX speeds if exceeding
+	m_speed = (m_speed < MIN_SPEED)? 
+			  MIN_SPEED 
+			  : (m_speed > MAX_SPEED)? 
+				  MAX_SPEED 
+				  : m_speed; 
+}
+
+const float Player::ComputeDecay(void)
+{
+	// Speed decay varies based on how far it is from minimum
+	// 0.3 -> 0.0004
+	float diffFromMin = m_speed - MIN_SPEED;
+
+	return diffFromMin * diffFromMin * DECAY_FACTOR + DECAY_MINIMUM;
+	//return 0.0004f;
+}
+
 void Player::update(int delta)
 {
     IncCycle();
 	SmashUpdate();
+
+	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
+		IncSpeed(-ComputeDecay());
+
+	//printf("Speed: %f%%\tDecay: %f%%\n", 100*m_speed/MAX_SPEED, -ComputeDecay()*100);
 	
 	// Could this next block be moved to their corresponding Effect classes?
 //	if (m_evasion1)
@@ -198,7 +231,7 @@ void Player::update(int delta)
     m_AABB->h = sprites[0][0]->h;
     
     if (moving) {
-        int pixelsToMove = SPEED * delta;//1000 / 60;
+        int pixelsToMove = m_speed * 1000 / 60; //delta;
 
         switch (this->direction) {
             case UP:

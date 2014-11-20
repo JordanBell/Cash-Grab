@@ -129,12 +129,25 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 
 bool entity_compare(const Entity* first, const Entity* second)
 {
-    // This is a hacky check for if these are coins or not
-    const Coin* coin1 = dynamic_cast<const Coin*>(first);
-    const Coin* coin2 = dynamic_cast<const Coin*>(second);
+	// Get each entity's rendering priority
+	const int priority1 = first->GetRenderPriority();
+	const int priority2 = second->GetRenderPriority();
+
+	if (priority1 != priority2)
+	{
+		// Primary sort criteria: rendering priorities
+		return priority1 < priority2;
+	}
+	else
+	{
+		// If we're dealing with two coins, compare by their y coordinate
+		const Coin* coin1 = dynamic_cast<const Coin*>(first);
+		const Coin* coin2 = dynamic_cast<const Coin*>(second);
     
-    if (!coin1 || !coin2)
-        return false;
+		// If either or both are not coins, return false
+		if (!coin1 || !coin2)
+			return false;
     
-    return first->y < second->y;
+		return first->y < second->y;
+	}
 }

@@ -5,7 +5,7 @@ class EnvironmentUpper :
 	public Environment
 {
 public:
-	EnvironmentUpper(const int x, const int y) : Environment(x, y) {}
+	EnvironmentUpper(const int x, const int y) : Environment(x, y) { m_renderPriority = 1; }
 	void render(void) override final;
 protected:
 	virtual void BuildWalls(void) override final {}; // Do nothing. No walls on upper layer

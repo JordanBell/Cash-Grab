@@ -3,7 +3,10 @@
 #include "Collidable.h"
 #include <math.h>
 
-#define SPEED 0.3 // The movement speed (independent of framerate)
+#define MAX_SPEED 0.50 // The max movement speed cap
+#define MIN_SPEED 0.10 // The minimum (base) movement speed
+#define DECAY_FACTOR 0.020 // Linearly controls the severity of player movement decay at higher speeds
+#define DECAY_MINIMUM 0.0002 // A base speed decay, that persists even at smaller speeds
 #define WALK_SPEED 10 // The number of frames between cycle changes
 #define WALK_CYCLE_LENGTH 4
 #define STILL 1
@@ -36,6 +39,7 @@ public:
     void DoMove();
 	void Smash(int radius);
 	void SmashWave() { smashCount = 0; }
+	void IncSpeed(const float amount);
 
 protected:
 	void IncCycle(void);
@@ -44,13 +48,15 @@ protected:
 private:
 	bool m_evasion1;
 	bool m_evasion2;
+	float m_speed;
 	int direction; //The direction being faced by the player
 	int smashCount;
 	bool moving;
 	SDL_Rect* sprites[ 4 ][ 4 ]; //The 16 sprite locations in the sprite sheet
 
-	void set_skin() { skin = (moving) ? sprites[direction][cycle/WALK_SPEED] : sprites[direction][STILL]; };
+	void set_skin(void) { skin = (moving) ? sprites[direction][cycle/WALK_SPEED] : sprites[direction][STILL]; };
 	void SmashUpdate(void);
+	const float ComputeDecay(void);
 };
 
 extern Player *g_player;

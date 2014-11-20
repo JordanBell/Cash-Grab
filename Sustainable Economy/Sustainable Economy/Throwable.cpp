@@ -22,6 +22,9 @@ Throwable::Throwable(int start_x, int start_y, int end_x, int end_y)
 	m_HitBox->w = 32;
     m_HitBox->h = 32;
 
+	// Set the highest render priority
+	m_renderPriority = 2;
+
 	max_cycles = 8 * LOOP_SPEED;
 
 	LaunchTo(end_x, end_y);

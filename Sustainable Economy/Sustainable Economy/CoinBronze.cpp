@@ -15,6 +15,7 @@ void CoinBronze::OnCollect(void)
     }
     
 	Wallet::IncCoinsBy(value); 
+	Coin::OnCollect();
 }
 
 void CoinBronze::InitSheet(void)

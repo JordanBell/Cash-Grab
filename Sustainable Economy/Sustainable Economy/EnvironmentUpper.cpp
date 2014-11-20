@@ -55,6 +55,55 @@ void EnvironmentUpper::render()
 	// The tops of each station
 	BuildStationRest(TILE_SIZE * 4, roomOffset + TILE_SIZE * 5);
 	BuildStationRest(TILE_SIZE * 12, roomOffset + TILE_SIZE * 5);
+
+
+
+	// The wall linings for each of the topWall decors
+	for (int offset = 0; offset >= roomOffset; offset += roomOffset)
+	{
+		// Top & Bottom Linings
+		for (int i = TILE_SIZE; i < screen->w - TILE_SIZE; i+=TILE_SIZE) {
+			apply_surface(i, 0 + offset, sprite_sheet, screen, rect_wallTop_Bottom); 
+
+			if (offset == 0 || !((i == TILE_SIZE*4) || (i == TILE_SIZE*5) || (i == TILE_SIZE*14) || (i == TILE_SIZE*15)))
+				apply_surface(i, screen->h-(offset == 0? 2:1) /* Hack. Forgiveness, PLEASE */ *TILE_SIZE + offset, sprite_sheet, screen, rect_wallTop_Top); 
+		}
+
+		// Left & Right Linings
+		for (int j = TILE_SIZE; j < screen->h - TILE_SIZE; j+=TILE_SIZE) {
+			if ((j != screen->h - 2*TILE_SIZE) || (offset == roomOffset)) {
+				apply_surface(0, j + offset, sprite_sheet, screen, rect_wallTop_Right);
+				apply_surface(screen->w - TILE_SIZE, j + offset, sprite_sheet, screen, rect_wallTop_Left); 
+			}
+		}
+
+		// Corners
+		apply_surface(0, offset, sprite_sheet, screen, rect_wallTop_BRCorner); 
+		apply_surface(screen->w-TILE_SIZE, offset, sprite_sheet, screen, rect_wallTop_BLCorner); 
+		apply_surface(0, screen->h - (offset == 0? 2:1) /* Hack. Forgiveness, PLEASE */ * TILE_SIZE+ offset, sprite_sheet, screen, rect_wallTop_TRCorner); 
+		apply_surface(screen->w-TILE_SIZE, screen->h - (offset == 0? 2:1) /* Hack. Forgiveness, PLEASE */ * TILE_SIZE+ offset, sprite_sheet, screen, rect_wallTop_TLCorner); 
+
+	}
+
+		// The very outer top decors
+	for (int j = -screen->h; j < screen->h-TILE_SIZE; j+=TILE_SIZE)
+	{
+		// Left & Right
+		apply_surface(0, j, sprite_sheet, screen, rect_wallTop_Left); 
+		apply_surface(screen->w-TILE_SIZE, j, sprite_sheet, screen, rect_wallTop_Right); 
+	}
+	for (int i = 0; i < screen->w; i+=TILE_SIZE)
+	{
+		// Top & Bottom
+		apply_surface(i, -screen->h, sprite_sheet, screen, rect_wallTop_Top); 
+		apply_surface(i, screen->h-2*TILE_SIZE, sprite_sheet, screen, rect_wallTop_Bottom); 
+	}
+
+	// Corners
+	//apply_surface(0, -screen->h, sprite_sheet, screen, rect_wallTop_TLCorner); 
+	//apply_surface(screen->w-TILE_SIZE, -screen->h, sprite_sheet, screen, rect_wallTop_TRCorner); 
+	//apply_surface(0, screen->h - (offset == 0? 2:1) /* Hack. Forgiveness, PLEASE */ * TILE_SIZE+ offset, sprite_sheet, screen, rect_wallTop_TRCorner); 
+	//apply_surface(screen->w-TILE_SIZE, screen->h - (offset == 0? 2:1) /* Hack. Forgiveness, PLEASE */ * TILE_SIZE+ offset, sprite_sheet, screen, rect_wallTop_TLCorner); 
 }
 
 void EnvironmentUpper::BuildStationRest(const int _x, const int _y)

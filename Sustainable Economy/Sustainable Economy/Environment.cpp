@@ -26,10 +26,8 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	}
 	
 	//Define the positions of used components from the sprite_sheet
-	rect_wall = sprites[0][0];
 	rect_floorBrown = sprites[1][0];
 	rect_floor = sprites[2][0];
-	rect_wallTop = sprites[3][0];
 	rect_wallDoor_Left = sprites[0][1];
 	rect_wallDoor_Right = sprites[1][1];
 	rect_wallTopOpen_Left = sprites[2][1];
@@ -40,6 +38,18 @@ Environment::Environment(int x, int y) : Entity(x, y)
 	rect_clock2 = sprites[1][2];
 	rect_paper1 = sprites[2][2];
 	rect_paper2 = sprites[3][2];
+
+	
+	rect_wallTop = sprites[3][0];
+	rect_wallTop_BRCorner = sprites[1][3];
+	rect_wallTop_Bottom = sprites[2][3];
+	rect_wallTop_BLCorner = sprites[3][3];
+	rect_wallTop_Right = sprites[1][4];
+	rect_wall = sprites[2][4];
+	rect_wallTop_Left = sprites[3][4];
+	rect_wallTop_TRCorner = sprites[1][5];
+	rect_wallTop_Top = sprites[2][5];
+	rect_wallTop_TLCorner = sprites[3][5];
 
 	BuildWalls();
 }
