@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Game.h"
 #include "Resources.h"
+#include "ParticleSimple.h"
 
 Player *g_player = nullptr;
 
@@ -188,11 +189,9 @@ void Player::IncSpeed(const float amount)
 const float Player::ComputeDecay(void)
 {
 	// Speed decay varies based on how far it is from minimum
-	// 0.3 -> 0.0004
 	float diffFromMin = m_speed - MIN_SPEED;
-
-	return diffFromMin * diffFromMin * DECAY_FACTOR + DECAY_MINIMUM;
-	//return 0.0004f;
+	
+	return DECAY_MINIMUM + ((diffFromMin*diffFromMin) * DECAY_FACTOR);
 }
 
 void Player::update(int delta)
@@ -201,9 +200,9 @@ void Player::update(int delta)
 	SmashUpdate();
 
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
-		IncSpeed(-ComputeDecay());
+		DecaySpeed();
 
-	printf("Speed: %f%%\tDecay: %f%%\n", 100*m_speed/MAX_SPEED, -ComputeDecay()*100);
+	//printf("Speed: %f%%\tDecay: -%f%%\n", ComputeSpeedPercentage()*100, ComputeDecay()*100);
 	
 	// Could this next block be moved to their corresponding Effect classes?
 //	if (m_evasion1)
@@ -234,6 +233,10 @@ void Player::update(int delta)
     m_AABB->h = sprites[0][0]->h;
     
     if (moving) {
+		// If the player is moving fast, kick up dirt
+		if (ComputeSpeedPercentage() > 0.75f)
+			AddDirtParticles();
+
         int pixelsToMove = m_speed * 1000 / 60; //delta;
 
         switch (this->direction) {
@@ -271,6 +274,21 @@ void Player::SmashUpdate(void)
 		if (smashCount % SMASH_INTERVAL == 0)
 			Smash(smashCount/2);
 	}
+}
+
+void Player::AddDirtParticles(void)
+{
+	//// Dirt starts at bottom of player
+	//int s_x, s_y; // Start coords
+	//s_x = this->x + (skin->w / 2); // Halfway across
+	//s_y = this->y + skin->h;	 // Bottom of player
+
+	//// Dirt flies somewhere behind the player
+	//int e_x, e_y; // End coords
+	//e_x = s_x - 32;
+	//e_y = s_y;
+
+	//ParticleSimple* dirtParticle = new ParticleSimple(s_x, s_y, e_x, e_y);
 }
 
 

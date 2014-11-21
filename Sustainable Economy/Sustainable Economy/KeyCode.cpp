@@ -14,7 +14,7 @@ void KeyCode::_1(void)
 
 		for (Throwable* t : g_throwables)
 		{
-			if (!t->moving) {
+			if (!t->IsAirborne()) {
 				t->LaunchTo(g_player->x, g_player->y, suppression);
 			}
 		}

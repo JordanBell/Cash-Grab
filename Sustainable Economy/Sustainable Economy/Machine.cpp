@@ -209,6 +209,7 @@ void Machine::LaunchCoin(int count, int slotNum)
 		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
 		// Create a new coin for that destination
 		Coin_Type* coin = new Coin_Type(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
+		coin->Launch();
 		// Add it to the collidables list
 		g_game->addCollidable(coin);
 

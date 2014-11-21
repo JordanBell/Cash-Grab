@@ -16,7 +16,7 @@ void EffectPull::OnStart()
     
     for (Coin* c : g_coins)
     {
-        if (!c->moving) {
+        if (!c->IsAirborne()) {
 //            SDL_Rect center = m_Parent->GetCenter();
             c->LaunchTo(m_Parent->x, m_Parent->y, suppression);
         }

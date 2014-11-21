@@ -56,7 +56,10 @@ private:
 
 	void set_skin(void) { skin = (moving) ? sprites[direction][cycle/WALK_SPEED] : sprites[direction][STILL]; };
 	void SmashUpdate(void);
+	void AddDirtParticles(void);
 	const float ComputeDecay(void);
+	const float ComputeSpeedPercentage(void) { return m_speed/MAX_SPEED; }
+	void DecaySpeed(void) { IncSpeed(-ComputeDecay()); }
 };
 
 extern Player *g_player;

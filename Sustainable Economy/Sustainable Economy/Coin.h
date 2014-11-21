@@ -20,10 +20,16 @@ public:
 	static list<Coin*> CoinsAroundPlayer(int radius);
 
 	virtual void OnCollect(void) { g_player->IncSpeed(SPEED_GAIN); }
-
+	void render(void) override final;
 protected:
-    SDL_Rect* sprites[ 8 ];
-	
-	void set_skin() { skin = sprites[cycle/LOOP_SPEED]; }
+    SDL_Rect* sprites[8];
+
+	// When landing, slow the animation to a calmer speed
+	void OnLanding(void) override final { SetAnimationSpeed(6); }
+
+	// When launched, speed up the animation to spin faster
+	void OnLaunch(void)  override final { SetAnimationSpeed(1); }
+
+	void set_skin() { skin = sprites[cycle/GetAnimationSpeed()]; }
 	virtual void InitSheet() {}
 };

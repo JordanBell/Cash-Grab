@@ -31,7 +31,7 @@ void CollisionManager::Update(int delta)
             {
                 // I know it's bad design but whatever
                 Throwable* throwable = dynamic_cast<Throwable*>(c);
-                if (throwable && !throwable->moving)
+                if (throwable && !throwable->IsAirborne())
                 {
                     MovableCollision(c);
                 }

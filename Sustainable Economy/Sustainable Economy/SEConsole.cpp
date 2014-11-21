@@ -14,7 +14,7 @@ void Pull(vector<int> args)
 
 	for (Throwable* t : g_throwables)
 	{
-		if (!t->moving) {
+		if (!t->IsAirborne()) {
 			t->LaunchTo(g_player->x, g_player->y, suppression);
 		}
 	}
@@ -24,7 +24,7 @@ void Pull(vector<int> args)
 void BounceUp(vector<int> args)
 {
 	for (Throwable* t : g_throwables)
-		if (!t->moving)
+		if (!t->IsAirborne())
 			t->BounceUp();
 }
 
@@ -32,7 +32,7 @@ void BounceUp(vector<int> args)
 void SetBouncy(vector<int> args)
 {
 	for (Throwable* t : g_throwables)
-		if (!t->moving)
+		if (!t->IsAirborne())
 			t->SetBouncy(args.front());
 }
 
@@ -59,7 +59,7 @@ void HomeIn(vector<int> args)
 	list<Throwable*> closeThrowables = Throwable::ThrowablesAroundPlayer(distance);
 	for (Throwable* t : closeThrowables)
 	{
-		if (!t->moving) {
+		if (!t->IsAirborne()) {
 			t->SetHoming(distance, speed);
 		}
 	}

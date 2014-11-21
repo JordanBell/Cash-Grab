@@ -18,7 +18,9 @@ Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Throwable(start_x, 
 	m_HitBox->w = 16;
     m_HitBox->h = 16;
 
-	// Initialise the clips of the sprite_sheet
+	m_numSprites = 8;
+	SetAnimationSpeed(1);
+
 	InitSheet();
 }
 
@@ -37,7 +39,7 @@ std::list<Coin*> Coin::CoinsAround(int px, int py, int radius)
 
 	for (Coin* c : g_coins)
 	{
-		if (!c->moving) {
+		if (!c->IsAirborne()) {
 			int dx = g_player->x - c->x;
 			int dy = g_player->y - c->y;
 			int distance = sqrt(dx*dx + dy*dy);
@@ -50,6 +52,11 @@ std::list<Coin*> Coin::CoinsAround(int px, int py, int radius)
 	return r_coins;
 }
 
+void Coin::render(void)
+{
+	Throwable::render();
+}
+
 std::list<Coin*> Coin::CoinsAroundPlayer(int radius) 
 { 
 	return
@@ -59,6 +66,6 @@ std::list<Coin*> Coin::CoinsAroundPlayer(int radius)
 void Coin::update(int delta)
 {
     Throwable::update(delta);
-    
+    printf("Pos: (%f, %f)\n", x, y);
 	IncCycle();
 }
