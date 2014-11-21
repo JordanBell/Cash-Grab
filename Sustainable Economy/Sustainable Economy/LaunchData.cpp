@@ -26,15 +26,25 @@ vector<int> LaunchData::ComputeActivationLevels(bool print)
 							  90}; // Gold
 
 	// Note: In the upcoming calculation, each of the ideal times are divided by a rough estimate of how long it would take for the player to collect the coins
-	int numRoundsPerTier[] = {numSecondsPerTier[0] / 18, // Bronze
-							  numSecondsPerTier[1] / 22,
-							  numSecondsPerTier[2] / 25, // Bronze/Silver
-							  numSecondsPerTier[3] / 25,
-							  numSecondsPerTier[4] / 25, // Silver
-							  numSecondsPerTier[5] / 25,
-							  numSecondsPerTier[6] / 25, // Silver/Gold
-							  numSecondsPerTier[7] / 25, 
-							  numSecondsPerTier[8] / 25}; // Gold
+	//int numRoundsPerTier[] = {numSecondsPerTier[0] / 18, // Bronze
+	//						  numSecondsPerTier[1] / 22,
+	//						  numSecondsPerTier[2] / 25, // Bronze/Silver
+	//						  numSecondsPerTier[3] / 25,
+	//						  numSecondsPerTier[4] / 25, // Silver
+	//						  numSecondsPerTier[5] / 25,
+	//						  numSecondsPerTier[6] / 25, // Silver/Gold
+	//						  numSecondsPerTier[7] / 25, 
+	//						  numSecondsPerTier[8] / 25}; // Gold
+
+	int numRoundsPerTier[] = {5, // Bronze
+							  5,
+							  5, // Bronze/Silver
+							  5,
+							  5, // Silver
+							  5,
+							  5, // Silver/Gold
+							  5, 
+							  5}; // Gold
 
 	int count = 0;
 	// Print the calculated rounds per tier

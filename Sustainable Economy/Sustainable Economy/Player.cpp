@@ -167,7 +167,10 @@ void Player::IncCycle(void)
 void Player::IncSpeed(const float amount) 
 { 
 	// Increase the player's speed
-	m_speed += amount; 
+	if (amount == 0.03)
+		m_speed += amount * (1 - (m_speed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED));
+	else
+		m_speed += amount; 
 
 	//// Limit to MIN if fallen below
 	//m_speed = (m_speed < MIN_SPEED)? 
@@ -200,7 +203,7 @@ void Player::update(int delta)
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
 		IncSpeed(-ComputeDecay());
 
-	//printf("Speed: %f%%\tDecay: %f%%\n", 100*m_speed/MAX_SPEED, -ComputeDecay()*100);
+	printf("Speed: %f%%\tDecay: %f%%\n", 100*m_speed/MAX_SPEED, -ComputeDecay()*100);
 	
 	// Could this next block be moved to their corresponding Effect classes?
 //	if (m_evasion1)

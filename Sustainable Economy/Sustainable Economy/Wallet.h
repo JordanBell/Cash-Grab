@@ -1,6 +1,6 @@
 #pragma once
 #define START_MONEY 5
-#define COIN_INCREASE 1.5
+#define COIN_INCREASE 1.25
 
 class Wallet
 {
