@@ -14,7 +14,7 @@ int PowerupSmash::value = 0;
 PowerupSmash::PowerupSmash(int start_x, int start_y, int end_x, int end_y) : Powerup(start_x, start_y, end_x, end_y)
 {
     m_Effect = new EffectSmash(this, SMASH_RADIUS);
-    InitSheet();
+    InitSprites();
 }
 
 PowerupSmash::~PowerupSmash()
@@ -25,7 +25,7 @@ PowerupSmash::~PowerupSmash()
     }
 }
 
-void PowerupSmash::InitSheet(void)
+void PowerupSmash::InitSprites(void)
 {
     for (int i = 0; i < 8; i++)
     {

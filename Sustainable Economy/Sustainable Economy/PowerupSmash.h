@@ -22,8 +22,8 @@ public:
     ~PowerupSmash();
     
 private:
-    void InitSheet(void) override final;
-    void set_skin() override { skin = sprites[0]; }
+    void InitSprites(void) override final;
+    void UpdateImageRect(void) override { m_imageRect = sprites[0]; }
 };
 
 #endif /* defined(__CashGrab__PowerupSmash__) */
