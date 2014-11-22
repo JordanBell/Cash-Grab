@@ -14,14 +14,12 @@ Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Throwable(start_x, 
 {
 	g_coins.push_back(this);
 
-	sprite_sheet = g_resources->GetCoinSheet();
+	m_imageSurface = g_resources->GetCoinSheet();
 	m_HitBox->w = 16;
     m_HitBox->h = 16;
 
 	m_numSprites = 8;
 	SetAnimationSpeed(1);
-
-	InitSheet();
 }
 
 Coin::~Coin(void)
@@ -30,6 +28,7 @@ Coin::~Coin(void)
     {
        delete sprites[i];
     }
+
 	g_coins.remove(this);
 }
 
@@ -52,19 +51,8 @@ std::list<Coin*> Coin::CoinsAround(int px, int py, int radius)
 	return r_coins;
 }
 
-void Coin::render(void)
-{
-	Throwable::render();
-}
-
 std::list<Coin*> Coin::CoinsAroundPlayer(int radius) 
 { 
 	return
 		CoinsAround(g_player->x, g_player->y, radius); 
-}
-
-void Coin::update(int delta)
-{
-    Throwable::update(delta);
-	IncCycle();
 }

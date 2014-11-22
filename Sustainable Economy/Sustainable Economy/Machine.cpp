@@ -6,14 +6,14 @@
 Machine* g_machine = nullptr;
 
 Machine::Machine(int x, int y) 
-	: Collidable(x, y), coins(), m_dispensing(false), m_ticker(0), m_numDispensed(0),
-	coinCost(START_MONEY), m_timeElapsed(0), m_coinType(LaunchData::BRONZE), m_dispensePattern(LaunchData::NORM), m_dispenseStyle(LaunchData::SPUTTER)
+	: Collidable(x, y), coins(), GameObject(x, y), m_dispensing(false), m_ticker(0), 
+	m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_coinType(LaunchData::BRONZE), 
+	m_dispensePattern(LaunchData::NORM), m_dispenseStyle(LaunchData::SPUTTER)
 {
 	// Initialise launch data
 	LaunchData::Notify(0);
 
-	sprite_sheet = g_resources->GetMoneyMachineSheet();
-	skin = nullptr; //Use the entire image
+	m_imageSurface = g_resources->GetMoneyMachineSheet();
     
     m_IsMoveable = false;
     m_HitBox->w = TILE_SIZE * 6;
@@ -21,7 +21,8 @@ Machine::Machine(int x, int y)
 
     dispenser_pos = std::pair<int, int>(x, y + (2 * TILE_SIZE));
     
-    for (int i = 0; i < NUM_SLOTS; i++) {
+    for (int i = 0; i < NUM_SLOTS; i++) 
+	{
         int slotX = dispenser_pos.first + (i * TILE_SIZE);
         int slotY = dispenser_pos.second;
         
@@ -30,7 +31,7 @@ Machine::Machine(int x, int y)
     }
 }
 
-void Machine::update(int delta)
+void Machine::Update(int delta)
 {
 	m_timeElapsed += delta;
 

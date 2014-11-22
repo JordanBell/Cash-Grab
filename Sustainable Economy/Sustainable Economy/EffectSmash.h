@@ -1,13 +1,13 @@
 //
 //  EffectSmash.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 08/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__EffectSmash__
-#define __SustainableEconomy__EffectSmash__
+#ifndef __CashGrab__EffectSmash__
+#define __CashGrab__EffectSmash__
 
 #include "Effect.h"
 
@@ -16,10 +16,10 @@ private:
     int m_SmashRadius;
     
 public:
-    EffectSmash(Entity* parent, int smashRadius);
+    EffectSmash(GameObject* parent, int smashRadius);
     
     void OnStart();
     void OnEnd();
 };
 
-#endif /* defined(__SustainableEconomy__EffectSmash__) */
+#endif /* defined(__CashGrab__EffectSmash__) */

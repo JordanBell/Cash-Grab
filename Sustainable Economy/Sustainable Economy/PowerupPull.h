@@ -1,13 +1,13 @@
 //
 //  PowerupPull.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 16/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__PowerupPull__
-#define __SustainableEconomy__PowerupPull__
+#ifndef __CashGrab__PowerupPull__
+#define __CashGrab__PowerupPull__
 
 #include "Powerup.h"
 
@@ -20,8 +20,8 @@ public:
     ~PowerupPull();
     
 private:
-    void InitSheet(void) override final;
+    void InitSprites(void) override final;
     
 };
 
-#endif /* defined(__SustainableEconomy__PowerupPull__) */
+#endif /* defined(__CashGrab__PowerupPull__) */

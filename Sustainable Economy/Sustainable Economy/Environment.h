@@ -1,20 +1,18 @@
 #ifndef environment_h
 #define environment_h
 
-#include "entity.h"
+#include "gameObject.h"
 #define SHEET_WIDTH 8
 #define SHEET_HEIGHT 8
 
 class Environment :
-	public Entity
+	public GameObject
 {
-	void set_skin(void) override { skin = nullptr; };
 public:
 	Environment(int x, int y);
 	~Environment(void);
 
-	void update(int delta) override final {}
-	virtual void render(void) override;
+	virtual void Render(void) override;
 
 protected:
 	SDL_Rect* sprites[SHEET_WIDTH][SHEET_HEIGHT]; //All of the clip positions

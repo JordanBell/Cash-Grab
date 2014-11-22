@@ -1,13 +1,13 @@
 //
 //  PowerupMagnetism.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 16/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__PowerupMagnetism__
-#define __SustainableEconomy__PowerupMagnetism__
+#ifndef __CashGrab__PowerupMagnetism__
+#define __CashGrab__PowerupMagnetism__
 
 #include "Powerup.h"
 
@@ -22,7 +22,7 @@ public:
     void OnCollect(void) override final;
     
 private:
-    void InitSheet(void) override final;
+    void InitSprites(void) override final;
 };
 
-#endif /* defined(__SustainableEconomy__PowerupMagnetism__) */
+#endif /* defined(__CashGrab__PowerupMagnetism__) */

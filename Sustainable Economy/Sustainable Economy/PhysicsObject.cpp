@@ -105,8 +105,8 @@ void PhysicsObject::MoveUpdate(void)
 			m_airborne = false;
 
 			// Snap the PhysicsObject to its target position (just to make sure, completely and surely)
-			//m_pos.x = m_endPos.x;
-			//m_pos.y = m_endPos.y;
+			m_pos.x = m_endPos.x;
+			m_pos.y = m_endPos.y;
 
 			//Stop all movement
 			m_spatialKin.Clear();

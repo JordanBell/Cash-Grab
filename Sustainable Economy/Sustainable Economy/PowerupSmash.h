@@ -1,13 +1,13 @@
 //
 //  PowerupSmash.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 16/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__PowerupSmash__
-#define __SustainableEconomy__PowerupSmash__
+#ifndef __CashGrab__PowerupSmash__
+#define __CashGrab__PowerupSmash__
 
 #include "Powerup.h"
 
@@ -19,4 +19,4 @@ public:
     PowerupSmash(int start_x, int start_y, int end_x, int end_y);
 };
 
-#endif /* defined(__SustainableEconomy__PowerupSmash__) */
+#endif /* defined(__CashGrab__PowerupSmash__) */

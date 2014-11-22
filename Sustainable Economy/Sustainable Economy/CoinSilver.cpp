@@ -16,7 +16,7 @@ void CoinSilver::OnCollect(void)
 	Coin::OnCollect();
 }
 
-void CoinSilver::InitSheet(void)
+void CoinSilver::InitSprites(void)
 {
 	for (int i = 0; i < 8; i++)
 	{

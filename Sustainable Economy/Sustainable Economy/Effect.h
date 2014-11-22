@@ -1,6 +1,6 @@
 //
 //  Effect.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Base class for effects, such as coin magnetism, icy floor, etc.
 //  Contains member functions which are called by EffectManager to
@@ -10,10 +10,10 @@
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__Effect__
-#define __SustainableEconomy__Effect__
+#ifndef __CashGrab__Effect__
+#define __CashGrab__Effect__
 
-#include "Entity.h"
+#include "Sprite.h"
 
 #define MAGNETISM_DISTANCE_DEFAULT 25
 #define MAGNETISM_DISTANCE_SHORT 50
@@ -24,7 +24,7 @@
 class Effect {
 protected:
     /* Powerup that owns this effect */
-    Entity* m_Parent;
+    GameObject* m_Parent;
     
     /* Duration of this effect, in ms */
     int m_Duration;
@@ -60,7 +60,7 @@ protected:
 public:
     bool m_IsDone;
     
-	Effect(Entity* parent) : m_Parent(parent), m_Duration(0), m_ElapsedTime(0), m_IsDone(false)  {}
+	Effect(GameObject* parent) : m_Parent(parent), m_Duration(0), m_ElapsedTime(0), m_IsDone(false)  {}
     virtual ~Effect() { }
     
     /**
@@ -109,4 +109,4 @@ public:
 	static bool GetCoinColorsChange(void) { return s_coinColorsChange; }
 };
 
-#endif /* defined(__SustainableEconomy__Effect__) */
+#endif /* defined(__CashGrab__Effect__) */

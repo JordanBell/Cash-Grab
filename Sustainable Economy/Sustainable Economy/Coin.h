@@ -15,12 +15,11 @@ public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
 	~Coin(void);
 
-	void update(int delta);
+	// When collected, increase the player speed. Subclasses increase the wallet's money accordingly.
+	virtual void OnCollect(void) override { g_player->IncSpeed(SPEED_GAIN); }
+
 	static list<Coin*> CoinsAround(int x, int y, int radius);
 	static list<Coin*> CoinsAroundPlayer(int radius);
-
-	virtual void OnCollect(void) { g_player->IncSpeed(SPEED_GAIN); }
-	void render(void) override final;
 protected:
     SDL_Rect* sprites[8];
 
@@ -30,6 +29,6 @@ protected:
 	// When launched, speed up the animation to spin faster
 	void OnLaunch(void)  override final { SetAnimationSpeed(1); }
 
-	void set_skin() { skin = sprites[cycle/GetAnimationSpeed()]; }
-	virtual void InitSheet() {}
+	// TODO: Merge this with PowerUp's UpdateImageRect function
+	void UpdateImageRect(void) override { m_imageRect = sprites[m_cycle/GetAnimationSpeed()]; }
 };

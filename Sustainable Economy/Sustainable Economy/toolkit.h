@@ -20,7 +20,7 @@ extern float s_renderingOffset_x, s_renderingOffset_y;
 // Functions
 SDL_Surface* load_image(std::string filename);
 
-class Entity;
+class GameObject;
 
 void toggleScreenFormat();
 void exitFullScreen();
@@ -30,7 +30,7 @@ bool SDL_init();
 bool load_files();
 void SDL_deinit();
 
-// Comparison function for sorting entity lists
-bool entity_compare(const Entity* first, const Entity* second);
+// Comparison function for sorting GameObject lists
+bool GameObject_Compare(const GameObject* first, const GameObject* second);
 
 #endif

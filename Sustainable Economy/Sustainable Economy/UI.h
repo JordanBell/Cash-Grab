@@ -1,13 +1,13 @@
 //
 //  UI.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 28/04/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__UI__
-#define __SustainableEconomy__UI__
+#ifndef __CashGrab__UI__
+#define __CashGrab__UI__
 
 #include "SDL.h"
 #include "Resources.h"
@@ -43,4 +43,4 @@ public:
 
 extern UI* g_UI;
 
-#endif /* defined(__SustainableEconomy__UI__) */
+#endif /* defined(__CashGrab__UI__) */

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class Throwable : public Collidable, public PhysicsObject
+class Throwable : public Collidable, public PhysicsObject, public Sprite
 {
 public:
 	static list<Throwable*> ThrowablesAround(const int x, const int y, const int radius);
@@ -14,14 +14,14 @@ public:
 	Throwable(int start_x, int start_y, int end_x, int end_y);
 	~Throwable(void);
 
-	virtual void update(int delta);
+	virtual void Update(int delta);
 	virtual void OnCollect(void) = 0; // A throwable's effect when collected
 	void BounceUp(void);
 
 	void SetHoming(int distance, int speed) { m_homingDistance = distance; m_homingSpeed = speed; }
 	void SetBouncy(bool bouncy) { m_isBouncy = bouncy; }
 
-	//virtual void render(void) override {};
+	//virtual void Render(void) override {};
 
 protected:
 

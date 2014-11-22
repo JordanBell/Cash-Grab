@@ -1,13 +1,13 @@
 //
 //  CollisionManager.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 18/04/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__CollisionManager__
-#define __SustainableEconomy__CollisionManager__
+#ifndef __CashGrab__CollisionManager__
+#define __CashGrab__CollisionManager__
 
 #include <list>
 #include "Collidable.h"
@@ -38,4 +38,4 @@ public:
     void ImmovableCollision(Collidable* collidable);
 };
 
-#endif /* defined(__SustainableEconomy__CollisionManager__) */
+#endif /* defined(__CashGrab__CollisionManager__) */

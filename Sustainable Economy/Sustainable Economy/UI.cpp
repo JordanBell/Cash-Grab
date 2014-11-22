@@ -1,6 +1,6 @@
 //
 //  UI.cpp
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 28/04/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.

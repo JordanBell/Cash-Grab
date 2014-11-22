@@ -1,6 +1,6 @@
 //
 //  Collidable.cpp
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 18/04/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
@@ -54,7 +54,7 @@ bool HitTest(SDL_Rect* first, SDL_Rect* second, int &collisionOverlap)
     return collides;
 }
 
-Collidable::Collidable(int x, int y) : Entity(x, y)
+Collidable::Collidable(int x, int y)
 {
     m_IsMoveable = true;
     m_xVel = m_yVel = 0;
@@ -91,16 +91,19 @@ bool Collidable::WillCollideWith(Collidable *other, int &collisionOverlap)
     return HitTest(m_AABB, other->m_HitBox, collisionOverlap);
 }
 
-void Collidable::update(int delta)
+void Collidable::UpdateCollidablePos(const int x, const int y)
 {
+	// Update Hitbox
     m_HitBox->x = x;
     m_HitBox->y = y;
-    
-    // Subclasses must set position of AABB themselves
+
+	// Update prediction hitbox
+	m_AABB->x = x;
+    m_AABB->y = y;
 }
 
 
-void Collidable::DoMove()
+void Collidable::DoMove(void)
 {
     // Must be implemented by classes that can move
 }

@@ -5,13 +5,12 @@ class CoinGold :
 {
 public:
 	CoinGold(int start_x, int start_y, int end_x, int end_y) 
-		: Coin(start_x, start_y, end_x, end_y) { InitSheet(); }
+		: Coin(start_x, start_y, end_x, end_y) { InitSprites(); }
 
 	void OnCollect(void) override final;
 
 	static int value;
-public:
 
 protected:
-	void InitSheet(void) override final;
+	void InitSprites(void) override final;
 };

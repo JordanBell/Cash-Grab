@@ -14,7 +14,12 @@
 list<Throwable*> g_throwables;
 
 Throwable::Throwable(int start_x, int start_y, int end_x, int end_y) 
-	: Collidable(start_x, start_y), PhysicsObject(start_x, start_y, end_x, end_y), m_homingDistance(0), m_homingSpeed(0), m_isBouncy(false)
+	: Collidable(start_x, start_y), 
+	PhysicsObject(start_x, start_y, end_x, end_y), 
+	Sprite(start_x, start_y),
+	m_homingDistance(0), 
+	m_homingSpeed(0), 
+	m_isBouncy(false)
 {
 	g_throwables.push_back(this);
 
@@ -36,7 +41,7 @@ void Throwable::BounceUp(void)
 	/// Repeat code from LaunchTo
     /*cycle /= LOOP_SPEED;
 	LOOP_SPEED = 1;
-	max_cycles = 8 * LOOP_SPEED;*/
+	m_maxCycles = 8 * LOOP_SPEED;*/
 
 	//moving = true;
 	// Launch the coin towards the end coordinates
@@ -109,21 +114,24 @@ void Throwable::SetAnimationSpeed(const int newSpeed)
 {
 	// Set the cycle: decode the old speed, encode the new one
     //cycle *= newSpeed / m_animationSpeed;
-    cycle = 0;
+    m_cycle = 0;
 
 	// Set the new speed
 	m_animationSpeed = newSpeed;
 
 	// Adjust number of cycles accordingly
-	max_cycles = m_numSprites * m_animationSpeed;
+	m_maxCycles = m_numSprites * m_animationSpeed;
 }
 
-void Throwable::update(int delta)
+void Throwable::Update(int delta)
 {
+	// Update the throwable as a sprite
+	Sprite::Update(delta);
+
 	if (m_airborne) 
 	{
 		PhysicsObject::MoveUpdate();
-
+		
 		// Take on the position calculated as a physics object
 		x = m_pos.x;
 		y = m_pos.y;
@@ -135,6 +143,5 @@ void Throwable::update(int delta)
 	else
 		m_homingDistance = 0;
 
-
-    Collidable::update(delta);
+    UpdateCollidablePos(x, y);
 }

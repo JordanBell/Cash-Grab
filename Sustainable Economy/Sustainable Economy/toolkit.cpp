@@ -1,7 +1,7 @@
 //The headers
 #include "toolkit.h"
 #include "Resources.h"
-#include "Entity.h"
+#include "Sprite.h"
 #include "Coin.h"
 #include "UI.h"
 
@@ -128,9 +128,9 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	SDL_BlitSurface(source, clip, destination, &offset);
 }
 
-bool entity_compare(const Entity* first, const Entity* second)
+bool GameObject_Compare(const GameObject* first, const GameObject* second)
 {
-	// Get each entity's rendering priority
+	// Get each gameObject's rendering priority
 	const int priority1 = first->GetRenderPriority();
 	const int priority2 = second->GetRenderPriority();
 

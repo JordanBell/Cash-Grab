@@ -6,7 +6,7 @@ class EnvironmentUpper :
 {
 public:
 	EnvironmentUpper(const int x, const int y) : Environment(x, y) { m_renderPriority = 1; }
-	void render(void) override final;
+	void Render(void) override final;
 protected:
 	virtual void BuildWalls(void) override final {}; // Do nothing. No walls on upper layer
 	virtual void BuildStationRest(const int _x, const int _y) override final;

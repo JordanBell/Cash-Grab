@@ -1,13 +1,13 @@
 //
 //  EffectMagnetism.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 08/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__EffectMagnetism__
-#define __SustainableEconomy__EffectMagnetism__
+#ifndef __CashGrab__EffectMagnetism__
+#define __CashGrab__EffectMagnetism__
 
 #include "Effect.h"
 
@@ -20,7 +20,7 @@ private:
     const int k_PowerupTimeout;
     
 public:
-    EffectMagnetism(Entity* parent) :
+    EffectMagnetism(GameObject* parent) :
 		Effect(parent), k_PowerupTimeout(5000) {  }
     
     void OnStart() override;
@@ -31,4 +31,4 @@ public:
     static void SetMagnetismSpeed(int speed) { s_MagnetismSpeed = speed; }
 };
 
-#endif /* defined(__SustainableEconomy__EffectMagnetism__) */
+#endif /* defined(__CashGrab__EffectMagnetism__) */

@@ -1,13 +1,13 @@
 //
 //  EffectManager.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 08/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__EffectManager__
-#define __SustainableEconomy__EffectManager__
+#ifndef __CashGrab__EffectManager__
+#define __CashGrab__EffectManager__
 
 #include <list>
 #include "Effect.h"
@@ -28,4 +28,4 @@ public:
     void Update(int delta);
 };
 
-#endif /* defined(__SustainableEconomy__EffectManager__) */
+#endif /* defined(__CashGrab__EffectManager__) */

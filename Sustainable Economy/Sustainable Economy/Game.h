@@ -9,7 +9,7 @@
 
 #include <list>
 #include "KeyCode.h"
-#include "Entity.h"
+#include "Sprite.h"
 #include "Player.h"
 #include "Coin.h"
 #include "EnvironmentUpper.h"
@@ -33,10 +33,10 @@ public:
 	Game();
 	~Game(void);
 	void run();
-    void addEntity(Entity* entity, bool toFront = false);
+    void addGameObject(GameObject* gameObject, bool toFront = false);
     void addCollidable(Collidable* collidable, bool toFront = false);
     void AddEffect(Effect* effect);
-    void removeEntity(Entity* entity);
+    void removeGameObject(GameObject* gameObject);
     void removeCollidable(Collidable* collidable);
 	bool IsMuted(void) { return m_muted; }
 	void Mute(void) { m_muted = true; }
@@ -56,22 +56,22 @@ private:
 	bool m_muted;
 	Player::Direction m_transitionDirection;
 
-	//Entities
+	//GameObjects
 	Environment *environment;
 	Machine *machine;
 	Prompt *prompt;
-	list<Entity*> m_Entities;
-    list<unique_ptr<Entity>> m_EntityDeleteQueue;
+	list<GameObject*> m_GameObjects;
+    list<unique_ptr<GameObject>> m_GameObjectDeleteQueue;
 	bool running;
 
-	void InitEnvironment();
-	void Update();
-	void HandleKeys();
-	void Render();
-	void Poll();
+	void InitEnvironment(void);
+	void Update(void);
+	void HandleKeys(void);
+	void Render(void);
+	void Poll(void);
 
-    void DeleteEntities();
-	void RegulateFrameRate();
+    void DeleteGameObjects(void);
+	void RegulateFrameRate(void);
 };
 
 extern Game* g_game;

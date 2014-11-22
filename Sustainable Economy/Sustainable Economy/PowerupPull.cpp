@@ -1,6 +1,6 @@
 //
 //  PowerupPull.cpp
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 16/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
@@ -15,7 +15,7 @@ int PowerupPull::value = 1;
 PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y) : Powerup(start_x, start_y, end_x, end_y)
 {
     m_Effect = new EffectPull(this);
-    InitSheet();
+    InitSprites();
 }
 
 PowerupPull::~PowerupPull()
@@ -26,7 +26,7 @@ PowerupPull::~PowerupPull()
     }
 }
 
-void PowerupPull::InitSheet(void)
+void PowerupPull::InitSprites(void)
 {
     for (int i = 0; i < 8; i++)
     {

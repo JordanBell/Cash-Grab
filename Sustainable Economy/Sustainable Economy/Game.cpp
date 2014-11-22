@@ -27,13 +27,14 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false), m_trans
 	prompt = new Prompt(machine);
     
     m_EffectManager = new EffectManager();
+
     // Add persisting magnetism effect (should only be one of this throughout the duration of the game)
     AddEffect(new EffectMagnetism(nullptr));
     
 	m_CollisionManager = new CollisionManager(this);
 	
     addCollidable(machine);
-	m_Entities.push_back(player);
+	m_GameObjects.push_back(player);
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
@@ -42,7 +43,7 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false), m_trans
 Game::~Game(void)
 {
 	// Delete all entities
-    for (list<Entity*>::iterator it = m_Entities.begin(); it != m_Entities.end(); ++it)
+    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
     {
         delete *it;
     }
@@ -68,7 +69,7 @@ void Game::run()
 		Poll();
         
         // Handle any deletions that need to take place after updating
-        DeleteEntities();
+        DeleteGameObjects();
 
 		// Regulate the framerate, and save the delta time.
 		RegulateFrameRate();
@@ -83,11 +84,11 @@ void Game::InitEnvironment(void)
 	g_environment = new Environment(0, 0);
 	g_environmentUpper = new EnvironmentUpper(0, 0);
 	environment = g_environment;
-	m_Entities.push_front(environment);
-	m_Entities.push_front(g_environmentUpper);
+	m_GameObjects.push_front(environment);
+	m_GameObjects.push_front(g_environmentUpper);
 
 	// Add the prompt now, to layer it over everything
-	m_Entities.push_back(prompt);
+	m_GameObjects.push_back(prompt);
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
@@ -191,11 +192,11 @@ void Game::Update()
 //    if (consoleCooldownCounter == 0) g_player->Smash(50);
 	HandleKeys();
 	
-	for (Entity* e : m_Entities)
-        e->update(delta);
+	for (GameObject* e : m_GameObjects)
+        e->Update(delta);
     
     // Efficiency!
-    m_Entities.sort(entity_compare);
+    m_GameObjects.sort(GameObject_Compare);
     
 	m_CollisionManager->Update(delta);
     m_EffectManager->Update(delta);
@@ -211,12 +212,8 @@ void Game::Render()
     SDL_FillRect(screen,NULL,0x000000);
     
 	// Render all of the entities
-	for (Entity* e : m_Entities) 
-		e->render();
-    
-	// Render all particles TODO: Implement particles as entities - refactor entities as we know them into GameObjects and Sprites
-	for (Particle* p : g_particles) 
-		p->Render();
+	for (GameObject* go : m_GameObjects) 
+		go->Render();
 
 	// Render the UI above everything
     g_UI->Render();
@@ -244,23 +241,29 @@ void Game::Poll()
 	}
 }
 
-void Game::addEntity(Entity* entity, bool toFront)
+void Game::addGameObject(GameObject* gameObject, bool toFront)
 {
     if (toFront)
     {
-        m_Entities.push_front(entity);
+        m_GameObjects.push_front(gameObject);
     }
     else
     {
-        m_Entities.push_back(entity);
+        m_GameObjects.push_back(gameObject);
     }
     
-//    m_Entities.sort(entity_compare);
+//    m_GameObjects.sort(GameObject_Compare);
 }
 
 void Game::addCollidable(Collidable* collidable, bool toFront)
 {
-    addEntity(collidable, toFront);
+	// Check if the collidable is a game object. If so, add it to the game object list
+	GameObject* collidableGameObject = dynamic_cast<GameObject*>(collidable);
+
+	if (collidableGameObject)
+		addGameObject(collidableGameObject, toFront);
+
+	// Add this collidable to the collidables list
     m_CollisionManager->AddCollidable(collidable, toFront);
 }
 
@@ -269,23 +272,29 @@ void Game::AddEffect(Effect *effect)
     m_EffectManager->AddEffect(effect);
 }
 
-void Game::removeEntity(Entity* entity)
+void Game::removeGameObject(GameObject* gameObject)
 {
-    m_EntityDeleteQueue.emplace_back(unique_ptr<Entity>(entity)); // Warning: Will this in-line declaration delete the pointer when out of scope?
+    m_GameObjectDeleteQueue.emplace_back(unique_ptr<GameObject>(gameObject)); // Warning: Will this in-line declaration delete the pointer when out of scope?
 }
 
 void Game::removeCollidable(Collidable *collidable)
 {
+	// Check if the collidable is a game object. If so, add it to the game object list
+	GameObject* collidableGameObject = dynamic_cast<GameObject*>(collidable);
+
+	if (collidableGameObject)
+		removeGameObject(collidableGameObject);
+
+	// Remove this collidable to the collidables list
     m_CollisionManager->RemoveCollidable(collidable);
-    removeEntity(collidable);
 }
 
-void Game::DeleteEntities()
+void Game::DeleteGameObjects()
 {
-    for (unique_ptr<Entity>& entity_ptr : m_EntityDeleteQueue)
+    for (unique_ptr<GameObject>& gameObject_ptr : m_GameObjectDeleteQueue)
     {
-        m_Entities.remove(entity_ptr.get());
+        m_GameObjects.remove(gameObject_ptr.get());
     }
     
-    m_EntityDeleteQueue.clear(); // Thus deleting the entities being pointed to
+    m_GameObjectDeleteQueue.clear(); // Thus deleting the entities being pointed to
 }

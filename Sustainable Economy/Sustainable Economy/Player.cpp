@@ -7,16 +7,22 @@ Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) 
-	: Collidable(x, y), direction(DOWN), moving(false), m_CanMove(true), smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED)
+	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), 
+	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED)
 {
-    sprite_sheet = g_resources->GetPlayerSheet();
+    m_imageSurface = g_resources->GetPlayerSheet();
     
-    delay = 200;
-    max_cycles = WALK_CYCLE_LENGTH * WALK_SPEED;
-    
-    //Initialise the clips of the sprite_sheet
-    int clip_w = (sprite_sheet->w / WALK_CYCLE_LENGTH);
-    int clip_h = (sprite_sheet->h / 4);
+    m_animationDelay = 200;
+    m_maxCycles = WALK_CYCLE_LENGTH * WALK_SPEED;
+
+	InitSprites();
+}
+
+void Player::InitSprites(void)
+{
+	//Initialise the clips of the m_imageSurface
+    int clip_w = (m_imageSurface->w / WALK_CYCLE_LENGTH);
+    int clip_h = (m_imageSurface->h / 4);
     m_HitBox->w = m_AABB->w = clip_w;
 
     for (int i = 0; i < 4; i++)
@@ -94,8 +100,8 @@ void Player::DoMove()
     {
         y += m_yVel;
         x += m_xVel;
-        m_AABB->x = x;
-        m_AABB->y = y;
+
+		UpdateCollidablePos(x, y);
 
 		// The boundaries for the screen, player and his trespassings in any four directions
 		int screenLeft, playerLeft;
@@ -106,8 +112,8 @@ void Player::DoMove()
 
         // Player Boundaries
 		playerLeft = x, playerTop = y;
-		playerRight = x + skin->w;
-		playerBottom = y + skin->h;
+		playerRight = x + m_imageRect->w;
+		playerBottom = y + m_imageRect->h;
 
         // Screen Boundaries
 		screenLeft = -s_renderingOffset_x, screenTop = -s_renderingOffset_y;
@@ -160,11 +166,6 @@ void Player::SnapToGrid()
     }
 }
 
-void Player::IncCycle(void)
-{
-    cycle = (cycle >= (max_cycles-1)) ? 0 : cycle+1;
-}
-
 void Player::IncSpeed(const float amount) 
 { 
 	// Increase the player's speed
@@ -194,9 +195,10 @@ const float Player::ComputeDecay(void)
 	return DECAY_MINIMUM + ((diffFromMin*diffFromMin) * DECAY_FACTOR);
 }
 
-void Player::update(int delta)
+void Player::Update(int delta)
 {
-    IncCycle();
+    //IncCycle();
+	Sprite::Update(delta);
 	SmashUpdate();
 
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
@@ -225,6 +227,8 @@ void Player::update(int delta)
 //			c->LaunchTo(coinX, coinY, 2);
 //		}
 //	}
+
+	InitSprites();
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;
@@ -261,8 +265,8 @@ void Player::update(int delta)
         m_AABB->h += m_yVel;
         m_AABB->w += m_xVel;
     }
-    
-    Collidable::update(delta);
+
+    UpdateCollidablePos(x, y);
 }
 
 void Player::SmashUpdate(void)
@@ -282,8 +286,8 @@ void Player::AddDirtParticles(void)
 
 	// Dirt starts at bottom of player
 	int s_x, s_y; // Start coords
-	s_x = this->x + (skin->w / 2); // Halfway across
-	s_y = this->y + skin->h;	 // Bottom of player
+	s_x = this->x + (m_imageRect->w / 2); // Halfway across
+	s_y = this->y + m_imageRect->h;	 // Bottom of player
 
 	// Dirt flies somewhere behind the player
 	int e_x, e_y; // End coords
@@ -297,8 +301,7 @@ void Player::AddDirtParticles(void)
 	dirtParticle->Launch(1);
 }
 
-
-void Player::render()
+void Player::Render(void)
 {
     // For debugging!
     
@@ -309,24 +312,5 @@ void Player::render()
     SDL_Rect *rect = &r;
     apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);*/
     
-    Entity::render();
+    Sprite::Render();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

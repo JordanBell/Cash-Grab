@@ -1,13 +1,13 @@
 //
 //  MagnetismEffect.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 08/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__MagnetismEffect__
-#define __SustainableEconomy__MagnetismEffect__
+#ifndef __CashGrab__MagnetismEffect__
+#define __CashGrab__MagnetismEffect__
 
 #include "Effect.h"
 
@@ -18,4 +18,4 @@ public:
     void OnEnd();
 };
 
-#endif /* defined(__SustainableEconomy__MagnetismEffect__) */
+#endif /* defined(__CashGrab__MagnetismEffect__) */

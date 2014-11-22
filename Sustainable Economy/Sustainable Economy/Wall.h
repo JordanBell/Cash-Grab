@@ -1,22 +1,21 @@
 //
 //  Wall.h
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 20/04/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __SustainableEconomy__Wall__
-#define __SustainableEconomy__Wall__
+#ifndef __CashGrab__Wall__
+#define __CashGrab__Wall__
 
 #include "Collidable.h"
 
-class Wall : public Collidable {
+class Wall : public Collidable, public GameObject {
     
 public:
     Wall(int x, int y, SDL_Surface* sheet, SDL_Rect* clip);
-    
-    void set_skin() { }
+	void Render(void) { GameObject::Render(); }
 };
 
-#endif /* defined(__SustainableEconomy__Wall__) */
+#endif /* defined(__CashGrab__Wall__) */

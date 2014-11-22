@@ -13,7 +13,7 @@
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
 
-class Player : public Collidable {
+class Player : public Collidable, public Sprite {
 public:
 	
 	//De/Constructors
@@ -34,16 +34,17 @@ public:
 	void move(int direction);
 	void stop_moving(void);
     void SetCanMove(bool canMove);
-	void update(int delta);
-    void render();
-    void DoMove();
+	void Update(int delta);
+    void DoMove(void);
 	void Smash(int radius);
 	void SmashWave() { smashCount = 0; }
 	void IncSpeed(const float amount);
 
+	void Render(void) override;
+
 protected:
-	void IncCycle(void);
     void SnapToGrid(void);
+	void UpdateImageRect(void) override { m_imageRect = (moving) ? sprites[direction][m_cycle/WALK_SPEED] : sprites[direction][STILL]; };
 
 private:
 	bool m_evasion1;
@@ -54,7 +55,7 @@ private:
 	bool moving;
 	SDL_Rect* sprites[ 4 ][ 4 ]; //The 16 sprite locations in the sprite sheet
 
-	void set_skin(void) { skin = (moving) ? sprites[direction][cycle/WALK_SPEED] : sprites[direction][STILL]; };
+	void InitSprites(void) override;
 	void SmashUpdate(void);
 	void AddDirtParticles(void);
 	const float ComputeDecay(void);

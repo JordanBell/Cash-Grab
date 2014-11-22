@@ -5,7 +5,7 @@
 #include <list>
 
 class ParticleSimple :
-	public PhysicsObject
+	public PhysicsObject, GameObject
 {
 public:
 	ParticleSimple(int start_x, int start_y, int end_x, int end_y);
@@ -13,17 +13,14 @@ public:
 
 	// Change the color of the particle surface
 	void SetColor(const Uint32 color);
-	
-	// Render this particle on screen
-	void Render(void) { apply_surface(m_pos.x, m_pos.y, m_surface, screen); }
+	void Update(int delta) override { printf("Updating!"); x = m_pos.x; y = m_pos.y; PhysicsObject::MoveUpdate(); GameObject::Update(delta); }
 
 protected:
 	// When the particle has landed, remove it // TODO: Or, create a timer that fades it out
-	void OnLanding(void) override { /* g_game->removeEntity(this); */ }
+	void OnLanding(void) override { printf("Landed.\n"); g_game->removeGameObject(this); }
 
 private:
 	Dimensions m_size;
-	SDL_Surface* m_surface;
 };
 
 typedef ParticleSimple Particle;

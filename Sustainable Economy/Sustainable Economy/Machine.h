@@ -19,7 +19,7 @@ using namespace std;
 #define QUANTITY_THRESHOLD 20
 
 class Machine :
-	public Collidable
+	public Collidable, public GameObject
 {
 public:
 	int coinCost;
@@ -27,7 +27,7 @@ public:
 	Machine(int x, int y);
 	~Machine(void) {}
 	
-	void update(int delta);
+	void Update(int delta);
 	void dispense();
 
 	void ForceDispense(int coinNum);

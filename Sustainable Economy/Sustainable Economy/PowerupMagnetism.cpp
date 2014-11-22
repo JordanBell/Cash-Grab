@@ -1,6 +1,6 @@
 //
 //  PowerupMagnetism.cpp
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 16/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
@@ -15,7 +15,7 @@ PowerupMagnetism::PowerupMagnetism(int start_x, int start_y, int end_x, int end_
 {
     // No effect to add, just modify current magnetism effect
     m_Effect = nullptr;
-    InitSheet();
+    InitSprites();
 }
 
 PowerupMagnetism::~PowerupMagnetism()
@@ -31,7 +31,7 @@ void PowerupMagnetism::OnCollect()
     EffectMagnetism::SetMagnetismDistance(MAGNETISM_DISTANCE_SHORT);
 }
 
-void PowerupMagnetism::InitSheet(void)
+void PowerupMagnetism::InitSprites(void)
 {
     for (int i = 0; i < 8; i++)
     {

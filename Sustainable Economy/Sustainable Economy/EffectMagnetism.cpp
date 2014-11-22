@@ -1,6 +1,6 @@
 //
 //  EffectMagnetism.cpp
-//  SustainableEconomy
+//  CashGrab
 //
 //  Created by Tristan Bell on 08/11/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
