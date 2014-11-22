@@ -2,6 +2,8 @@
 #include "Resources.h"
 #include "Wallet.h"
 #include "PowerupMagnetism.h"
+#include "PowerupPull.h"
+#include "PowerupSmash.h"
 
 Machine* g_machine = nullptr;
 
@@ -191,7 +193,7 @@ void Machine::ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins)
 
     // For testing dispensing powerups
 //    if (rand() % 5 == 0)
-//        LaunchCoin<PowerupMagnetism>(numBronze, slotNum);
+//        LaunchCoin<PowerupSmash>(numBronze, slotNum);
 //    else
         LaunchCoin<CoinBronze>(numBronze, slotNum);
     

@@ -30,6 +30,6 @@ protected:
 	// When launched, speed up the animation to spin faster
 	void OnLaunch(void)  override final { SetAnimationSpeed(1); }
 
-	void set_skin() { skin = sprites[cycle/GetAnimationSpeed()]; }
+	void set_skin() override { skin = sprites[cycle/GetAnimationSpeed()]; }
 	virtual void InitSheet() {}
 };

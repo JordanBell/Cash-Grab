@@ -16,7 +16,14 @@
 class PowerupSmash : public Powerup {
     
 public:
+    static int value;
+    
     PowerupSmash(int start_x, int start_y, int end_x, int end_y);
+    ~PowerupSmash();
+    
+private:
+    void InitSheet(void) override final;
+    void set_skin() override { skin = sprites[0]; }
 };
 
 #endif /* defined(__SustainableEconomy__PowerupSmash__) */

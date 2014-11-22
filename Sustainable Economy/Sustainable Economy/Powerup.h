@@ -30,7 +30,7 @@ public:
     
 protected:
     virtual void InitSheet(void) {  }
-    void set_skin() { skin = sprites[cycle/GetAnimationSpeed()]; }
+    void set_skin() override { skin = sprites[cycle/GetAnimationSpeed()]; }
 };
 
 #endif /* defined(__SustainableEconomy__Powerup__) */

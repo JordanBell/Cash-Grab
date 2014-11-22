@@ -14,8 +14,9 @@ Powerup::Powerup(int start_x, int start_y, int end_x, int end_y) : Throwable(sta
     sprite_sheet = g_resources->GetPowerupSheet();
     m_HitBox->w = 16;
     m_HitBox->h = 16;
-
-	SetAnimationSpeed(1);
+    
+    m_numSprites = 8;
+	SetAnimationSpeed(7);
     
     InitSheet();
 }

@@ -10,7 +10,7 @@
 #include "EffectPull.h"
 #include "EffectMagnetism.h"
 
-int PowerupPull::value = 1;
+int PowerupPull::value = 0;
 
 PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y) : Powerup(start_x, start_y, end_x, end_y)
 {
