@@ -9,7 +9,7 @@
 #include "PowerupMagnetism.h"
 #include "EffectMagnetism.h"
 
-int PowerupMagnetism::value = 1;
+int PowerupMagnetism::value = 0;
 
 PowerupMagnetism::PowerupMagnetism(int start_x, int start_y, int end_x, int end_y) : Powerup(start_x, start_y, end_x, end_y)
 {
@@ -38,6 +38,7 @@ void PowerupMagnetism::InitSprites(void)
         SDL_Rect* clip = new SDL_Rect();
         
         clip->x = TILE_SIZE * i;
+        clip->y = 4 * TILE_SIZE;
         clip->w = clip->h = TILE_SIZE;
         
         sprites[i] = clip;
