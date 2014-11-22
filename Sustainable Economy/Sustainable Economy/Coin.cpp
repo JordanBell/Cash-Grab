@@ -66,6 +66,5 @@ std::list<Coin*> Coin::CoinsAroundPlayer(int radius)
 void Coin::update(int delta)
 {
     Throwable::update(delta);
-    printf("Pos: (%f, %f)\n", x, y);
 	IncCycle();
 }

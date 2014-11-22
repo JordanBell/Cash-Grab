@@ -1,4 +1,5 @@
 #include "PhysicsObject.h"
+#include <iostream>
 #include <math.h>
 #include <cmath>
 
@@ -57,15 +58,11 @@ const float PhysicsObject::ComputeScreenAngle(void) const
 	else // Continue as planned
 	{
 		float trigAngle = atan(dx / dy);
-		float relativeAngle = aimingUp ? THREEQ_ANGLE : RIGHT_ANGLE;
-		relativeAngle = RIGHT_ANGLE; // Hack: Should work. TODO: Refactor this.
 
-		//bool posPol = ((!aimingRight && !aimingUp) || (aimingRight && aimingUp)); // TODO: If below line works, remove this
 		int anglePolarity = (aimingRight == aimingUp) ? 1 : -1;
-		return (relativeAngle + (anglePolarity * trigAngle));
+		return (RIGHT_ANGLE + (anglePolarity * trigAngle));
 	}
 }
-
 
 const float PhysicsObject::ComputeDistanceToEnd(void) const
 {

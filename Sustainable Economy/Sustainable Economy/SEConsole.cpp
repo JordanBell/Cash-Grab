@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Wallet.h"
 #include "LaunchData.h"
+#include "ParticleSimple.h"
 
 // HAX
 
@@ -19,6 +20,29 @@ void Pull(vector<int> args)
 		}
 	}
 }
+
+/* Make a small explosion of simple particles */
+void ParticleExplosion(vector<int> args)
+{
+	int s_x, s_y; // Start coords
+	s_x = s_y = 10*TILE_SIZE;
+
+	int e_x, e_y; // End coords
+
+	list<Particle*> particles;
+	for (int i = 0; i < 10; i++)
+	{
+		// Dirt flies somewhere around behind the player
+		e_x = s_x + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
+		e_y = s_y + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
+
+		particles.push_back(new ParticleSimple(s_x, s_y, e_x, e_y));
+	}
+
+	for (Particle* p : particles)
+		p->Launch();
+}
+
 
 /* Make all coins bounce in place */
 void BounceUp(vector<int> args)
@@ -278,5 +302,12 @@ SEConsole::SEConsole(void)
 		"Yes sir.", 
 		"Jordan's preset of debug calls. Changes upon his mood. Originally [mag], [toggle_pull] and [mute].",
 		j)
+	);
+
+	commands.push_back( 
+		Command("exp", 
+		"Exploding particles", 
+		"Adds a small, standard explosion of simple particles at (320,320).",
+		ParticleExplosion)
 	);
 }

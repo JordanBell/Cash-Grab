@@ -17,6 +17,9 @@ public:
 
 	const bool IsAirborne(void) const { return m_airborne; }
 
+	// Update movement variables
+	void MoveUpdate();
+
 protected:
 	// Can be constructed with specific start coordinates, initially stationary
 	PhysicsObject(int _x, int _y) 
@@ -40,9 +43,6 @@ protected:
 
 	// Whether or not this is currently moving through the air
 	bool m_airborne; 
-
-	// Update movement variables
-	void MoveUpdate();
 
 	// Called upon landing; to be overridden
 	virtual void OnLanding(void) {}

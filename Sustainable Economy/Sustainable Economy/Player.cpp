@@ -278,17 +278,23 @@ void Player::SmashUpdate(void)
 
 void Player::AddDirtParticles(void)
 {
-	//// Dirt starts at bottom of player
-	//int s_x, s_y; // Start coords
-	//s_x = this->x + (skin->w / 2); // Halfway across
-	//s_y = this->y + skin->h;	 // Bottom of player
+	printf("Particles!");
 
-	//// Dirt flies somewhere behind the player
-	//int e_x, e_y; // End coords
-	//e_x = s_x - 32;
-	//e_y = s_y;
+	// Dirt starts at bottom of player
+	int s_x, s_y; // Start coords
+	s_x = this->x + (skin->w / 2); // Halfway across
+	s_y = this->y + skin->h;	 // Bottom of player
 
-	//ParticleSimple* dirtParticle = new ParticleSimple(s_x, s_y, e_x, e_y);
+	// Dirt flies somewhere behind the player
+	int e_x, e_y; // End coords
+	int r1, r2;
+	r1 = rand()%8;
+	r2 = rand()%8;
+	e_x = s_x - r1*r1/2;
+	e_y = s_y - r2*r2/3;
+
+	ParticleSimple* dirtParticle = new ParticleSimple(s_x, s_y, e_x, e_y);
+	dirtParticle->Launch(1);
 }
 
 

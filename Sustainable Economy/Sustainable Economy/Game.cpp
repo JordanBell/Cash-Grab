@@ -8,6 +8,7 @@
 #include <sstream>
 #include "Wallet.h"
 #include "EffectMagnetism.h"
+#include "ParticleSimple.h"
 
 using namespace std;
 
@@ -149,6 +150,10 @@ void Game::Update()
 	// Decrement the cooldown for console activation
 	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
 	
+	// TODO: Replace this once particles are implemented as entities
+	for (Particle* po : g_particles) 
+		po->MoveUpdate();
+
 	// Increment the screen transition
 	if (m_transitionDirection != Player::Direction::NULLDIR)
 	{
@@ -187,9 +192,7 @@ void Game::Update()
 	HandleKeys();
 	
 	for (Entity* e : m_Entities)
-    {
         e->update(delta);
-    }
     
     // Efficiency!
     m_Entities.sort(entity_compare);
@@ -208,8 +211,13 @@ void Game::Render()
     SDL_FillRect(screen,NULL,0x000000);
     
 	// Render all of the entities
-	for (Entity* e : m_Entities) { e->render(); }
+	for (Entity* e : m_Entities) 
+		e->render();
     
+	// Render all particles TODO: Implement particles as entities - refactor entities as we know them into GameObjects and Sprites
+	for (Particle* p : g_particles) 
+		p->Render();
+
 	// Render the UI above everything
     g_UI->Render();
 
