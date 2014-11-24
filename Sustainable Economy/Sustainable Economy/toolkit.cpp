@@ -7,10 +7,6 @@
 
 SDL_Surface* screen;
 TTF_Font* font;
-//SDL_Color machineTextColor = { 175, 175, 150 };
-//SDL_Color machineTextColor = { 50, 150, 50 };
-//SDL_Color machineTextColor = { 80, 250, 80 };
-//SDL_Color machineTextColor = { 27, 31, 13 }; // Near Black
 SDL_Color machineTextColor = { 60, 175, 60 }; // Text color on the machine's displays
 SDL_Color textColor = { 120, 10, 20 };
 SDL_Event event;

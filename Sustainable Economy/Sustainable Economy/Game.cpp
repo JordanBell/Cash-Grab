@@ -151,9 +151,9 @@ void Game::Update()
 	// Decrement the cooldown for console activation
 	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
 	
-	// TODO: Replace this once particles are implemented as entities
-	for (Particle* po : g_particles) 
-		po->MoveUpdate();
+	//// TODO: Replace this once particles are implemented as entities
+	//for (Particle* po : g_particles) 
+	//	po->MoveUpdate();
 
 	// Increment the screen transition
 	if (m_transitionDirection != Player::Direction::NULLDIR)

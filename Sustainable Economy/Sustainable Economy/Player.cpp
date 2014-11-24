@@ -16,6 +16,8 @@ Player::Player(int x, int y)
     m_maxCycles = WALK_CYCLE_LENGTH * WALK_SPEED;
 
 	InitSprites();
+
+	m_renderPriority = LAYER_PLAYER;
 }
 
 void Player::InitSprites(void)
@@ -282,23 +284,43 @@ void Player::SmashUpdate(void)
 
 void Player::AddDirtParticles(void)
 {
-	printf("Particles!");
 
-	// Dirt starts at bottom of player
-	int s_x, s_y; // Start coords
-	s_x = this->x + (m_imageRect->w / 2); // Halfway across
-	s_y = this->y + m_imageRect->h;	 // Bottom of player
+	float minSpeed = MAX_SPEED * 0.75;
+	float aboveMin = m_speed - minSpeed;
+	float perc = float(aboveMin) / float(MAX_SPEED-minSpeed);
+	int angle = 8*perc + 80; // Angle between 80 and 87
+	
+	// 1 to 7 particles
+	int numParticles = perc*perc*6 + 1;
 
-	// Dirt flies somewhere behind the player
-	int e_x, e_y; // End coords
-	int r1, r2;
-	r1 = rand()%8;
-	r2 = rand()%8;
-	e_x = s_x - r1*r1/2;
-	e_y = s_y - r2*r2/3;
+	for (int i = 0; i < numParticles; i++)
+	{
+		// Dirt starts at bottom of player
+		float s_x, s_y; // Start coords
+		s_x = this->x + (m_imageRect->w / 2); // Halfway across
+		s_y = this->y + m_imageRect->h;	 // Bottom of player
 
-	ParticleSimple* dirtParticle = new ParticleSimple(s_x, s_y, e_x, e_y);
-	dirtParticle->Launch(1);
+		// Dirt flies somewhere behind the player
+		float e_x, e_y; // End coords
+		float r1, r2, val1, val2;
+		r1 = rand()%8;
+		r2 = rand()%8;
+		val1 = r1*r1/4;
+		val2 = r2*r2/4;
+		val1 *= rand()%2 ? 1 : -1;
+		val2 *= rand()%2 ? 1 : -1;
+		e_x = s_x - val1;
+		e_y = s_y - val2;
+
+		ParticleSimple* dirtParticle = new ParticleSimple(s_x, s_y, e_x, e_y);
+
+		// Find a variable angle 
+		int thisAngle = angle + (rand()%5) - 2; // Vary it by an amount varying from -2 to +2
+
+		//int angle = 8*(float(m_speed - (MAX_SPEED * 0.75)) / float(MAX_SPEED-(MAX_SPEED * 0.75))) + 81 + ((rand()%5) - 2);
+
+		dirtParticle->Launch(thisAngle);
+	}
 }
 
 void Player::Render(void)

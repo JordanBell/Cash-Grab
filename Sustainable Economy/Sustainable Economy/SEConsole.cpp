@@ -30,7 +30,8 @@ void ParticleExplosion(vector<int> args)
 	int e_x, e_y; // End coords
 
 	list<Particle*> particles;
-	for (int i = 0; i < 10; i++)
+	int num = args.front();
+	for (int i = 0; i < num; i++)
 	{
 		// Dirt flies somewhere around behind the player
 		e_x = s_x + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
@@ -148,14 +149,17 @@ void PrintLaunchInfo(vector<int> args)
 /* Jordan's debug preset */
 void j(vector<int> args)
 {
-	TogglePull(args);
-	ToggleMagnetism(args);
+	//TogglePull(args);
+	//ToggleMagnetism(args);
 
-	// Toggle Mute
-	if (g_game->IsMuted()) 
-		Unmute(args);
-	else
-		Mute(args);
+	//// Toggle Mute
+	//if (g_game->IsMuted()) 
+	//	Unmute(args);
+	//else
+	//	Mute(args);
+
+	g_machine->ForceDispense(1000);
+	Mute(args);
 }
 
 

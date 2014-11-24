@@ -28,7 +28,7 @@ Throwable::Throwable(int start_x, int start_y, int end_x, int end_y)
     m_HitBox->h = 32;
 
 	// Set the highest render priority for throwables
-	m_renderPriority = 2;
+	m_renderPriority = LAYER_AIR;
 }
 
 Throwable::~Throwable(void) 

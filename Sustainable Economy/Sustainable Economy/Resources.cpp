@@ -7,7 +7,7 @@
 #include "Prompt.h"
 
 #include <stdexcept>
-
+// TODO: Make resources a namespace? Replace constructor and destructor with Init()/Load() and Deinit()/Free() respectively?
 Resources* g_resources = nullptr;
 
 Resources::Resources(void)
@@ -20,7 +20,8 @@ Resources::Resources(void)
     m_PowerupSheet =        load_image("powerupSheet.png");
 	m_Prompt =				load_image("Press Enter.png");
     m_Square =              load_image("Square.png");
-	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size 28
+    m_SpeedParticle =       load_image("speedParticle.png");
+	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size set
     
     m_Music = Mix_LoadMUS("Main2.wav");
     
@@ -40,6 +41,7 @@ Resources::Resources(void)
 		(!m_Prompt)             ||
 		(!m_Font)               ||
         (!m_Square)             ||
+        (!m_SpeedParticle)      ||
         (!m_Music))
 		{
 			throw std::runtime_error("Some of the resources failed to initialise");
@@ -62,6 +64,7 @@ Resources::~Resources(void)
 	SDL_FreeSurface(m_MoneyMachineSheet);
 	SDL_FreeSurface(m_Prompt);
     SDL_FreeSurface(m_Square);
+    SDL_FreeSurface(m_SpeedParticle);
 	TTF_CloseFont(m_Font);
     
     Mix_FreeMusic(m_Music);

@@ -1,11 +1,11 @@
 #include "KinematicData.h"
 #include <cstdlib>
-
+#include <iostream>
 const float KinematicData::ComputeAngleBySuppression(const int angleSuppression)
 {
 	if (angleSuppression <= -1)
 		return 90; // Straight Up
-
+	
 	// Angles are more shallow the higher the suppression
     switch (angleSuppression) {
         case 0:
@@ -27,6 +27,6 @@ const float KinematicData::ComputeAngleBySuppression(const int angleSuppression)
             return 1;
             break;
         default:
-            return 1;
+            return angleSuppression;
     }
 }

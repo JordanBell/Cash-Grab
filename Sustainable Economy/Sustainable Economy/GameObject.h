@@ -19,7 +19,7 @@ protected:
 public:
 	// Construct a GameObject
 	GameObject(int x, int y) 
-		: m_renderPriority(0), m_imageRect(nullptr), x(x), y(y) {}
+		: m_renderPriority(1), m_imageRect(nullptr), x(x), y(y) {}
 
 	// Destruct the GameObject
 	virtual ~GameObject(void) {}

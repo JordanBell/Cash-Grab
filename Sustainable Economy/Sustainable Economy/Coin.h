@@ -3,6 +3,7 @@
 #include <list>
 #include "Throwable.h"
 #include "Player.h"
+
 using namespace std;
 class Coin;
 extern list<Coin*> g_coins;
@@ -24,10 +25,10 @@ protected:
     SDL_Rect* sprites[8];
 
 	// When landing, slow the animation to a calmer speed
-	void OnLanding(void) override final { SetAnimationSpeed(6); }
+	void OnLanding(void) override final;
 
 	// When launched, speed up the animation to spin faster
-	void OnLaunch(void)  override final { SetAnimationSpeed(1); }
+	void OnLaunch(void)  override final;
 
 	// TODO: Merge this with PowerUp's UpdateImageRect function
 	void UpdateImageRect(void) override { m_imageRect = sprites[m_cycle/GetAnimationSpeed()]; }

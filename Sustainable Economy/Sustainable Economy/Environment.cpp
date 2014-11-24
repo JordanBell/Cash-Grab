@@ -51,6 +51,8 @@ Environment::Environment(int x, int y) : GameObject(x, y)
 	rect_wallTop_TLCorner = sprites[3][5];
 
 	BuildWalls();
+
+	m_renderPriority = LAYER_ENV_LOWER;
 }
 	
 void Environment::BuildWalls(void)

@@ -32,6 +32,20 @@ Coin::~Coin(void)
 	g_coins.remove(this);
 }
 
+// When landing, slow the animation to a calmer speed
+void Coin::OnLanding(void) 
+{ 
+	SetAnimationSpeed(6); 
+	m_renderPriority = LAYER_GROUND; 
+}
+
+// When launched, speed up the animation to spin faster
+void Coin::OnLaunch(void)
+{ 
+	SetAnimationSpeed(1); 
+	m_renderPriority = LAYER_AIR; 
+}
+
 std::list<Coin*> Coin::CoinsAround(int px, int py, int radius)
 {
 	std::list<Coin*> r_coins;

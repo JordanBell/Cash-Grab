@@ -10,7 +10,6 @@ public:
 	virtual ~Sprite(void) {}
 
 	virtual void Update(int delta) { IncCycle(); UpdateImageRect(); }
-	const int GetRenderPriority(void) const { return m_renderPriority; }
 
 protected:
 	//The Delay before cycling through each sprite. Make smaller to speed up the animation
@@ -25,7 +24,10 @@ protected:
 	// Called by Sprite constructor, to be overridden by Sprite subclasses
 	virtual void InitSprites(void) = 0;
 
+	// Increment the animation cycle
 	virtual void IncCycle(void) { m_cycle = (m_cycle >= (m_maxCycles-1)) ? 0 : m_cycle+1; }
+
+	// (virtual) Called by Sprite::Update - makes any changes to the animation's sprite (image rect)
 	virtual void UpdateImageRect(void) { m_imageRect = nullptr; }
 };
 

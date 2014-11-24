@@ -9,18 +9,25 @@ class ParticleSimple :
 {
 public:
 	ParticleSimple(int start_x, int start_y, int end_x, int end_y);
-	~ParticleSimple(void);
+	~ParticleSimple(void) { SDL_FreeSurface(m_imageSurface); s_instanceList.remove(this); }
 
 	// Change the color of the particle surface
-	void SetColor(const Uint32 color);
-	void Update(int delta) override { printf("Updating!"); x = m_pos.x; y = m_pos.y; PhysicsObject::MoveUpdate(); GameObject::Update(delta); }
+	void SetColor(const Uint32 color) { SDL_FillRect(m_imageSurface, NULL, color); }
+	void Update(int delta) override;
 
 protected:
-	// When the particle has landed, remove it // TODO: Or, create a timer that fades it out
-	void OnLanding(void) override { printf("Landed.\n"); g_game->removeGameObject(this); }
+	// When the particle has landed, change its render priority
+	void OnLanding(void) override { m_renderPriority = LAYER_GROUND; }
 
 private:
 	Dimensions m_size;
+	int m_fadeCounter;
+	int m_age;
+
+	static std::list<ParticleSimple*> s_instanceList;
+	static Uint32 s_color; // Soft brown
+
+	void StartFade(void);
 };
 
 typedef ParticleSimple Particle;

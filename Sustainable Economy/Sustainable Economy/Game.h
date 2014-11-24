@@ -6,6 +6,11 @@
 
 #define CONSOLE_COOLDOWN 10
 #define TRANSITION_SPEED 10
+#define LAYER_ENV_LOWER 0
+#define LAYER_GROUND 1
+#define LAYER_PLAYER 2
+#define LAYER_ENV_UPPER 3
+#define LAYER_AIR 4
 
 #include <list>
 #include "KeyCode.h"
