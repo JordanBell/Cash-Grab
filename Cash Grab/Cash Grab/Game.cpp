@@ -135,7 +135,7 @@ void Game::HandleKeys()
 
 		// Screen Formatting
 		if (keystates[SDLK_f]) toggleScreenFormat();
-		if (keystates[SDLK_ESCAPE]) exitFullScreen();
+		if (keystates[SDLK_ESCAPE]) running = false;
 	}
 
 	// Testing console toggle
