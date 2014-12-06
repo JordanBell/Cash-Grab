@@ -3,9 +3,9 @@
 
 std::list<Particle*> g_particles;
 std::list<Particle*> ParticleSimple::s_instanceList;
-//Uint32 ParticleSimple::s_color = 0x00705030; // Soft brown
+Uint32 ParticleSimple::s_color = 0x00705030; // Soft brown
 //Uint32 ParticleSimple::s_color = 0x0066CCCC; // Blue
-Uint32 ParticleSimple::s_color = 0x00237556; // Blue
+//Uint32 ParticleSimple::s_color = 0x00237556; // Blue
 
 #define INSTANCE_LIMIT 1000000
 #define AGE_LIMIT 10
@@ -38,6 +38,19 @@ void ParticleSimple::StartFade(void)
 
 	// The start of the fade is triggered by a fade counter != FADE_LENGTH
 	m_fadeCounter--;
+}
+
+void ParticleSimple::Render(void)
+{
+	// Find the rendering rectangle based on position and size.
+	//SDL_Rect renderRect = { x + s_renderingOffset_x, y + s_renderingOffset_y, m_size.x, m_size.y };
+
+	// Fill the rect onto the screen - cheaper than blitting a surface
+	//SDL_FillRect(screen, &renderRect, m_color);
+	
+	// SDL_FillRect(m_imageSurface, NULL, color);
+	// Normal GameObject rendering
+	apply_surface(x, y, m_imageSurface, screen, m_imageRect);
 }
 
 
