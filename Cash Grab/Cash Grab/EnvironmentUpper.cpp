@@ -25,6 +25,15 @@ void EnvironmentUpper::Render()
 			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, sprites[WALL_TOP][e]); // Top Screen's WallTop
 		}
 
+		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*3) || (_x == TILE_SIZE*16) || (_x == TILE_SIZE*15))
+		{
+			apply_surface(_x, 0*TILE_SIZE - screen->h, m_imageSurface, screen, sprites[WALL_TOP][e]); // Top WallTop
+			apply_surface(_x, 1*TILE_SIZE - screen->h, m_imageSurface, screen, sprites[WALL][e]); // Top Wall
+			apply_surface(_x, 2*TILE_SIZE - screen->h, m_imageSurface, screen, sprites[WALL][e]); // Mid Wall
+
+			//apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, rect_wall); // Top Screen's WallTop
+		}
+
 		// Bottom overhang
 		apply_surface(_x, (screen->h - 2*TILE_SIZE), m_imageSurface, screen, sprites[WALL_TOP][e]);
 
@@ -45,8 +54,8 @@ void EnvironmentUpper::Render()
 
 		// Top Room
 	// Clocks
-	apply_surface(TILE_SIZE*4.5, roomOffset + 1.5*TILE_SIZE, m_imageSurface, screen, sprites[CLOCK_1][e]); // Clock above left doorway
-	apply_surface(TILE_SIZE*14.5, roomOffset + 1.5*TILE_SIZE, m_imageSurface, screen, sprites[CLOCK_2][e]); // Clock above left doorway
+	apply_surface(TILE_SIZE*3.5, roomOffset + 1.5*TILE_SIZE, m_imageSurface, screen, sprites[CLOCK_1][ELEMENT_ICE]); // Clock above left doorway
+	apply_surface(TILE_SIZE*15.5, roomOffset + 1.5*TILE_SIZE, m_imageSurface, screen, sprites[CLOCK_2][ELEMENT_FIRE]); // Clock above left doorway
 
 	// The tops of each station
 	BuildStationRest(TILE_SIZE * 4, roomOffset + TILE_SIZE * 5);
