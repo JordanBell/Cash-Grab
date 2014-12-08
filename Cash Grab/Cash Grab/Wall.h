@@ -14,8 +14,10 @@
 class Wall : public Collidable, public GameObject {
     
 public:
-    Wall(int x, int y, SDL_Surface* sheet, SDL_Rect* clip);
-	void Render(void) { GameObject::Render(); }
+    Wall(int x, int y) : Collidable(x, y), GameObject(x, y)
+		{ m_IsMoveable = false; }
+
+	void Render(void) { /* Do Nothing */ }
 };
 
 #endif /* defined(__CashGrab__Wall__) */

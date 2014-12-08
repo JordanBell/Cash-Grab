@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 #include "ParticleSimple.h"
+#include "Camera.h"
 
 Player *g_player = nullptr;
 
@@ -104,34 +105,6 @@ void Player::DoMove()
         x += m_xVel;
 
 		UpdateCollidablePos(x, y);
-
-		// The boundaries for the screen, player and his trespassings in any four directions
-		int screenLeft, playerLeft;
-		int screenRight, playerRight;
-		int screenTop, playerTop;
-		int screenBottom, playerBottom;
-		bool offLeft, offRight, offTop, offBottom;
-
-        // Player Boundaries
-		playerLeft = x, playerTop = y;
-		playerRight = x + m_imageRect->w;
-		playerBottom = y + m_imageRect->h;
-
-        // Screen Boundaries
-		screenLeft = -s_renderingOffset_x, screenTop = -s_renderingOffset_y;
-		screenRight = screen->w - s_renderingOffset_x;
-		screenBottom = screen->h - s_renderingOffset_y;
-
-		// Check for boundary passes
-		offLeft   = (direction == LEFT) && (playerLeft < screenLeft);
-		offRight  = (direction == RIGHT) && (playerRight > screenRight);
-		offTop	  = (direction == UP) && (playerTop < screenTop);
-		offBottom = (direction == DOWN) && (playerBottom > screenBottom);
-
-		if (offLeft)   g_game->TransitionScreen(LEFT);
-		if (offRight)  g_game->TransitionScreen(RIGHT);
-		if (offTop)	   g_game->TransitionScreen(UP);
-		if (offBottom) g_game->TransitionScreen(DOWN);
     }
 }
 
@@ -266,6 +239,9 @@ void Player::Update(int delta)
         
         m_AABB->h += m_yVel;
         m_AABB->w += m_xVel;
+
+		// The player has moved, so make sure he's still in the same room
+		g_camera->FocusOnPlayerRoom();
     }
 
     UpdateCollidablePos(x, y);
@@ -333,6 +309,7 @@ void Player::AddDirtParticles(void)
 			}
 
 			ParticleSimple* dirtParticle = new ParticleSimple(s_x, s_y, e_x, e_y);
+			g_game->addGameObject(dirtParticle);
 
 			// Find a variable angle 
 			int thisAngle = angle + (rand()%5) - 2; // Vary each particle's angle by an amount varying from -2 to +2

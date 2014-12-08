@@ -5,7 +5,6 @@
 #define FRAME_RATE 60
 
 #define CONSOLE_COOLDOWN 10
-#define TRANSITION_SPEED 10
 #define LAYER_ENV_LOWER 0
 #define LAYER_GROUND 1
 #define LAYER_PLAYER 2
@@ -18,7 +17,6 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "Coin.h"
-#include "EnvironmentUpper.h"
 #include "Prompt.h"
 #include "Timer.h"
 #include "SEConsole.h"
@@ -48,8 +46,6 @@ public:
 	void Mute(void) { m_muted = true; }
 	void Unmute(void) { m_muted = false; }
 
-	void TransitionScreen(Player::Direction direction) { m_transitionDirection = direction; }
-
 private:
 	SEConsole testingConsole;
 	int consoleCooldownCounter;
@@ -60,10 +56,8 @@ private:
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking
 	bool m_muted;
-	Player::Direction m_transitionDirection;
 
 	//GameObjects
-	Environment *environment;
 	Machine *machine;
 	Prompt *prompt;
 	list<GameObject*> m_GameObjects;
