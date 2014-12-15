@@ -18,6 +18,8 @@ protected:
     SDL_Rect* m_AABB;
     
 public:
+    virtual ~Collidable(void) { }
+    
     bool m_IsMoveable; // ie Walls are not moveable
     
     int m_xVel, m_yVel; // Number of pixels to move next frame (if it can move)

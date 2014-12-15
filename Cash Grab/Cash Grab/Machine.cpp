@@ -206,7 +206,7 @@ template <class Coin_Type>
 void Machine::LaunchCoin(int count, int slotNum)
 {
 	// DEBUG: Loop does not check for transgressions against: (m_numDispensed < coinCost). At time of coding - not sure if necessary
-	for (count; count > 0 ; count--)
+	for (int i = 0; i < count; i++)
 	{
 		// Find this Coin's launch info
 		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);

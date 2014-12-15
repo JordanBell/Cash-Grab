@@ -10,7 +10,7 @@
 class PhysicsObject
 {
 public:		
-	~PhysicsObject(void) {}
+	virtual ~PhysicsObject(void) {}
 
 	void Launch(int angleSuppression = 0, int speedOverride = -1);
 	void LaunchTo(int _x, int _y, int angleSuppression = 0, int speedOverride = -1);

@@ -10,6 +10,8 @@
 // TODO: Make resources a namespace? Replace constructor and destructor with Init()/Load() and Deinit()/Free() respectively?
 Resources* g_resources = nullptr;
 
+#define CHECK_NULL(x) x ? "false" : "true"
+
 Resources::Resources(void)
 {
 	// Load the resouce files using SDL
@@ -44,6 +46,16 @@ Resources::Resources(void)
         (!m_SpeedParticle)      ||
         (!m_Music))
 		{
+            printf("Player: %s\n", CHECK_NULL(m_PlayerSheet));
+            printf("Coin: %s\n", CHECK_NULL(m_CoinSheet));
+            printf("Environment: %s\n", CHECK_NULL(m_EnvironmentImage));
+            printf("Money machine: %s\n", CHECK_NULL(m_MoneyMachineSheet));
+            printf("Powerup: %s\n", CHECK_NULL(m_PowerupSheet));
+            printf("Prompt: %s\n", CHECK_NULL(m_Prompt));
+            printf("Font: %s\n", CHECK_NULL(m_Font));
+            printf("Square: %s\n", CHECK_NULL(m_Square));
+            printf("Speed particle: %s\n", CHECK_NULL(m_SpeedParticle));
+            printf("music: %s\n", CHECK_NULL(m_Music));
 			throw std::runtime_error("Some of the resources failed to initialise");
 		}
     
