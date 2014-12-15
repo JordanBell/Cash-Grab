@@ -18,7 +18,7 @@ public:
 	virtual void Render(void) override = 0;
 
 	// Get a rectangle of this room's position and size
-	SDL_Rect GetRect(void) { SDL_Rect r = {x, y, m_Size.x, m_Size.y}; return r; }
+	SDL_Rect GetRect(void) { SDL_Rect r = {(Sint16)x, (Sint16)y, (Uint16)m_Size.x, (Uint16)m_Size.y}; return r; }
 
 	// Return a pointer to the room that the player is in
 	static Room* GetPlayerRoom(void);
