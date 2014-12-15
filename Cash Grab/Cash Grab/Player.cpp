@@ -176,9 +176,8 @@ void Player::Update(int delta)
 	Sprite::Update(delta);
 	SmashUpdate();
 
-    m_speed = 0.4;
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
-//		DecaySpeed();
+		DecaySpeed();
 
 	//printf("Speed: %f%%\tDecay: -%f%%\n", ComputeSpeedPercentage()*100, ComputeDecay()*100);
 	
@@ -203,8 +202,6 @@ void Player::Update(int delta)
 //			c->LaunchTo(coinX, coinY, 2);
 //		}
 //	}
-
-	InitSprites();
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;

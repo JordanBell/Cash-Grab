@@ -23,10 +23,6 @@ public:
 
 	// Destruct the GameObject
 	virtual ~GameObject(void) {
-        if (m_imageSurface) {
-            SDL_FreeSurface(m_imageSurface);
-        }
-        
         if (m_imageRect) {
             delete m_imageRect;
         }

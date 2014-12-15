@@ -11,17 +11,23 @@
 #ifndef Cash_Grab_Menu_h
 #define Cash_Grab_Menu_h
 
+#include <vector>
+#include "Button.h"
+
 class Menu {
     std::vector<Button*> m_Buttons;
     
 public:
-    Menu();
-    
-    virtual ~Menu() {
-        for (Button* b : m_Buttons) {
+    virtual ~Menu()
+    {
+        for (Button *b : m_Buttons) {
             delete b;
         }
     }
+    
+    virtual void Update(int delta);
+    
+    virtual void Render();
 };
 
 #endif
