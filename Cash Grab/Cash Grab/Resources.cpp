@@ -2,7 +2,6 @@
 #include "toolkit.h"
 #include "Player.h"
 #include "Coin.h"
-#include "Environment.h"
 #include "Machine.h"
 #include "Prompt.h"
 

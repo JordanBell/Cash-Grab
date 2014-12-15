@@ -13,13 +13,12 @@ public:
 	~Prompt(void) {}
 
 	void Update(int delta);
-	void Render(void) { /*if (visible) GameObject::Render();*/ }
+	void Render(void) { if (visible) GameObject::Render(); }
 
 private:
 	int timeSinceFlash;
 	Machine* machine;
 	bool visible;
-	SDL_Surface* m_image;
 };
 
 #endif

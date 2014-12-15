@@ -25,9 +25,6 @@ ParticleSimple::ParticleSimple(int start_x, int start_y, int end_x, int end_y)
 	// Set render priority above coins
 	m_renderPriority = LAYER_GROUND;
 
-	// Add this to the game's list of GameObjects
-	g_game->addGameObject(this);
-
 	s_instanceList.emplace_back(this);
 }
 

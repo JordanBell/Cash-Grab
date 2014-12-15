@@ -5,7 +5,7 @@
 #include <list>
 
 class ParticleSimple :
-	public PhysicsObject, GameObject
+	public PhysicsObject, public GameObject
 {
 public:
 	ParticleSimple(int start_x, int start_y, int end_x, int end_y);

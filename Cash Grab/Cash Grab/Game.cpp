@@ -1,20 +1,25 @@
 #include "Game.h"
 #include "SDL.h"
 #include "CollisionManager.h"
-#include "Machine.h"
+#include "Camera.h"
 #include "Resources.h"
+#include "Machine.h"
 #include "UI.h"
 #include <time.h>
 #include <sstream>
 #include "Wallet.h"
 #include "EffectMagnetism.h"
 #include "ParticleSimple.h"
+#include "RoomOriginal_Upper.h"
+#include "RoomOriginal_Lower.h"
+#include "RoomHub_Upper.h"
+#include "RoomHub_Lower.h"
 
 using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false), m_transitionDirection(Player::Direction::NULLDIR)
+Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 {
     delta = 0;
 	srand((unsigned int)time(nullptr));
@@ -25,6 +30,7 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false), m_trans
 	player = new Player((9.5*TILE_SIZE), (8*TILE_SIZE));
     g_player = player;
 	prompt = new Prompt(machine);
+	addGameObject(prompt);
     
     m_EffectManager = new EffectManager();
 
@@ -38,6 +44,9 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false), m_trans
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
+
+	// Initialise the Camera
+	g_camera = new Camera();
 }
 
 Game::~Game(void)
@@ -55,6 +64,7 @@ Game::~Game(void)
 void Game::run()
 {    
 	InitEnvironment();
+	g_camera->FocusOnPlayerRoom();
     
     //Mix_PlayMusic(g_resources->GetMusic(), -1);
     
@@ -80,15 +90,11 @@ void Game::run()
 
 void Game::InitEnvironment(void)
 {
-	// Environment stuff has a few steps
-	g_environment = new Environment(0, 0);
-	g_environmentUpper = new EnvironmentUpper(0, 0);
-	environment = g_environment;
-	m_GameObjects.push_front(environment);
-	m_GameObjects.push_front(g_environmentUpper);
-
-	// Add the prompt now, to layer it over everything
-	m_GameObjects.push_back(prompt);
+	// Add room objects
+	addGameObject( new RoomOriginal_Upper() );
+	addGameObject( new RoomOriginal_Lower() );
+	addGameObject( new RoomHub_Upper() );
+	addGameObject( new RoomHub_Lower() );
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
@@ -153,47 +159,16 @@ void Game::Update()
 	// Decrement the cooldown for console activation
 	if (consoleCooldownCounter > 0) consoleCooldownCounter--;
 
-	// Increment the screen transition
-	if (m_transitionDirection != Player::Direction::NULLDIR)
-	{
-		if (m_transitionDirection == Player::Direction::UP)
-		{
-			if (s_renderingOffset_y != screen->h)
-				s_renderingOffset_y += TRANSITION_SPEED;
-			else
-				m_transitionDirection = Player::Direction::NULLDIR;
-		}
-        if (m_transitionDirection == Player::Direction::DOWN)
-		{
-			if (s_renderingOffset_y != 0)
-				s_renderingOffset_y -= TRANSITION_SPEED;
-			else
-				m_transitionDirection = Player::Direction::NULLDIR;
-		}
-        if (m_transitionDirection == Player::Direction::LEFT)
-		{
-			if (s_renderingOffset_x != 0)
-				s_renderingOffset_x += TRANSITION_SPEED;
-			else
-				m_transitionDirection = Player::Direction::NULLDIR;
-		}
-        if (m_transitionDirection == Player::Direction::RIGHT)
-		{
-			if (s_renderingOffset_x != -screen->w)
-				s_renderingOffset_x -= TRANSITION_SPEED;
-			else
-				m_transitionDirection = Player::Direction::NULLDIR;
-        }
-	}
-
-
-//    if (consoleCooldownCounter == 0) g_player->Smash(50);
+//	if (consoleCooldownCounter == 0) g_player->Smash(50);
 	HandleKeys();
 	
 	for (GameObject* e : m_GameObjects)
         e->Update(delta);
     
-    // Efficiency!
+	// Update the camera
+	g_camera->UpdateFocus();
+
+    // Sort game objects
     m_GameObjects.sort(GameObject_Compare);
     
 	m_CollisionManager->Update(delta);
