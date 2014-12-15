@@ -96,10 +96,6 @@ void Collidable::UpdateCollidablePos(const int x, const int y)
 	// Update Hitbox
     m_HitBox->x = x;
     m_HitBox->y = y;
-
-	// Update prediction hitbox
-	m_AABB->x = x;
-    m_AABB->y = y;
 }
 
 

@@ -176,8 +176,9 @@ void Player::Update(int delta)
 	Sprite::Update(delta);
 	SmashUpdate();
 
+    m_speed = 0.4;
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
-		DecaySpeed();
+//		DecaySpeed();
 
 	//printf("Speed: %f%%\tDecay: -%f%%\n", ComputeSpeedPercentage()*100, ComputeDecay()*100);
 	
@@ -237,8 +238,8 @@ void Player::Update(int delta)
                 break;
         }
         
-        m_AABB->h += m_yVel;
-        m_AABB->w += m_xVel;
+        m_AABB->h += abs(m_yVel);
+        m_AABB->w += abs(m_xVel);
 
 		// The player has moved, so make sure he's still in the same room
 		g_camera->FocusOnPlayerRoom();
@@ -327,11 +328,13 @@ void Player::Render(void)
     // For debugging!
     
     // Draw the AABB, then the player
-    /*SDL_Surface *test = g_resources->GetTestImage();
+    /*Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
+    Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
     
-    SDL_Rect r = { 0, 0, m_AABB->w, m_AABB->h };
-    SDL_Rect *rect = &r;
-    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);*/
+    SDL_Rect r1 = { m_AABB->x, m_AABB->y, m_AABB->w, m_AABB->h };
+    SDL_Rect r2 = { m_HitBox->x, m_HitBox->y, m_HitBox->w, m_HitBox->h };
+    SDL_FillRect(screen, &r1, aabbColor);
+    SDL_FillRect(screen, &r2, hitBoxColor);*/
     
     Sprite::Render();
 }
