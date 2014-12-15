@@ -14,6 +14,7 @@
 #include "RoomOriginal_Lower.h"
 #include "RoomHub_Upper.h"
 #include "RoomHub_Lower.h"
+#include "RoomHallways_Lower.h"
 
 using namespace std;
 
