@@ -7,7 +7,7 @@
 #define MIN_SPEED 0.1f // The minimum (base) movement speed
 #define DECAY_FACTOR 0.020 // Linearly controls the severity of player movement decay at higher speeds
 #define DECAY_MINIMUM 0.0002 // A base speed decay, that persists even at smaller speeds
-#define WALK_SPEED 10 // The number of frames between cycle changes
+#define WALK_SPEED 8 // The number of frames between cycle changes
 #define WALK_CYCLE_LENGTH 4
 #define STILL 1
 #define SMASH_LIMIT 500

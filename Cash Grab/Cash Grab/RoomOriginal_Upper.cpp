@@ -25,7 +25,7 @@ void RoomOriginal_Upper::Render(void)
 	}
 
 	// Clocks
-	apply_surface(TILE_SIZE*4.5, 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_1][m_BaseE]); // Clock above left doorway
+	apply_surface(TILE_SIZE*4.5, 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_2][m_BaseE]); // Clock above left doorway
 	apply_surface(TILE_SIZE*14.5, 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_1][m_BaseE]); // Clock above left doorway
 	
 	// Top & Bottom Linings

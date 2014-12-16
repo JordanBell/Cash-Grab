@@ -7,9 +7,6 @@ class ParticleType_Powder :
 public:
 	#define COMMON_CONSTRUCT \
 		{ \
-		/* Make it White */ \
-		SetColor(0x00cce3e6); \
-		\
 		/* Make it Light */ \
 		SetGravity(m_gravityForce/300); \
 		\

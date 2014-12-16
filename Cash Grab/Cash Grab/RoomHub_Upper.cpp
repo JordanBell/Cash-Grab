@@ -3,10 +3,6 @@
 
 void RoomHub_Upper::Render(void)
 {
-	// Clocks
-	apply_surface(TILE_SIZE*4.5, y + 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_1][ELEMENT_ICE]); // Clock above left doorway
-	apply_surface(TILE_SIZE*14.5, y + 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_2][ELEMENT_FIRE]); // Clock above left doorway
-
 	// The tops of each station
 	RenderStation(TILE_SIZE * 4, TILE_SIZE * 5);
 	RenderStation(TILE_SIZE * 12, TILE_SIZE * 5);
@@ -22,6 +18,10 @@ void RoomHub_Upper::Render(void)
 
 			//apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, rect_wall); // Top Screen's WallTop
 		}
+		else {
+			// Bottom walls
+			apply_surface(_x, y + (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
+		}
 
 		// Door Openings
 		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14))
@@ -29,6 +29,10 @@ void RoomHub_Upper::Render(void)
 		else if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15))
 			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_RIGHT][m_BaseE]); // Top Screen's WallTop
 	}
+
+	// Clocks
+	apply_surface(TILE_SIZE*4.5, y + 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_1][ELEMENT_ICE]); // Clock above left doorway
+	apply_surface(TILE_SIZE*14.5, y + 1.5*TILE_SIZE, m_imageSurface, screen, tiles[CLOCK_2][ELEMENT_FIRE]); // Clock above left doorway
 
 	// The wall linings for each of the topWall decors
 	// Top & Bottom Linings

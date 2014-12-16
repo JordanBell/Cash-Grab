@@ -123,16 +123,13 @@ void RoomHub_Lower::Render(void)
 			apply_surface(_x, 3*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]);*/
 
 		if (_x == TILE_SIZE*4)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_LEFT][ELEMENT_ICE]); // Door
+				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LEFT][ELEMENT_ICE]); // Door
 		if (_x == TILE_SIZE*5)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_RIGHT][ELEMENT_ICE]); // Door
+				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_RIGHT][ELEMENT_ICE]); // Door
 		if (_x == TILE_SIZE*14)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_LEFT][ELEMENT_FIRE]); // Door
+				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LEFT][ELEMENT_FIRE]); // Door
 		if (_x == TILE_SIZE*15)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_RIGHT][ELEMENT_FIRE]); // Door
-
-		// Add the bottom wall no matter what
-		apply_surface(_x, y + (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
+				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_RIGHT][ELEMENT_FIRE]); // Door
 	}
 
 	// Left and Right Walls
