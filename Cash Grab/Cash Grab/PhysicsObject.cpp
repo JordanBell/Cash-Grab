@@ -41,6 +41,24 @@ void PhysicsObject::Launch(int angleSuppression, int speedOverride)
 	m_screenKin.velocity.y = m_additiveScreenVelocity.y + (m_spatialKin.velocity.y * -3/4); // Multiply by a negative as the axis for the coordinates are swapped
 }
 
+void PhysicsObject::Drop(void)
+{
+	m_airborne = true;
+
+	// Set spatial stats
+	m_spatialKin.height = m_DropHeight;
+	m_spatialKin.velocity.x = m_spatialKin.velocity.y = 0;
+	
+	// Compute the on-screen angle of travel
+	m_screenKin.angle = ComputeScreenAngle();
+	
+	m_additiveScreenVelocity = XY (0, 0); 
+
+	// Determine the on-screen velocities
+	m_screenKin.velocity.x = m_additiveScreenVelocity.x;
+	m_screenKin.velocity.y = m_additiveScreenVelocity.y + (m_spatialKin.velocity.y * -3/4); // Multiply by a negative as the axis for the coordinates are swapped
+}
+
 const float PhysicsObject::ComputeScreenAngle(void) const
 {
 	// Get the angle travelled along the floor in 2D space, from start to end
@@ -88,11 +106,12 @@ void PhysicsObject::MoveUpdate(void)
 		// Apply gravity to vertical spatial velocity
 		m_spatialKin.ApplyGravity(m_gravityForce);
 	
-		// Keep track of the height, to know when the coin has landed
+		// Keep track of the height, to know when the object has landed
 		m_spatialKin.UpdateHeight();
 
 		// Update velocity and position values
-		m_screenKin.velocity.y = m_additiveScreenVelocity.y + (m_spatialKin.velocity.y * -0.75f);
+		
+		m_screenKin.velocity.y = m_additiveScreenVelocity.y - m_spatialKin.velocity.y;
 		m_pos.x += m_screenKin.velocity.x;
 		m_pos.y += m_screenKin.velocity.y;
 	

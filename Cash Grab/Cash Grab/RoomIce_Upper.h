@@ -8,5 +8,6 @@ public:
 		: Room(-screen->w, -screen->h*2, Dimensions(screen->w, screen->h*2), ICE, LAYER_ENV_UPPER) {}
 
 	void Render(void) override final;
+	void Update(int delta) override final;
 };
 

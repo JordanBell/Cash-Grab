@@ -3,6 +3,7 @@
 #include "Wall.h"
 
 #define NUM_SNOW 300
+#define NUM_PILES 0
 RoomIce_Lower::RoomIce_Lower(void)
 	: Room(-screen->w, -screen->h*2, Dimensions(screen->w, screen->h*2), ICE, LAYER_ENV_LOWER)
 {
@@ -33,12 +34,24 @@ RoomIce_Lower::RoomIce_Lower(void)
 
 	for (int i = 0; i < NUM_SNOW; i++)
 	{
-		// Create a random position, and a random corresponding spritesheet index
+		// Create a random position, and a random corresponding spritesheet rect
 		m_SnowPositions.push_back(
 			pair<Position, SDL_Rect>(
 				Position(rand() % (screen->w / 8) * 8, 
-						 rand() % ((2*screen->h-5*TILE_SIZE) / 8) * 8 + TILE_SIZE + 3*TILE_SIZE),
+						 rand() % ((2*screen->h-5*TILE_SIZE) / 8) * 8 + 4*TILE_SIZE),
 				cracks[rand()%4]
+			)
+		);
+	}
+
+	for (int i = 0; i < NUM_PILES; i++)
+	{
+		// Create a random position, and a random corresponding spritesheet index
+		m_SnowPositions_Piles.push_back(
+			pair<Position, int>(
+				Position(rand() % screen->w, 
+						 rand() % (2*screen->h-5*TILE_SIZE) + 4*TILE_SIZE),
+				rand() % 2 ? SNOW_PILE_1 : SNOW_PILE_2
 			)
 		);
 	}
@@ -51,7 +64,7 @@ void RoomIce_Lower::Render(void)
 		for (int _y = y+4*TILE_SIZE; _y < y + m_Size.y-TILE_SIZE; _y += TILE_SIZE)
 			apply_surface(_x, _y, m_imageSurface, screen, tiles[FLOOR][m_BaseE]);
 
-	// Random snow piles, as generated in the constructor
+	// Random ice floors, as generated in the constructor
 	int count = 0;
 	for (pair<Position, SDL_Rect> pr : m_SnowPositions) {
 		count++;
@@ -59,8 +72,16 @@ void RoomIce_Lower::Render(void)
 		apply_surface(x + pr.first.x, (y + screen->h) - screen->h + pr.first.y, m_imageSurface, screen, &pr.second);
 
 		// Sometime's there's snow above
-		if (count%20 == 0)
+		if (count%10 == 0)
 			apply_surface(x + pr.first.x + 4, (y + screen->h) - screen->h + 4 + pr.first.y, m_imageSurface, screen, tiles[SNOW_MINI_2][m_BaseE]);
+	}
+
+	// Random snow piles, as generated in the constructor
+	for (pair<Position, int> pr : m_SnowPositions_Piles) 
+	{
+		apply_surface(x + pr.first.x, 
+					  y + pr.first.y, 
+					  m_imageSurface, screen, tiles[pr.second][m_BaseE]);
 	}
 	
 	// Top Wall

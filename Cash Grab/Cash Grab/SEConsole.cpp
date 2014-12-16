@@ -4,9 +4,18 @@
 #include "Game.h"
 #include "Wallet.h"
 #include "LaunchData.h"
-#include "ParticleSimple.h"
+#include "ParticleSnow.h"
 #include "Camera.h"
-// HAX
+
+/* Temporary calculation function for printing arbitrary calculations used in debugging. 
+Override the contents of this function for your own calculations when appropriate. */
+void Calc(vector<int> args)
+{
+	// Drop a snowflake
+	ParticleSnow* p = new ParticleSnow(300, 300, 100);
+	g_game->addGameObject(p);
+	p->Drop();
+}
 
 /* Launch all coins at the player */
 void Pull(vector<int> args)
@@ -59,14 +68,6 @@ void SetBouncy(vector<int> args)
 	for (Throwable* t : g_throwables)
 		if (!t->IsAirborne())
 			t->SetBouncy(args.front());
-}
-
-/* Temporary calculation function for printing arbitrary calculations used in debugging. 
-Override the contents of this function for your own calculations when appropriate. */
-void Calc(vector<int> args)
-{
-	// Prints calculated activation levels
-	LaunchData::ComputeActivationLevels(true);
 }
 
 

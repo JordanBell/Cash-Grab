@@ -11,7 +11,8 @@ class PhysicsObject
 {
 public:		
 	virtual ~PhysicsObject(void) {}
-
+	
+	void Drop(void);
 	void Launch(int angleSuppression = 0, int speedOverride = -1);
 	void LaunchTo(int _x, int _y, int angleSuppression = 0, int speedOverride = -1);
 
@@ -21,6 +22,14 @@ public:
 	void MoveUpdate();
 
 protected:
+	// Can be contructed above a ground position
+	PhysicsObject(int end_x, int end_y, int height) 
+		: m_pos(end_x, end_y - height), 
+		m_endPos(end_x, end_y), 
+		m_DropHeight(height),
+		m_gravityForce(DEFAULT_GRAVITY), 
+		m_airborne(true) {}
+
 	// Can be constructed with specific start coordinates, initially stationary
 	PhysicsObject(int _x, int _y) 
 		: m_pos(_x, _y), 
@@ -38,6 +47,12 @@ protected:
 	// Rendered position
 	XY m_pos; 
 
+	// The force of gravity on this object
+	float m_gravityForce;
+
+	// Override the value of gravity
+	void SetGravity(float newGrav) { m_gravityForce = newGrav; }
+
 	// A pixel velocity, derived from spatial velocity, that is added to screen velocity
 	Vector2 m_additiveScreenVelocity;
 
@@ -51,14 +66,14 @@ protected:
 	virtual void OnLaunch(void) {}
 
 private:
+	// If applicable, the drop height
+	int m_DropHeight;
+
 	// Initialise kinematic values
 	void InitKin(void);
 
 	// Target end position of an airborne launch
 	XY m_endPos; 
-
-	// The force of gravity on this object
-	float m_gravityForce;
 
 	// Kinematic data for airborne physics
 	KinematicData m_spatialKin, m_screenKin;

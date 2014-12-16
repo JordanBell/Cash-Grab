@@ -14,5 +14,6 @@ public:
 
 private:
 	vector<pair<Position, SDL_Rect>> m_SnowPositions;
+	vector<pair<Position, int>> m_SnowPositions_Piles;
 };
 
