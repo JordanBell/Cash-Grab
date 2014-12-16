@@ -21,6 +21,8 @@
 #include "RoomFire_Lower.h"
 #include "RoomFire_Upper.h"
 
+#include "Button.h"
+
 using namespace std;
 
 Game* g_game = nullptr;
@@ -47,6 +49,10 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 	
     addCollidable(machine);
 	m_GameObjects.push_back(player);
+    
+    
+    Button *b = new Button(300, 200, "hello");
+    m_GameObjects.push_back(b);
 
 	// Set up the key responses
 	keys = KeyCode(player, machine);
@@ -197,8 +203,9 @@ void Game::Render()
     SDL_FillRect(screen,NULL,0x000000);
     
 	// Render all of the entities
-	for (GameObject* go : m_GameObjects) 
-		go->Render();
+    for (GameObject* go : m_GameObjects) {
+        go->Render();
+    }
 
 	// Render the UI above everything
     g_UI->Render();
@@ -223,6 +230,45 @@ void Game::Poll()
 			if (testingConsole.IsActive())
 				testingConsole.KeyIn(event.key.keysym);
 		}
+        
+        // Hax0rz!
+        if( event.type == SDL_MOUSEBUTTONDOWN )
+        {
+            //If the left mouse button was pressed
+            if( event.button.button == SDL_BUTTON_LEFT )
+            {
+                //Get the mouse offsets
+                int x = event.button.x;
+                int y = event.button.y;
+                
+                for (GameObject *go : m_GameObjects) {
+                    Button *b = dynamic_cast<Button*>(go);
+                    
+                    if (b && b->inBounds(x, y)) {
+                        b->y += 1;
+                    }
+                }
+            }
+        }
+        if( event.type == SDL_MOUSEBUTTONUP )
+        {
+            //If the left mouse button was pressed
+            if( event.button.button == SDL_BUTTON_LEFT )
+            {
+                //Get the mouse offsets
+                int x = event.button.x;
+                int y = event.button.y;
+                
+                for (GameObject *go : m_GameObjects) {
+                    Button *b = dynamic_cast<Button*>(go);
+                    
+                    if (b && b->inBounds(x, y)) {
+                        b->y -= 1;
+                        b->Click();
+                    }
+                }
+            }
+        }
 	}
 }
 

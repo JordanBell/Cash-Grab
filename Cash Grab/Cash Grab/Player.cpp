@@ -202,8 +202,6 @@ void Player::Update(int delta)
 //			c->LaunchTo(coinX, coinY, 2);
 //		}
 //	}
-
-	InitSprites();
     
     m_xVel = m_yVel = 0;
     m_AABB->x = x;

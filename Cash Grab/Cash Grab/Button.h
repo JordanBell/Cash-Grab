@@ -9,16 +9,21 @@
 #ifndef __Cash_Grab__Button__
 #define __Cash_Grab__Button__
 
-#include "Sprite.h"
+#include "GameObject.h"
 
-class Button : public Sprite {
-private:
-    SDL_Rect bounds;
+class Button : public GameObject {
+protected:
+    SDL_Color m_color;
     
 public:
-    Button(int x, int y);
+    Button(int x, int y, const char *text);
+    virtual ~Button() { }
     
-    void Clicked();
+    virtual void Click() { printf("Clicked\n"); };
+    
+    bool inBounds(int x, int y);
+    
+    virtual void Render() override;
 };
 
 #endif /* defined(__Cash_Grab__Button__) */
