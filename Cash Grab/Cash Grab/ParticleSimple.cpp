@@ -24,7 +24,7 @@ ParticleSimple::ParticleSimple(int end_x, int end_y, int height)
 	//m_imageSurface = g_resources->GetSpeedParticle();
 	
 	// Set render priority above coins
-	m_renderPriority = LAYER_GROUND;
+	m_renderPriority = LAYER_AIR;
 
 	s_instanceList.emplace_back(this);
 }
@@ -41,7 +41,7 @@ ParticleSimple::ParticleSimple(int start_x, int start_y, int end_x, int end_y)
 	//m_imageSurface = g_resources->GetSpeedParticle();
 	
 	// Set render priority above coins
-	m_renderPriority = LAYER_GROUND;
+	m_renderPriority = LAYER_AIR;
 
 	s_instanceList.emplace_back(this);
 }

@@ -1,30 +1,10 @@
 #pragma once
-#include "particlesimple.h"
+#include "particletype_powder.h"
 
 class ParticleSnow :
-	public ParticleSimple
+	public ParticleType_Powder
 {
 public:
-	#define COMMON_CONSTRUCT \
-		{ \
-		/* Make it White */ \
-		SetColor(0x00cce3e6); \
-		\
-		/* Make it Light */ \
-		SetGravity(m_gravityForce/300); \
-		\
-		/* Make it a random size */ \
-		int randSize = rand()%3+1; \
-		SetSize(XY(randSize, randSize)); \
-	    }
-
 	ParticleSnow(int end_x, int end_y, int height)
-		: ParticleSimple(end_x, end_y, height) 
-	COMMON_CONSTRUCT
-
-	ParticleSnow(int start_x, int start_y, int end_x, int end_y)
-		: ParticleSimple(start_x, start_y, end_x, end_y) 
-	COMMON_CONSTRUCT
-
-	#undef COMMON_CONSTRUCT
+		: ParticleType_Powder(end_x, end_y, height) { SetColor(0x00cce3e6); }
 };
