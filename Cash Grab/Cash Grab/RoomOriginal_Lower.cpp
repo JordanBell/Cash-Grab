@@ -8,7 +8,6 @@ RoomOriginal_Lower::RoomOriginal_Lower(void)
 { 
 	// Build the walls
 	// Left and Right Walls (Bottom)
-	// TODO Make walls as invisible GameObject for hit detection, render their images in RoomOriginal_Lower::Render
 	for (int _y = 0; _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
 	{
 		// Initialise Left and Right
@@ -157,8 +156,7 @@ void RoomOriginal_Lower::Render(void)
 		apply_surface(_x, (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
 	}
 
-	// Left and Right Walls (Bottom)
-	// TODO Make walls as invisible GameObject for hit detection, render their images in RoomOriginal_Lower::Render
+	// Left and Right Walls
 	for (int _y = 0; _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
 	{
 		// Initialise Left and Right

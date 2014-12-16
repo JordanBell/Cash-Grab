@@ -8,6 +8,10 @@ public:
 
 	void Render(void) override final;
 
+	// Get the room's friction
+	virtual float GetFriction(void)
+		{ return FRICTION_ICE; }
+
 private:
 	vector<pair<Position, SDL_Rect>> m_SnowPositions;
 };

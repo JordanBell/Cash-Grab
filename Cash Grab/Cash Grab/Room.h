@@ -2,6 +2,9 @@
 #include "XY.h"
 #include "GameObject.h"
 #include "Game.h"
+
+#define FRICTION_DEFAULT 0.90f
+#define FRICTION_ICE 0.1f
 #define SHEET_WIDTH 30
 #define SHEET_HEIGHT 4
 
@@ -22,6 +25,10 @@ public:
 
 	// Whether or not the room spans an area larger than the screen
 	const bool IsLarge(void) { return m_IsLarge; }
+
+	// Get the room's friction
+	virtual float GetFriction(void)
+		{ return FRICTION_DEFAULT; }
 
 	// Return a pointer to the room that the player is in
 	static Room* GetPlayerRoom(void);

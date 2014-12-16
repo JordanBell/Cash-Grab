@@ -8,7 +8,7 @@ Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) 
-	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), 
+	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
 	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
@@ -99,10 +99,10 @@ void Player::Smash(int radius)
 
 void Player::DoMove()
 {
-    if (moving)
+    if (m_CanMove)
     {
-        y += m_yVel;
-        x += m_xVel;
+		y += m_Velocities.y;
+		x += m_Velocities.x;
 
 		UpdateCollidablePos(x, y);
     }
@@ -172,6 +172,9 @@ const float Player::ComputeDecay(void)
 
 void Player::Update(int delta)
 {
+	// Update Friction
+	m_Friction = Room::GetPlayerRoom()->GetFriction();
+
     //IncCycle();
 	Sprite::Update(delta);
 	SmashUpdate();
@@ -179,70 +182,92 @@ void Player::Update(int delta)
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
 		DecaySpeed();
 
-	//printf("Speed: %f%%\tDecay: -%f%%\n", ComputeSpeedPercentage()*100, ComputeDecay()*100);
-	
-	// Could this next block be moved to their corresponding Effect classes?
-//	if (m_evasion1)
-//	{
-//		// Evasion Effect 1 -- Bounce around the player
-//		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
-//
-//		for (Coin* c : closeCoins)
-//			c->LaunchTo(x + (rand()%50 - 25), y + (rand()%50 - 25), 0);
-//	}
-//	else if (m_evasion2)
-//	{
-//		// Evasion Effect 2 -- Bounce around the map
-//		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
-//
-//		for (Coin* c : closeCoins) 
-//		{
-//			int coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
-//			int coinY = rand() % (screen->h - 7*TILE_SIZE) + 4*TILE_SIZE;
-//			c->LaunchTo(coinX, coinY, 2);
-//		}
-//	}
+	InitSprites();
     
-    m_xVel = m_yVel = 0;
     m_AABB->x = x;
     m_AABB->y = y;
     m_AABB->w = sprites[0][0]->w;
     m_AABB->h = sprites[0][0]->h;
-    
-    if (moving) {
-		// If the player is moving fast, kick up dirt
-		if (ComputeSpeedPercentage() > 0.75f)
+
+	// If the player is moving fast, kick up dirt
+	if (!((m_Velocities.x == 0) && (m_Velocities.y == 0))) // If not still
+		if (ComputeSpeedPercentage() > 0.75f) // If going fast enough to kick up dirt
 			AddDirtParticles();
 
-        int pixelsToMove = m_speed * 1000 / 60; //delta;
+    if (moving) {
+		float pixelsToMove = m_speed * 1000 / 60; //delta
 
-        switch (this->direction) {
-            case UP:
-                m_yVel = -pixelsToMove;
-                m_AABB->y = y + m_yVel;
-                break;
-            case DOWN:
-                m_yVel = pixelsToMove;
-                break;
-            case LEFT:
-                m_xVel = -pixelsToMove;
-                m_AABB->x = x + m_xVel;
-                break;
-            case RIGHT:
-                m_xVel = pixelsToMove;
-                break;
-            default:
-                break;
-        }
-        
-        m_AABB->h += m_yVel;
-        m_AABB->w += m_xVel;
+		// Calculate target Y velocity
+		if (this->direction == UP) {
+			m_TargetVelocities.y = -pixelsToMove;
+			m_AABB->y = y + m_Velocities.y;
+		}
+		else if (this->direction == DOWN)
+			m_TargetVelocities.y = pixelsToMove;
+		else // No input (vertical)
+			m_TargetVelocities.y = 0; 
+
+		// Calculate target X velocity
+		if (this->direction == LEFT) {
+			m_TargetVelocities.x = -pixelsToMove;
+			m_AABB->x = x + m_Velocities.x;
+		}
+		else if (this->direction == RIGHT)
+			m_TargetVelocities.x = pixelsToMove;
+		else // No input (horizontal)
+			m_TargetVelocities.x = 0;
 
 		// The player has moved, so make sure he's still in the same room
 		g_camera->FocusOnPlayerRoom();
-    }
+    } 
+	else 
+	{
+		m_TargetVelocities.x = 0;
+		m_TargetVelocities.y = 0;
+	}
+	
+	// Adjust the actual velocity to accelerate toward the set target velocities
+	ApproachTargetVelocity();
+
+	// Update AABB based on the new velocities
+	if (this->direction == UP)
+		m_AABB->y = y + m_Velocities.y;
+
+	if (this->direction == LEFT)
+		m_AABB->x = x + m_Velocities.x;
+    
+	m_AABB->w += abs(m_Velocities.x);
+    m_AABB->h += abs(m_Velocities.y);
 
     UpdateCollidablePos(x, y);
+}
+
+void Player::ApproachTargetVelocity(void)
+{
+	int polY = m_Velocities.y > 0 ? 1 : -1;
+
+	// (x) Horizontal
+	if (m_Velocities.x != m_TargetVelocities.x)
+	{
+
+		const int pol = (m_TargetVelocities.x - m_Velocities.x) > 0 ? 1 : -1;
+		const float acceleration = moving? 3*m_Friction : m_Friction;
+		const float changeInVelocity = pol * min(acceleration, abs(m_TargetVelocities.x - m_Velocities.x));
+
+		m_Velocities.x += changeInVelocity;
+	}
+
+	// (y) Vertical
+	if (m_Velocities.y != m_TargetVelocities.y)
+	{
+		const int pol = (m_TargetVelocities.y - m_Velocities.y) > 0 ? 1 : -1;
+		
+		const float acceleration = moving? 3*m_Friction : m_Friction;
+		const float changeInVelocity = pol * min(acceleration, abs(m_TargetVelocities.y - m_Velocities.y));
+
+		m_Velocities.y += changeInVelocity;
+	}
+
 }
 
 void Player::SmashUpdate(void)
@@ -258,7 +283,6 @@ void Player::SmashUpdate(void)
 
 void Player::AddDirtParticles(void)
 {
-
 	float minSpeed = MAX_SPEED * 0.75;
 	float aboveMin = m_speed - minSpeed;
 	float perc = float(aboveMin) / float(MAX_SPEED-minSpeed);
@@ -266,7 +290,6 @@ void Player::AddDirtParticles(void)
 	
 	// 1 to 4 particles
 	int numParticles = perc*perc*3 + 1;
-
 	
 	for (int i = 0; i < numParticles; i++)
 	{
@@ -311,7 +334,6 @@ void Player::AddDirtParticles(void)
 
 			// Find a variable angle 
 			int thisAngle = angle + (rand()%5) - 2; // Vary each particle's angle by an amount varying from -2 to +2
-			//angle /= 2; // Tweak
 
 			//int angle = 8*(float(m_speed - (MAX_SPEED * 0.75)) / float(MAX_SPEED-(MAX_SPEED * 0.75))) + 81 + ((rand()%5) - 2);
 
@@ -323,13 +345,14 @@ void Player::AddDirtParticles(void)
 void Player::Render(void)
 {
     // For debugging!
-    
     // Draw the AABB, then the player
-    /*SDL_Surface *test = g_resources->GetTestImage();
-    
-    SDL_Rect r = { 0, 0, m_AABB->w, m_AABB->h };
-    SDL_Rect *rect = &r;
-    apply_surface(m_AABB->x, m_AABB->y, test, screen, rect);*/
+    /*Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
+    Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
+
+    SDL_Rect r1 = { m_AABB->x+s_renderingOffset_x, m_AABB->y+s_renderingOffset_y, m_AABB->w, m_AABB->h };
+    SDL_Rect r2 = { m_HitBox->x+s_renderingOffset_x, m_HitBox->y+s_renderingOffset_y, m_HitBox->w, m_HitBox->h };
+    SDL_FillRect(screen, &r1, aabbColor);
+    SDL_FillRect(screen, &r2, hitBoxColor);*/
     
     Sprite::Render();
 }

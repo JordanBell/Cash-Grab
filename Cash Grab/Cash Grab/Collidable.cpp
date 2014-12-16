@@ -57,7 +57,7 @@ bool HitTest(SDL_Rect* first, SDL_Rect* second, int &collisionOverlap)
 Collidable::Collidable(int x, int y)
 {
     m_IsMoveable = true;
-    m_xVel = m_yVel = 0;
+	m_Velocities = XY(0, 0);
     
     m_HitBox = new SDL_Rect();
     m_HitBox->x = x;

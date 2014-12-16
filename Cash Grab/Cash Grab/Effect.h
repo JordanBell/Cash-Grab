@@ -110,3 +110,25 @@ public:
 };
 
 #endif /* defined(__CashGrab__Effect__) */
+
+// Could this next block be moved to their corresponding Effect classes?
+//	if (m_evasion1)
+//	{
+//		// Evasion Effect 1 -- Bounce around the player
+//		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
+//
+//		for (Coin* c : closeCoins)
+//			c->LaunchTo(x + (rand()%50 - 25), y + (rand()%50 - 25), 0);
+//	}
+//	else if (m_evasion2)
+//	{
+//		// Evasion Effect 2 -- Bounce around the map
+//		list<Coin*> closeCoins = Coin::CoinsAroundPlayer(MAGNETISM_DISTANCE);
+//
+//		for (Coin* c : closeCoins) 
+//		{
+//			int coinX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+//			int coinY = rand() % (screen->h - 7*TILE_SIZE) + 4*TILE_SIZE;
+//			c->LaunchTo(coinX, coinY, 2);
+//		}
+//	}

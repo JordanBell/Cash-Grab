@@ -3,7 +3,8 @@
 
 std::list<Particle*> g_particles;
 std::list<Particle*> ParticleSimple::s_instanceList;
-Uint32 ParticleSimple::s_color = 0x00705030; // Soft brown
+//Uint32 ParticleSimple::s_color = 0x00705030; // Soft brown
+Uint32 ParticleSimple::s_color = 0x00655c5c; // Tile-ish
 //Uint32 ParticleSimple::s_color = 0x0066CCCC; // Blue
 //Uint32 ParticleSimple::s_color = 0x00237556; // Blue
 

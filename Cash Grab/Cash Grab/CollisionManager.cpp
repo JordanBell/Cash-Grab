@@ -46,41 +46,41 @@ void CollisionManager::Update(int delta)
                 if (collisionOverlap > 0)
                 {
                     // Slow down by overlap amount
-                    if (m_Player->m_yVel > 0)
+                    if (m_Player->m_Velocities.y > 0)
                     {
-                        m_Player->m_yVel -= collisionOverlap;
+                        m_Player->m_Velocities.y -= collisionOverlap;
                         
-                        if (m_Player->m_yVel < 0)
+                        if (m_Player->m_Velocities.y < 0)
                         {
-                            m_Player->m_yVel = 0;
+                            m_Player->m_Velocities.y = 0;
                         }
                     }
-                    else if (m_Player->m_yVel < 0)
+                    else if (m_Player->m_Velocities.y < 0)
                     {
-                        m_Player->m_yVel += collisionOverlap;
+                        m_Player->m_Velocities.y += collisionOverlap;
                         
-                        if (m_Player->m_yVel > 0)
+                        if (m_Player->m_Velocities.y > 0)
                         {
-                            m_Player->m_yVel = 0;
+                            m_Player->m_Velocities.y = 0;
                         }
                     }
                     
-                    if (m_Player->m_xVel > 0)
+                    if (m_Player->m_Velocities.x > 0)
                     {
-                        m_Player->m_xVel -= collisionOverlap;
+                        m_Player->m_Velocities.x -= collisionOverlap;
                         
-                        if (m_Player->m_xVel < 0)
+                        if (m_Player->m_Velocities.x < 0)
                         {
-                            m_Player->m_xVel = 0;
+                            m_Player->m_Velocities.x = 0;
                         }
                     }
-                    else if (m_Player->m_xVel < 0)
+                    else if (m_Player->m_Velocities.x < 0)
                     {
-                        m_Player->m_xVel += collisionOverlap;
+                        m_Player->m_Velocities.x += collisionOverlap;
                         
-                        if (m_Player->m_xVel > 0)
+                        if (m_Player->m_Velocities.x > 0)
                         {
-                            m_Player->m_xVel = 0;
+                            m_Player->m_Velocities.x = 0;
                         }
                     }
                     
