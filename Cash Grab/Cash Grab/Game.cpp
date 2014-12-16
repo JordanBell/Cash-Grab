@@ -15,6 +15,11 @@
 #include "RoomHub_Upper.h"
 #include "RoomHub_Lower.h"
 #include "RoomHallways_Lower.h"
+#include "RoomHallways_Upper.h"
+#include "RoomIce_Lower.h"
+#include "RoomIce_Upper.h"
+#include "RoomFire_Lower.h"
+#include "RoomFire_Upper.h"
 
 using namespace std;
 
@@ -96,6 +101,12 @@ void Game::InitEnvironment(void)
 	addGameObject( new RoomOriginal_Lower() );
 	addGameObject( new RoomHub_Upper() );
 	addGameObject( new RoomHub_Lower() );
+	addGameObject( new RoomHallways_Lower() );
+	addGameObject( new RoomHallways_Upper() );
+	addGameObject( new RoomIce_Lower() );
+	addGameObject( new RoomIce_Upper() );
+	addGameObject( new RoomFire_Lower() );
+	addGameObject( new RoomFire_Upper() );
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call

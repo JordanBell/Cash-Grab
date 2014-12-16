@@ -122,11 +122,6 @@ void RoomOriginal_Lower::Render(void)
 		// Sometimes the bottom of a wall, sometimes a door. Door is on upper layers, so leave room.
 		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
 			apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]); // Bottom Wall, Bottom Room
-		
-		// Bottom Wall, Top room. Leave room for doors
-		if ((_x != TILE_SIZE*3) && (_x != TILE_SIZE*4) && (_x != TILE_SIZE*15) && (_x != TILE_SIZE*16))
-			apply_surface(_x, 3*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]); 
-
 
 		// Left side of BOTTOM ROOM door
 		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14))

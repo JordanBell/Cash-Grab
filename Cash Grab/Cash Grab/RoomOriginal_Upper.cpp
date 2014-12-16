@@ -17,29 +17,11 @@ void RoomOriginal_Upper::Render(void)
 		}
 		else
 		{
-			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]); // Top Screen's WallTop
-		}
-
-		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*3) || (_x == TILE_SIZE*16) || (_x == TILE_SIZE*15))
-		{
-			apply_surface(_x, 0*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]); // Top WallTop
-			apply_surface(_x, 1*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL][m_BaseE]); // Top Wall
-			apply_surface(_x, 2*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL][m_BaseE]); // Mid Wall
-
-			//apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, rect_wall); // Top Screen's WallTop
+			//apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]); // Top Screen's WallTop
 		}
 
 		// Bottom overhang
 		apply_surface(_x, (screen->h - 2*TILE_SIZE), m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
-
-		// Left side of door
-		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14)) {
-			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_LEFT][m_BaseE]); // Top Screen's WallTop
-		}
-		// Right side of door
-		if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15)) {
-			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_RIGHT][m_BaseE]); // Top Screen's WallTop
-		}
 	}
 
 	// Clocks

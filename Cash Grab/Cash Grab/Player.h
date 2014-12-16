@@ -4,7 +4,8 @@
 #include <math.h>
 
 #define MAX_SPEED 0.50 // The max movement speed cap
-#define MIN_SPEED 0.10 // The minimum (base) movement speed
+//#define MIN_SPEED 0.10 // The minimum (base) movement speed
+#define MIN_SPEED 0.40 // FOR TESTING
 #define DECAY_FACTOR 0.020 // Linearly controls the severity of player movement decay at higher speeds
 #define DECAY_MINIMUM 0.0002 // A base speed decay, that persists even at smaller speeds
 #define WALK_SPEED 10 // The number of frames between cycle changes

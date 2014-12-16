@@ -21,7 +21,7 @@ RoomHub_Lower::RoomHub_Lower(void)
 	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
 	{
 		// Don't put walls in the doorways
-		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*3) && (_x != TILE_SIZE*16) && (_x != TILE_SIZE*15))
+		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
 		{
 			// Initialise Top and Bottom
 			Wall* topWallTop = new Wall(_x, y);
@@ -34,8 +34,12 @@ RoomHub_Lower::RoomHub_Lower(void)
 			g_game->addCollidable(topWall1, true);
 		}
 
+		// Don't put walls in the doorways
+		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
+			g_game->addCollidable(new Wall(_x, y+screen->h-TILE_SIZE));
+
 		// Add the bottom wall no matter what
-		apply_surface(_x, y + (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
+		//apply_surface(_x, y + (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
 	}
 
 	// Room's item station walls
@@ -110,23 +114,21 @@ void RoomHub_Lower::Render(void)
 	// Top and Bottom Walls
 	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
 	{
-		// Don't put walls in the doorways
-		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*3) && (_x != TILE_SIZE*16) && (_x != TILE_SIZE*15))
-		{
-			// Initialise Top and Bottom
-			apply_surface(_x, y, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
-			apply_surface(_x, y + (1*TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
-			apply_surface(_x, y + (2*TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
-			apply_surface(_x, y + (3*TILE_SIZE), m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]);
-		}
+		apply_surface(_x, y, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
+		apply_surface(_x, y + (1*TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
+		apply_surface(_x, y + (2*TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
+		apply_surface(_x, y + (3*TILE_SIZE), m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]);
 
-		if (_x == TILE_SIZE*3)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_LEFT][ELEMENT_ICE]); // Door
+		/*if ((_x != TILE_SIZE*5) && (_x != TILE_SIZE*4) && (_x != TILE_SIZE*15) && (_x != TILE_SIZE*14))
+			apply_surface(_x, 3*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]);*/
+
 		if (_x == TILE_SIZE*4)
+				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_LEFT][ELEMENT_ICE]); // Door
+		if (_x == TILE_SIZE*5)
 				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_RIGHT][ELEMENT_ICE]); // Door
-		if (_x == TILE_SIZE*15)
+		if (_x == TILE_SIZE*14)
 				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_LEFT][ELEMENT_FIRE]); // Door
-		if (_x == TILE_SIZE*16)
+		if (_x == TILE_SIZE*15)
 				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LOCKED_RIGHT][ELEMENT_FIRE]); // Door
 
 		// Add the bottom wall no matter what

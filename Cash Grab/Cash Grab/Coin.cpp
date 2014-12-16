@@ -24,12 +24,12 @@ Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Throwable(start_x, 
 
 Coin::~Coin(void)
 {
-    for (int i = 0; i < 8; i++)
-    {
-       delete sprites[i];
-    }
-
+	printf("Destr\n");
 	g_coins.remove(this);
+
+	// TODO: Figure out why the following breaks the code
+    /*for (int i = 0; i < 8; i++)
+       delete sprites[i];*/
 }
 
 // When landing, slow the animation to a calmer speed

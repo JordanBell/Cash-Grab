@@ -2,7 +2,7 @@
 #include "XY.h"
 #include "GameObject.h"
 #include "Game.h"
-#define SHEET_WIDTH 27
+#define SHEET_WIDTH 30
 #define SHEET_HEIGHT 4
 
 class Room : public GameObject
@@ -20,6 +20,9 @@ public:
 	// Get a rectangle of this room's position and size
 	SDL_Rect GetRect(void) { SDL_Rect r = {(Sint16)x, (Sint16)y, (Uint16)m_Size.x, (Uint16)m_Size.y}; return r; }
 
+	// Whether or not the room spans an area larger than the screen
+	const bool IsLarge(void) { return m_IsLarge; }
+
 	// Return a pointer to the room that the player is in
 	static Room* GetPlayerRoom(void);
 
@@ -34,8 +37,10 @@ protected:
 	// Spritesheet Rects for rooms
 	SDL_Rect* tiles[SHEET_WIDTH][SHEET_HEIGHT];
 	
-private:
 	Dimensions m_Size;
+
+private:
 	static std::vector<Room*> s_Rooms;
+	bool m_IsLarge;
 };
 	

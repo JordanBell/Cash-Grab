@@ -27,9 +27,12 @@ Room::Room(const int x, const int y, const Dimensions& size, RoomElement element
 		}
 	}
 
+	// Set whether or not the given size spans across an area larger than the screen
+	m_IsLarge = ((size.x > screen->w) || (size.y > screen->h));
+
 	m_renderPriority = renderPriority;
 
-	// Add this room to the vector of lists (only if it is the primary representation of the room, ie the lower layer
+	// Add this room to the vector of lists (only if it is the primary representation of the room: when it's the lower environment layer)
 	if (m_renderPriority == LAYER_ENV_LOWER)
 		Room::s_Rooms.push_back(this);
 }

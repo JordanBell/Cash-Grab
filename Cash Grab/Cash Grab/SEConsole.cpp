@@ -5,7 +5,7 @@
 #include "Wallet.h"
 #include "LaunchData.h"
 #include "ParticleSimple.h"
-
+#include "Camera.h"
 // HAX
 
 /* Launch all coins at the player */
@@ -158,8 +158,11 @@ void j(vector<int> args)
 	//else
 	//	Mute(args);
 
-	g_machine->ForceDispense(1000);
-	Mute(args);
+	/*g_machine->ForceDispense(1000);
+	Mute(args);*/
+	
+	g_camera->DisableUpdate();
+	s_renderingOffset_y = screen->h*2;
 }
 
 

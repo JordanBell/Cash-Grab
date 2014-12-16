@@ -11,6 +11,7 @@
 #define LAYER_ENV_UPPER 3
 #define LAYER_AIR 4
 #define LAYER_UI 10
+#define SHOW_WALLS false
 
 #include <list>
 #include "KeyCode.h"

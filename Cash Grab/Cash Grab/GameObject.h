@@ -22,11 +22,7 @@ public:
 		: m_renderPriority(1), m_imageRect(nullptr), x(x), y(y) {}
 
 	// Destruct the GameObject
-	virtual ~GameObject(void) {
-        if (m_imageSurface) {
-            SDL_FreeSurface(m_imageSurface);
-        }
-        
+	virtual ~GameObject(void) {        
         if (m_imageRect) {
             delete m_imageRect;
         }
