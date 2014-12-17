@@ -2,39 +2,35 @@
 //  Menu.cpp
 //  Cash Grab
 //
-//  Created by Tristan Bell on 15/12/2014.
+//  Created by Tristan Bell on 17/12/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
 #include "Menu.h"
+#include "MenuScreen.h"
 
 void Menu::Update(int delta)
 {
-    SDL_Event event;
-    
-    if (SDL_PollEvent(&event)) {
-        if( event.type == SDL_MOUSEBUTTONDOWN )
-        {
-            //If the left mouse button was pressed
-            if( event.button.button == SDL_BUTTON_LEFT )
-            {
-                //Get the mouse offsets
-                int x = event.button.x;
-                int y = event.button.y;
-                
-                for (Button *b : m_Buttons) {
-                    if (b->inBounds(x, y)) {
-                        b->Click();
-                    }
-                }
-            }
-        }
-    }
+    currentMenu->m_screen->Update(delta);
 }
 
 void Menu::Render()
 {
-    for (Button *b : m_Buttons) {
-        b->Render();
+    currentMenu->m_screen->Render();
+}
+
+void Menu::GoToScreen(string screenName)
+{
+    prev = currentMenu;
+    currentMenu = next.at(screenName);
+}
+
+void Menu::Back()
+{
+    if (prev) {
+        currentMenu = prev;
+    }
+    else {
+        printf("No previous menu!\n");
     }
 }

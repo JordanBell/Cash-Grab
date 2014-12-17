@@ -17,6 +17,7 @@ public:
     Wall(int x, int y) : Collidable(x, y), GameObject(x, y)
 		{ m_IsMoveable = false; m_renderPriority = 99; }
 
+	// Render if set to do so
 	void Render(void);
 };
 

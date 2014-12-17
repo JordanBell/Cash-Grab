@@ -236,8 +236,8 @@ void Player::Update(int delta)
 	if (this->direction == LEFT)
 		m_AABB->x = x + m_Velocities.x;
     
-	m_AABB->w += abs(m_Velocities.x);
-    m_AABB->h += abs(m_Velocities.y);
+	m_AABB->w += fabs(m_Velocities.x);
+    m_AABB->h += fabs(m_Velocities.y);
 
     UpdateCollidablePos(x, y);
 }
@@ -251,8 +251,8 @@ void Player::ApproachTargetVelocity(void)
 	{
 
 		const int pol = (m_TargetVelocities.x - m_Velocities.x) > 0 ? 1 : -1;
-		const float acceleration = moving? 3*m_Friction : m_Friction;
-		const float changeInVelocity = pol * min(acceleration, abs(m_TargetVelocities.x - m_Velocities.x));
+		const double acceleration = moving? 3*m_Friction : m_Friction;
+		const float changeInVelocity = pol * min(acceleration, fabs(m_TargetVelocities.x - m_Velocities.x));
 
 		m_Velocities.x += changeInVelocity;
 	}
@@ -262,8 +262,8 @@ void Player::ApproachTargetVelocity(void)
 	{
 		const int pol = (m_TargetVelocities.y - m_Velocities.y) > 0 ? 1 : -1;
 		
-		const float acceleration = moving? 3*m_Friction : m_Friction;
-		const float changeInVelocity = pol * min(acceleration, abs(m_TargetVelocities.y - m_Velocities.y));
+		const double acceleration = moving? 3*m_Friction : m_Friction;
+        const float changeInVelocity = pol * min(acceleration, fabs(m_TargetVelocities.y - m_Velocities.y));
 
 		m_Velocities.y += changeInVelocity;
 	}

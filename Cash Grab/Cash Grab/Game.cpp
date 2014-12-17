@@ -23,6 +23,8 @@
 #include "RoomFire_Lower.h"
 #include "RoomFire_Upper.h"
 
+#include "TextButton.h"
+
 using namespace std;
 
 Game* g_game = nullptr;
@@ -226,6 +228,45 @@ void Game::Poll()
 			if (testingConsole.IsActive())
 				testingConsole.KeyIn(event.key.keysym);
 		}
+        
+        // Hax0rz!
+//        if( event.type == SDL_MOUSEBUTTONDOWN )
+//        {
+//            //If the left mouse button was pressed
+//            if( event.button.button == SDL_BUTTON_LEFT )
+//            {
+//                //Get the mouse offsets
+//                int x = event.button.x;
+//                int y = event.button.y;
+//                
+//                for (GameObject *go : m_GameObjects) {
+//                    Button *b = dynamic_cast<Button*>(go);
+//                    
+//                    if (b && b->inBounds(x, y)) {
+//                        b->y += 1;
+//                    }
+//                }
+//            }
+//        }
+//        if( event.type == SDL_MOUSEBUTTONUP )
+//        {
+//            //If the left mouse button was pressed
+//            if( event.button.button == SDL_BUTTON_LEFT )
+//            {
+//                //Get the mouse offsets
+//                int x = event.button.x;
+//                int y = event.button.y;
+//                
+//                for (GameObject *go : m_GameObjects) {
+//                    Button *b = dynamic_cast<Button*>(go);
+//                    
+//                    if (b && b->inBounds(x, y)) {
+//                        b->y -= 1;
+//                        b->Click();
+//                    }
+//                }
+//            }
+//        }
 	}
 }
 
