@@ -10,6 +10,8 @@
 #include "Wallet.h"
 #include "EffectMagnetism.h"
 #include "ParticleSimple.h"
+
+#include "Sinkhole.h"
 #include "RoomOriginal_Upper.h"
 #include "RoomOriginal_Lower.h"
 #include "RoomHub_Upper.h"
@@ -107,6 +109,7 @@ void Game::InitEnvironment(void)
 	addGameObject( new RoomIce_Upper() );
 	addGameObject( new RoomFire_Lower() );
 	addGameObject( new RoomFire_Upper() );
+	addGameObject( new Sinkhole() );
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
