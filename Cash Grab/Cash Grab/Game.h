@@ -45,7 +45,7 @@ public:
     void removeCollidable(Collidable* collidable);
 	bool IsMuted(void) { return m_muted; }
 	void Mute(void) { m_muted = true; }
-	void Unmute(void) { m_muted = false; }
+    void Unmute(void) { m_muted = false; }
 
 private:
 	SEConsole testingConsole;

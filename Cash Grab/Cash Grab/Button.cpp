@@ -9,16 +9,9 @@
 #include "Button.h"
 #include "Resources.h"
 
-Button::Button(int x, int y, const char *text) : GameObject(x, y)
+Button::Button(int x, int y, ClickHandler clickHandler) : GameObject(x, y), m_clickHandler(clickHandler)
 {
     m_color = { 0, 0, 0 };
-    m_imageSurface = TTF_RenderText_Solid(g_resources->GetFont(), text, m_color);
-    
-    m_imageRect = new SDL_Rect();
-    m_imageRect->x = x;
-    m_imageRect->y = y;
-    m_imageRect->w = m_imageSurface->w;
-    m_imageRect->h = m_imageSurface->h;
 }
 
 bool Button::inBounds(int x, int y)
@@ -30,4 +23,9 @@ bool Button::inBounds(int x, int y)
 void Button::Render()
 {
     apply_surface(x, y, m_imageSurface, screen);
+}
+
+void Button::Click()
+{
+    m_clickHandler();
 }

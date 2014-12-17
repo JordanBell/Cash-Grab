@@ -22,6 +22,7 @@ Resources::Resources(void)
 	m_Prompt =				load_image("Press Enter.png");
     m_Square =              load_image("Square.png");
     m_SpeedParticle =       load_image("speedParticle.png");
+    m_ButtonSheet =         load_image("buttons.png");
 	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size set
     
     m_Music = Mix_LoadMUS("Main2.wav");
@@ -34,16 +35,17 @@ Resources::Resources(void)
     
     
 	// Check for failures.
-	if ((!m_PlayerSheet)        ||
-		(!m_CoinSheet)          ||
-		(!m_EnvironmentImage)	||
-		(!m_MoneyMachineSheet)	||
-        (!m_PowerupSheet)       ||
-		(!m_Prompt)             ||
-		(!m_Font)               ||
-        (!m_Square)             ||
-        (!m_SpeedParticle)      ||
-        (!m_Music))
+	if (!m_PlayerSheet          ||
+		!m_CoinSheet            ||
+		!m_EnvironmentImage     ||
+		!m_MoneyMachineSheet	||
+        !m_PowerupSheet         ||
+		!m_Prompt               ||
+		!m_Font                 ||
+        !m_Square               ||
+        !m_SpeedParticle        ||
+        !m_ButtonSheet          ||
+        !m_Music)
 		{
             printf("Player: %s\n", CHECK_NULL(m_PlayerSheet));
             printf("Coin: %s\n", CHECK_NULL(m_CoinSheet));
@@ -54,6 +56,7 @@ Resources::Resources(void)
             printf("Font: %s\n", CHECK_NULL(m_Font));
             printf("Square: %s\n", CHECK_NULL(m_Square));
             printf("Speed particle: %s\n", CHECK_NULL(m_SpeedParticle));
+            printf("Buttons: %s\n", CHECK_NULL(m_ButtonSheet));
             printf("music: %s\n", CHECK_NULL(m_Music));
 			throw std::runtime_error("Some of the resources failed to initialise");
 		}
@@ -76,6 +79,7 @@ Resources::~Resources(void)
 	SDL_FreeSurface(m_Prompt);
     SDL_FreeSurface(m_Square);
     SDL_FreeSurface(m_SpeedParticle);
+    SDL_FreeSurface(m_ButtonSheet);
 	TTF_CloseFont(m_Font);
     
     Mix_FreeMusic(m_Music);

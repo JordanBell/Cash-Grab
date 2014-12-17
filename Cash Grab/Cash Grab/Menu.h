@@ -2,32 +2,36 @@
 //  Menu.h
 //  Cash Grab
 //
-//  Base class for menus.
-//
-//  Created by Tristan Bell on 15/12/2014.
+//  Created by Tristan Bell on 17/12/2014.
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef Cash_Grab_Menu_h
-#define Cash_Grab_Menu_h
+#ifndef __Cash_Grab__Menu__
+#define __Cash_Grab__Menu__
 
-#include <vector>
-#include "Button.h"
+#include <map>
+
+using namespace std;
+
+class MenuScreen;
 
 class Menu {
-    std::vector<Button*> m_Buttons;
+protected:
+    MenuScreen* m_screen;
+    
+    // Menu tree structure
+    Menu* currentMenu;
+    map<string, Menu*> next;
+    Menu* prev;
     
 public:
-    virtual ~Menu()
-    {
-        for (Button *b : m_Buttons) {
-            delete b;
-        }
-    }
+    virtual ~Menu() { }
     
     virtual void Update(int delta);
-    
     virtual void Render();
+    
+    void GoToScreen(string screenName);
+    void Back();
 };
 
-#endif
+#endif /* defined(__Cash_Grab__Menu__) */

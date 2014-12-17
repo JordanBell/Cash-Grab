@@ -1,5 +1,5 @@
 #pragma once
-#include "particletype_powder.h"
+#include "ParticleType_Powder.h"
 
 class ParticleSnow :
 	public ParticleType_Powder

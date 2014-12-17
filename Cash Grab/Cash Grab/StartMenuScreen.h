@@ -9,12 +9,12 @@
 #ifndef __Cash_Grab__StartMenu__
 #define __Cash_Grab__StartMenu__
 
-#include "Menu.h"
+#include "MenuScreen.h"
 
-class StartMenu : public Menu {
+class StartMenuScreen : public MenuScreen {
     
 public:
-    StartMenu();
+    StartMenuScreen(Menu* parent);
     
     void Update(int delta) override final;
 };

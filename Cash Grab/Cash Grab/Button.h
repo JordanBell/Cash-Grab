@@ -10,16 +10,21 @@
 #define __Cash_Grab__Button__
 
 #include "GameObject.h"
+#include <functional>
 
-class Button : public GameObject {
+typedef std::function<void ()> ClickHandler;
+
+class Button : public GameObject {    
 protected:
     SDL_Color m_color;
     
+    ClickHandler m_clickHandler;
+    
 public:
-    Button(int x, int y, const char *text);
+    Button(int x, int y, ClickHandler clickHandler);
     virtual ~Button() { }
     
-    virtual void Click() { printf("Clicked\n"); };
+    void Click();
     
     bool inBounds(int x, int y);
     
