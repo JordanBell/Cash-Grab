@@ -16,18 +16,16 @@ void RoomHub_Upper::Render(void)
 			apply_surface(_x, 1*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL][m_BaseE]); // Top Wall
 			apply_surface(_x, 2*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL][m_BaseE]); // Mid Wall
 
-			//apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, rect_wall); // Top Screen's WallTop
+			// Door Openings
+			if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14))
+				apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_LEFT][m_BaseE]); // Top Screen's WallTop
+			else if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15))
+				apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_RIGHT][m_BaseE]); // Top Screen's WallTop
 		}
-		else {
+		else if ((_x != 0) && (_x != screen->w-TILE_SIZE)){
 			// Bottom walls
 			apply_surface(_x, y + (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
 		}
-
-		// Door Openings
-		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14))
-			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_LEFT][m_BaseE]); // Top Screen's WallTop
-		else if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15))
-			apply_surface(_x, -1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_RIGHT][m_BaseE]); // Top Screen's WallTop
 	}
 
 	// Clocks
@@ -53,7 +51,14 @@ void RoomHub_Upper::Render(void)
 	apply_surface(0, y, m_imageSurface, screen, tiles[WALL_TOPBORDER_BR][m_BaseE]); 
 	apply_surface(screen->w-TILE_SIZE, y, m_imageSurface, screen, tiles[WALL_TOPBORDER_BL][m_BaseE]); 
 	apply_surface(0, y + screen->h - TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TR][m_BaseE]); 
-	apply_surface(screen->w-TILE_SIZE, y + screen->h - TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TL][m_BaseE]); 
+	apply_surface(screen->w-TILE_SIZE, y + screen->h - TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TL][m_BaseE]);
+
+	// Left & Right outer edge decors
+	for (int j = y; j < y+screen->h; j+=TILE_SIZE)
+	{
+		apply_surface(0, j, m_imageSurface, screen, tiles[WALL_TOPBORDER_L][m_BaseE]); 
+		apply_surface(screen->w-TILE_SIZE, j, m_imageSurface, screen, tiles[WALL_TOPBORDER_R][m_BaseE]); 
+	}
 }
 
 void RoomHub_Upper::RenderStation(const int _x, const int _y)

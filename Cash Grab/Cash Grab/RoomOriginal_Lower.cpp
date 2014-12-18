@@ -29,11 +29,13 @@ RoomOriginal_Lower::RoomOriginal_Lower(void)
 			Wall* topWallTop = new Wall(_x, 0);
 			Wall* topWall0 = new Wall(_x, 0 + (1*TILE_SIZE));
 			Wall* topWall1 = new Wall(_x, 0 + (2*TILE_SIZE));
+			Wall* topWall2 = new Wall(_x, 0 + (3*TILE_SIZE));
 
 			// Make them into collidables
 			g_game->addCollidable(topWallTop, true);
 			g_game->addCollidable(topWall0, true);
 			g_game->addCollidable(topWall1, true);
+			g_game->addCollidable(topWall2, true);
 		}
 		
 		// Add the bottom wall no matter what

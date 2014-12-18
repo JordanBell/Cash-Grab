@@ -15,9 +15,9 @@ RoomHallways_Lower::RoomHallways_Lower(void)
 
 	// Initialise the little snow positions
 	SDL_Rect crack1 = { 29*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack2 = { (Sint16)29.5*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack3 = { 29*TILE_SIZE, (Sint16)(1.5*TILE_SIZE), TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack4 = { (Sint16)(29.5*TILE_SIZE), (Sint16)(1.5*TILE_SIZE), TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack2 = { 29.5*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack3 = { 29*TILE_SIZE, 1.5*TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack4 = { 29.5*TILE_SIZE, 1.5*TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
 	SDL_Rect cracks[] = {crack1, crack2, crack3, crack4};
 
 	for (int i = 0; i < NUM_SNOW; i++)
@@ -37,7 +37,7 @@ void RoomHallways_Lower::BuildWallsLeft(void)
 {
 	// LEFT side TOP walls
 	for (int _x = x+TILE_SIZE; _x < x+HALLWAY_WIDTH; _x += TILE_SIZE)
-		g_game->addCollidable(new Wall(_x, y+screen->h - 10*TILE_SIZE));
+		g_game->addCollidable(new Wall(_x, y+screen->h - 9*TILE_SIZE));
 	
 	// LEFT side RIGHT walls
 	for (int _y = (y + screen->h) - HALLWAY_HEIGHT - TILE_SIZE; _y < (y + screen->h); _y += TILE_SIZE)
@@ -45,7 +45,7 @@ void RoomHallways_Lower::BuildWallsLeft(void)
 
 	// LEFT side LEFT walls
 	for (int _y = (y + screen->h) - HALLWAY_HEIGHT - 4*TILE_SIZE; _y < (y + screen->h); _y += TILE_SIZE)
-		if ((_y != y+screen->h-6*TILE_SIZE) && (_y != y+screen->h-7*TILE_SIZE) && (_y != y+screen->h-8*TILE_SIZE))
+		if ((_y != y+screen->h-6*TILE_SIZE) && (_y != y+screen->h-7*TILE_SIZE))
 			g_game->addCollidable(new Wall(x, _y));
 
 	// LEFT side BOTTOM LEFT
@@ -62,7 +62,7 @@ void RoomHallways_Lower::BuildWallsRight(void)
 {
 	// RIGHT side TOP walls
 	for (int _x = x+screen->w-HALLWAY_WIDTH; _x < x+screen->w; _x += TILE_SIZE)
-		g_game->addCollidable(new Wall(_x, y+screen->h - 10*TILE_SIZE));
+		g_game->addCollidable(new Wall(_x, y+screen->h - 9*TILE_SIZE));
 	
 	// RIGHT side LEFT walls
 	for (int _y = (y + screen->h) - HALLWAY_HEIGHT - TILE_SIZE; _y < (y + screen->h); _y += TILE_SIZE)
@@ -70,7 +70,7 @@ void RoomHallways_Lower::BuildWallsRight(void)
 
 	// RIGHT side RIGHT walls
 	for (int _y = (y + screen->h) - HALLWAY_HEIGHT - 4*TILE_SIZE; _y < (y + screen->h); _y += TILE_SIZE)
-		if ((_y != y+screen->h-6*TILE_SIZE) && (_y != y+screen->h-7*TILE_SIZE) && (_y != y+screen->h-8*TILE_SIZE))
+		if ((_y != y+screen->h-6*TILE_SIZE) && (_y != y+screen->h-7*TILE_SIZE))
 			g_game->addCollidable(new Wall(x+screen->w-TILE_SIZE, _y));
 
 	// LEFT side BOTTOM LEFT

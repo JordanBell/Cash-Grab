@@ -163,7 +163,8 @@ void j(vector<int> args)
 	Mute(args);*/
 	
 	g_camera->DisableUpdate();
-	s_renderingOffset_y = screen->h*2;
+	s_renderingOffset_x = -screen->w;
+	s_renderingOffset_y = screen->h+10*TILE_SIZE;
 }
 
 
