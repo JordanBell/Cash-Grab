@@ -17,6 +17,7 @@ void PhysicsObject::Launch(int angleSuppression, int speedOverride)
 {
 	m_airborne = true;
 
+	// Call any overridden OnLaunch code
 	OnLaunch();
 	
 	// The spatial launch angle
@@ -31,14 +32,23 @@ void PhysicsObject::Launch(int angleSuppression, int speedOverride)
 	// Compute the on-screen angle of travel
 	m_screenKin.angle = ComputeScreenAngle();
 	
+	/* This is hard to explain: Image this as the velocity of the object's shadow along 
+	the ground. The x and y values are the components of the spatial horizontal velocities. */
 	m_additiveScreenVelocity = XY (
 		m_spatialKin.velocity.x * cos(m_screenKin.angle),
 		m_spatialKin.velocity.x * sin((m_pos.y > m_endPos.y) ? (m_screenKin.angle*-1) : m_screenKin.angle)
 	); 
 
-	// Determine the on-screen velocities
+		// Determine the on-screen velocities
+	// X is mapped directly as it is on screen
 	m_screenKin.velocity.x = m_additiveScreenVelocity.x;
-	m_screenKin.velocity.y = m_additiveScreenVelocity.y + (m_spatialKin.velocity.y * -3/4); // Multiply by a negative as the axis for the coordinates are swapped
+
+	/* 
+	* Y is what you'd expect: 
+	* The y component of the horiztonal spatial velocity, 
+	* plus a fraction of the spatial vertical velocity
+	*/
+	m_screenKin.velocity.y = m_additiveScreenVelocity.y + (m_spatialKin.velocity.y * -3/4); 
 }
 
 void PhysicsObject::Drop(void)
@@ -95,8 +105,9 @@ const float PhysicsObject::ComputeSpeedForDistance(void) const
 	// Get the distance from here to the endPos
 	float distance = ComputeDistanceToEnd();
 
-	// Use a physics equation to determine the speed needed to reach that distance
+	// Determine the speed needed to reach that distance
 	return sqrt( (distance * m_gravityForce) / sin(2*m_spatialKin.angle) );
+	// 
 }
 
 void PhysicsObject::MoveUpdate(void)
@@ -110,14 +121,13 @@ void PhysicsObject::MoveUpdate(void)
 		m_spatialKin.UpdateHeight();
 
 		// Update velocity and position values
-		
 		m_screenKin.velocity.y = m_additiveScreenVelocity.y - m_spatialKin.velocity.y;
 		m_pos.x += m_screenKin.velocity.x;
 		m_pos.y += m_screenKin.velocity.y;
 	
 		if (m_spatialKin.height < 0) //Has hit the ground
 		{
-			// Any subclass's overriden, virtual OnLanding code
+			// Call any overridden OnLanding code
 			OnLanding();
 
 			// This is no longer airborne

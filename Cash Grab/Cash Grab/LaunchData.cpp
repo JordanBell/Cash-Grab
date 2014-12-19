@@ -84,7 +84,7 @@ void LaunchData::Notify(int totalCoins)
 	// If a new tier has been reached, add new styles and/or patterns
 	if (recordedTier != oldTier)
 	{
-		printf("*!*!* NEW TIER, %d, REACHED !*!*!\n", recordedTier);
+		//printf("*!*!* NEW TIER, %d, REACHED !*!*!\n", recordedTier);
 		possibleStyles.clear();
 		possiblePatterns.clear();
 		if (recordedTier >= 0)
