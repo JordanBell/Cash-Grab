@@ -2,6 +2,7 @@
 #define player_h
 #include "Collidable.h"
 #include <math.h>
+#include <string>
 
 #define MAX_SPEED 0.50f // The max movement speed cap
 #define MIN_SPEED 0.1f // The minimum (base) movement speed
@@ -12,6 +13,8 @@
 #define STILL 1
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
+
+using namespace std;
 
 class Player : public Collidable, public Sprite {
 public:
@@ -41,6 +44,9 @@ public:
 	void IncSpeed(const float amount);
 
 	void Render(void) override;
+
+	// Create a speech bubble above the player saying the given string phrase
+	void Say(const string phrase);
 
 protected:
     void SnapToGrid(void);

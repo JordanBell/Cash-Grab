@@ -10,8 +10,8 @@ void CoinBronze::OnCollect(void)
 { 
 	// Play the basic coin sound
     if (!g_game->IsMuted()) {
-        Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
-//        Mix_FadeInChannel(-1, g_resources->GetCoinSound_Bronze(), 0, rand() % 300);
+//        Mix_PlayChannel(-1, g_resources->GetCoinSound(0), 0);
+        Mix_FadeInChannel(-1, g_resources->GetCoinSound_Bronze(), 0, rand() % 300);
     }
     
 	Wallet::IncCoinsBy(value); 

@@ -46,12 +46,11 @@ bool SDL_init()
 	if (TTF_Init() == -1) return false;
     
     //Initialize SDL_mixer
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
         return false;
     
     Mix_AllocateChannels(50);
     
-    // Pan each channel differently, for variety
     for (int i = 0; i < 50; ++i) {
         int offset = 50 - i * 2;
         int left = 127 + offset;
@@ -60,6 +59,7 @@ bool SDL_init()
             left = 127 - offset;
         }
         
+//        printf("Panning for channel %d: left = %d, right = %d\n", i, left, 254-left);
         if (!Mix_SetPanning(i, left, 254-left)) {
             printf("Couldn't set panning for channel %d: %s\n", i, Mix_GetError());
         }
@@ -121,7 +121,27 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	offset.x = x + s_renderingOffset_x;
 	offset.y = y + s_renderingOffset_y;
 
-	SDL_BlitSurface(source, clip, destination, &offset);
+	//// Only blit if it is within the screen
+	//bool shouldBlit = true;
+
+	//// Only check overlapping as necessary, checking another side if no sides overlap thus far
+	//bool rightOverlap = (offset.x + (clip==nullptr)? source->w : clip->w) > 0;
+	//if (!rightOverlap) {
+	//	bool leftOverlap = offset.x < destination->w;
+	//	if (!leftOverlap) {
+	//		bool bottomOverlap = (offset.y + (clip==nullptr)? source->h : clip->h) > 0;
+	//		if (!bottomOverlap) {
+	//			bool topOverlap = offset.y < destination->h;
+	//			if (!topOverlap) {
+	//				shouldBlit = false;
+	//				printf("CULLING... ");
+	//			}
+	//		}
+	//	}
+	//}
+
+	//if (shouldBlit)
+		SDL_BlitSurface(source, clip, destination, &offset);
 }
 
 bool GameObject_Compare(const GameObject* first, const GameObject* second)

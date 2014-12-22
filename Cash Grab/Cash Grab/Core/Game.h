@@ -19,7 +19,7 @@
 #include "Coin.h"
 #include "Prompt.h"
 #include "Timer.h"
-#include "SEConsole.h"
+#include "CGConsole.h"
 #include "EffectManager.h"
 #include <memory>
 
@@ -47,7 +47,7 @@ public:
 	void Unmute(void) { m_muted = false; }
 
 private:
-	SEConsole testingConsole;
+	CGConsole testingConsole;
 	int consoleCooldownCounter;
 	KeyCode keys;
     CollisionManager* m_CollisionManager;

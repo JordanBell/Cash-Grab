@@ -20,10 +20,9 @@ Resources::Resources(void)
 	m_MoneyMachineSheet =	load_image("moneyMachine.png");
     m_PowerupSheet =        load_image("powerupSheet.png");
 	m_Prompt =				load_image("Press Enter.png");
-    m_Square =              load_image("Square.png");
-    m_SpeedParticle =       load_image("speedParticle.png");
     m_Sinkhole =			load_image("sinkhole.png");
     m_ButtonSheet =         load_image("buttons.png");
+    m_Speech =			    load_image("speechBubble.png");
 	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size set
     
     m_Music = Mix_LoadMUS("Main2.wav");
@@ -43,11 +42,12 @@ Resources::Resources(void)
         !m_PowerupSheet         ||
 		!m_Prompt               ||
 		!m_Font                 ||
-        !m_Square               ||
-        !m_SpeedParticle        ||
         !m_Sinkhole				||
+		!m_ButtonSheet			||
+        !m_Speech				||
         !m_Music)
 		{
+
             printf("Player: %s\n", CHECK_NULL(m_PlayerSheet));
             printf("Coin: %s\n", CHECK_NULL(m_CoinSheet));
             printf("Environment: %s\n", CHECK_NULL(m_EnvironmentImage));
@@ -55,11 +55,14 @@ Resources::Resources(void)
             printf("Powerup: %s\n", CHECK_NULL(m_PowerupSheet));
             printf("Prompt: %s\n", CHECK_NULL(m_Prompt));
             printf("Font: %s\n", CHECK_NULL(m_Font));
-            printf("Square: %s\n", CHECK_NULL(m_Square));
-            printf("Speed particle: %s\n", CHECK_NULL(m_SpeedParticle));
             printf("Sinkhole: %s\n", CHECK_NULL(m_Sinkhole));
             printf("Buttons: %s\n", CHECK_NULL(m_ButtonSheet));
+            printf("Speech Bubble: %s\n", CHECK_NULL(m_Speech));
             printf("music: %s\n", CHECK_NULL(m_Music));
+
+			// Let me see!!
+			SDL_Delay(2000);
+
 			throw std::runtime_error("Some of the resources failed to initialise");
 		}
     
@@ -79,10 +82,9 @@ Resources::~Resources(void)
 	SDL_FreeSurface(m_EnvironmentImage);
 	SDL_FreeSurface(m_MoneyMachineSheet);
 	SDL_FreeSurface(m_Prompt);
-    SDL_FreeSurface(m_Square);
-    SDL_FreeSurface(m_SpeedParticle);
     SDL_FreeSurface(m_Sinkhole);
     SDL_FreeSurface(m_ButtonSheet);
+    SDL_FreeSurface(m_Speech);
 	TTF_CloseFont(m_Font);
     
     Mix_FreeMusic(m_Music);

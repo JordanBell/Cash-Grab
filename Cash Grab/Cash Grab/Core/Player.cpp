@@ -3,6 +3,7 @@
 #include "Resources.h"
 #include "ParticleSimple.h"
 #include "Camera.h"
+#include "SpeechBubble.h"
 
 Player *g_player = nullptr;
 
@@ -66,6 +67,12 @@ void Player::move(int direction)
         moving = true;
         this->direction = direction;
     }
+}
+
+void Player::Say(const string phrase)
+{
+	//g_game->addGameObject(new SpeechBubble(this, phrase, 25*phrase.length()));
+	g_game->addGameObject(new SpeechBubble(this, phrase, 200));
 }
 
 void Player::Smash(int radius)
