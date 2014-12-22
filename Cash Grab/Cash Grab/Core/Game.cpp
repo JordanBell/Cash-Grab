@@ -152,9 +152,10 @@ void Game::HandleKeys()
 	
 		if (keystates[SDLK_RETURN]) keys.enter();
 		if (keystates[SDLK_1])		keys._1();
+		if (keystates[SDLK_f])		keys.f();
 
 		// Screen Formatting
-		if (keystates[SDLK_f]) toggleScreenFormat();
+		//if (keystates[SDLK_f]) toggleScreenFormat();
 		if (keystates[SDLK_ESCAPE]) running = false;
 	}
 

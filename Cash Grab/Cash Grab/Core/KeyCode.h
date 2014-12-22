@@ -14,6 +14,7 @@ struct KeyCode
 	void down()			{ g_player->move(Player::DOWN); }
 	void left()			{ g_player->move(Player::LEFT); }
 	void right()		{ g_player->move(Player::RIGHT); }
+	void f()			{ g_player->Interact(); }
 	void no_direction()	{ g_player->stop_moving();}
 	void _1();
 	void enter();

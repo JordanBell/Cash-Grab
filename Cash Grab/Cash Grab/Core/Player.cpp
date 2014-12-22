@@ -4,13 +4,15 @@
 #include "ParticleSimple.h"
 #include "Camera.h"
 #include "SpeechBubble.h"
+#include "InteractZone.h"
 
 Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) 
 	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
-	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED)
+	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED), 
+	m_Speech(nullptr), m_ChangedZone(false), m_Interaction(nullptr)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
 		
@@ -58,6 +60,12 @@ Player::~Player(void)
     }
 }
 
+void Player::Interact(void) 
+{ 
+	if (m_Interaction) 
+		m_Interaction->OnInteract(); 
+}
+
 void Player::move(int direction)
 {
     // If it's possible to move or moving in a different direction
@@ -71,8 +79,15 @@ void Player::move(int direction)
 
 void Player::Say(const string phrase)
 {
+	// Delete the old SpeechBubble, if exists.
+	if (m_Speech)
+		m_Speech->Deactivate();
+	
+	SpeechBubble* newSpeech = new SpeechBubble(this, phrase);
+	g_game->addGameObject(newSpeech);
+	m_Speech = newSpeech;
+	
 	//g_game->addGameObject(new SpeechBubble(this, phrase, 25*phrase.length()));
-	g_game->addGameObject(new SpeechBubble(this, phrase, 200));
 }
 
 void Player::Smash(int radius)
@@ -227,6 +242,26 @@ void Player::Update(int delta)
 
 		// The player has moved, so make sure he's still in the same room
 		g_camera->FocusOnPlayerRoom();
+
+		// Check if this is in an Interact Zone
+		bool wasInZone = m_Interaction != nullptr;
+		m_Interaction = nullptr;
+		for (auto zone : g_interactZones) {
+			if (zone->OverlapsWith(m_HitBox, direction)) {
+				m_Interaction = zone;
+				if (!wasInZone)
+					m_ChangedZone.Set(); // Moved into zone
+			}
+		}
+		if (m_Interaction == nullptr && wasInZone) // Moved out of zone
+			m_ChangedZone.Set();
+
+		if (m_ChangedZone.Read()) {
+			if (m_Interaction)
+				Say("F");
+			else
+				m_Speech->Deactivate();
+		}
     } 
 	else 
 	{

@@ -92,7 +92,30 @@ void SpeechBubble::Render(void)
 
 void SpeechBubble::Update(int delta)
 {
-	if (m_Timeout > 0)
+	if (m_Timeout == -10)
+		BooleanUpdate();
+	else
+		TimeoutUpdate();
+}
+
+void SpeechBubble::BooleanUpdate(void)
+{
+	if (deactivated)
+		g_game->removeGameObject(this);
+	else
+	{
+		// Follow the source
+		if (m_Source)
+		{
+			x = m_Source->x + OFFSET_X;
+			y = m_Source->y + OFFSET_Y;
+		}
+	}
+}
+
+void SpeechBubble::TimeoutUpdate(void)
+{
+	if ((m_Timeout > 0) && (!deactivated))
 	{
 		m_Timeout--;
 
