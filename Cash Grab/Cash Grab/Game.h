@@ -58,7 +58,6 @@ private:
 	bool m_muted;
 
 	//GameObjects
-	Machine *machine;
 	Prompt *prompt;
 	list<GameObject*> m_GameObjects;
     list<unique_ptr<GameObject>> m_GameObjectDeleteQueue;

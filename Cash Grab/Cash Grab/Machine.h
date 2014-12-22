@@ -2,9 +2,6 @@
 #define machine_h
 
 #include "Collidable.h"
-#include "CoinBronze.h"
-#include "CoinSilver.h"
-#include "CoinGold.h"
 #include "Game.h"
 #include "LaunchData.h"
 
@@ -28,7 +25,7 @@ public:
 	~Machine(void) {}
 	
 	void Update(int delta);
-	void dispense();
+	void Dispense();
 
 	void ForceDispense(int coinNum);
 

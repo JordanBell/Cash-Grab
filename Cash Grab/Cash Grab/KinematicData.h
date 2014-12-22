@@ -42,4 +42,4 @@ private:
 	// Compute an angle, in degrees, based on a given suppression value
 	static const float ComputeAngleBySuppression(const int angleSuppression);
 
-} ;
+};

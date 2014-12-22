@@ -194,11 +194,9 @@ vector<int> TestingConsole::ExtractArguments(string argumentsString)
 			r_args.push_back(atoi(head.c_str()));
 			head = "";
 		}
-		else
-		{
+		else {
 			head.push_back(c);
 		}
-
 	}
 
 	// Add the last argument

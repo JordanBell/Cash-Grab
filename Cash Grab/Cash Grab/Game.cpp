@@ -36,12 +36,8 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 	srand((unsigned int)time(nullptr));
 
 	// Initialise all ENTITIES
-	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
-	g_machine = machine;
 	player = new Player((9.5*TILE_SIZE), (8*TILE_SIZE));
     g_player = player;
-	prompt = new Prompt(machine);
-	addGameObject(prompt);
     
     m_EffectManager = new EffectManager();
 
@@ -50,11 +46,10 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
     
 	m_CollisionManager = new CollisionManager(this);
 	
-    addCollidable(machine);
 	m_GameObjects.push_back(player);
 
 	// Set up the key responses
-	keys = KeyCode(player, machine);
+	keys = KeyCode();
 
 	// Initialise the Camera
 	g_camera = new Camera();
@@ -192,10 +187,6 @@ void Game::Update()
     
 	m_CollisionManager->Update(delta);
     m_EffectManager->Update(delta);
-    
-    g_UI->SetCollectedCoins(Wallet::GetCoins());
-    g_UI->SetRequiredCoins(machine->coinCost);
-    g_UI->SetTotalCoins(Wallet::GetTotalCoins());
 }
 
 void Game::Render()

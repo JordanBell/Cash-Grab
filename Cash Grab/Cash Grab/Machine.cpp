@@ -5,6 +5,10 @@
 #include "PowerupPull.h"
 #include "PowerupSmash.h"
 
+#include "CoinBronze.h"
+#include "CoinSilver.h"
+#include "CoinGold.h"
+
 Machine* g_machine = nullptr;
 #define ANGLE_SUPPRESSION 1
 
@@ -113,7 +117,7 @@ void Machine::Update(int delta)
 	}
 }
 
-void Machine::dispense()
+void Machine::Dispense()
 {
 	// Can the player afford it?
 	if (!m_dispensing && canAfford())

@@ -33,6 +33,10 @@ public:
 	// Return a pointer to the room that the player is in
 	static Room* GetPlayerRoom(void);
 
+	// If this room has a machine, dispense from it.
+	void Dispense() 
+		{ if (m_Machine) m_Machine->Dispense(); }
+
 protected:
 	// The element tile palette of this room
 	enum RoomElement {
@@ -46,8 +50,17 @@ protected:
 	
 	Dimensions m_Size;
 
+	// Set this room's machine
+	void SetMachine(Machine* machine)
+		{ m_Machine = machine; }
+
+	// Set this room's machine
+	Machine* GetMachine(void)
+		{ return m_Machine; }
+
 private:
 	static std::vector<Room*> s_Rooms;
+	Machine* m_Machine;
 	bool m_IsLarge;
 };
 	

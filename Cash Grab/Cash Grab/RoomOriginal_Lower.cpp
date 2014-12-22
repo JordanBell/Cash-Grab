@@ -2,10 +2,20 @@
 #include "Game.h"
 #include "EnvrionmentSheetIndexes.h"
 #include "Wall.h"
+#include "Wallet.h"
+#include "UI.h"
 
 RoomOriginal_Lower::RoomOriginal_Lower(void)
 		: Room(0, 0, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER) 
 { 
+	// Initialise the dispenser
+	Machine* machine = new Machine(x + (7*TILE_SIZE), y + (TILE_SIZE));
+	SetMachine(machine);
+	g_game->addCollidable(machine);
+
+	// Create a prompt, linking to that machine TODO: Link it to the wallet instead.
+	g_game->addGameObject(new Prompt(machine));
+
 	// Build the walls
 	// Left and Right Walls (Bottom)
 	for (int _y = 0; _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
@@ -54,6 +64,14 @@ RoomOriginal_Lower::RoomOriginal_Lower(void)
         g_game->addCollidable(leftWall, true);
         g_game->addCollidable(rightWall, true);
 	}
+}
+
+void RoomOriginal_Lower::Update(int delta)
+{
+	// Update the room machine's GUI
+	g_UI->SetCollectedCoins(Wallet::GetCoins());
+    g_UI->SetRequiredCoins(GetMachine()->coinCost);
+    g_UI->SetTotalCoins(Wallet::GetTotalCoins());
 }
 
 void RoomOriginal_Lower::Render(void)

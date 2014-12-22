@@ -102,12 +102,63 @@ const float PhysicsObject::ComputeDistanceToEnd(void) const
 
 const float PhysicsObject::ComputeSpeedForDistance(void) const
 {
-	// Get the distance from here to the endPos
+	/*
+	Let's walk through how this works. If we're computing a speed needed to reach a distance, we are calculating how 
+	hard throw ourselves into the air. Our airtime dermines how far we go. How far we go is determined by the start 
+	and end positions - those we know.	So airtime is the main factor here. Time spent in the air before we hit the 
+	ground is determined by the vertical spatial velocity. 
+	
+	Gravity decreases the vertical velocity, which eventually starts to move the object to the ground. Once it does, 
+	we want to have reached the end point. But we don't know the exact value of our vertical velocity yet.  The vertical 
+	velocity is made up of a scalar and a direction - the direction we know: m_spatialKin.angle. Now all we need is the 
+	scalar: our speed.
+
+	So this can be figured out from the angle, the distance to the end point, and the force of gravity.
+	
+	Let's find the horizontal and vertical components of our initial launch
+		initialVertVelocity = speed * sin(launchAngle)
+		initialHoriVelocity = speed * cos(launchAngle)   --- This never changes, as we don't factor in air resistance
+
+	initialVertVelocity == -initialVertVelocity when the object has hit the ground
+		total change in vertVelocity = 2*initialVertVelocity
+	This is done by gravity, so:
+		total change in vertVelocity = time*gravity
+	Let's get that in terms of time
+		2*initialVertVelocity = time*gravity
+		time = 2*initialVertVelocity / gravity
+
+	Horizontal velocity determines how far the object flies across the ground (distance)
+		distance = time*initialHoriVelocity
+
+	Substitute in time from above
+		distance = (2*initialVertVelocity / gravity) * initialHoriVelocity  
+
+	Rearrange it bro
+		distance = (2*initialVertVelocity*initialHoriVelocity / gravity)
+
+	Substitute in the velocities
+		distance = (2 * (speed * sin(launchAngle)) * (speed * cos(launchAngle)) ) / gravity
+
+	Rearrange! Make all that in terms of speed, our unknown
+		distance * gravity = 2 * (speed * sin(launchAngle)) * (speed * cos(launchAngle))
+		distance * gravity = 2 * speed*speed * sin(launchAngle) * cos(launchAngle)
+		speed * speed = distance*gravity / ( 2 * sin(launchAngle) * cos(launchAngle) )
+
+	Here's a Trigonometry Identity that we can use to simplify that
+	2sin(x)cos(x) = sin2x
+
+	Therefore:
+		speed * speed = distance*gravity / sin(2*launchAngle)
+		speed = sqrt( distance*gravity / sin(2*launchAngle)
+	Which is finally calculated below as:
+		return sqrt( (distance * m_gravityForce) / sin(2*m_spatialKin.angle) );
+	*/
+
+	// Get the distance from here to the endPos (pythagorus)
 	float distance = ComputeDistanceToEnd();
 
 	// Determine the speed needed to reach that distance
 	return sqrt( (distance * m_gravityForce) / sin(2*m_spatialKin.angle) );
-	// 
 }
 
 void PhysicsObject::MoveUpdate(void)
