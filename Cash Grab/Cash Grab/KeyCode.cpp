@@ -1,6 +1,6 @@
 #include "KeyCode.h"
-#include "Machine.h"
-#include "Player.h"
+#include "Game.h"
+#include "Camera.h"
 
 bool KeyCode::bool1 = false;
 
@@ -23,5 +23,5 @@ void KeyCode::_1(void)
 
 void KeyCode::enter(void)
 {
-    machine->dispense();
+	g_camera->GetRoomFocus()->Dispense();
 }

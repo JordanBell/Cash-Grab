@@ -11,7 +11,9 @@
 
 TextButton::TextButton(int x, int y, ClickHandler clickHandler, const char *text) : Button(x, y, clickHandler)
 {
-    m_color = { 0, 0, 0 };
+	m_color.r = 0;
+	m_color.g = 0;
+	m_color.b = 0;
     m_imageSurface = TTF_RenderText_Solid(g_resources->GetFont(), text, m_color);
     
     m_imageRect = new SDL_Rect();

@@ -17,7 +17,8 @@ public:
     Wall(int x, int y) : Collidable(x, y), GameObject(x, y)
 		{ m_IsMoveable = false; m_renderPriority = 99; }
 
-	void Render(void) { if ( SHOW_WALLS ) { SDL_Rect r = { (Sint16)(x+s_renderingOffset_x), (Sint16)(y+s_renderingOffset_y), 32, 32}; SDL_FillRect(screen, &r, 0xFF0000FF); } }
+	// Render if set to do so
+	void Render(void);
 };
 
 #endif /* defined(__CashGrab__Wall__) */

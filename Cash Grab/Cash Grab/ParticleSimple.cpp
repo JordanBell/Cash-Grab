@@ -15,7 +15,6 @@ Uint32 ParticleSimple::s_color = 0x00655c5c; // Tile-ish
 ParticleSimple::ParticleSimple(int end_x, int end_y, int height) 
 		: PhysicsObject(end_x, end_y, height), GameObject(end_x, end_y-height), m_size(3, 3), m_fadeCounter(FADE_LENGTH), m_age(0), m_AgeLimit(AGE_LIMIT)
 { 
-	
 	// Create a square surface of this particle's color and size TODO: Create all surfaces in video memory (HWSURFACE)
 	m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32,
 									 0,0,0,0);
@@ -89,7 +88,7 @@ void ParticleSimple::Update(int delta)
 	if (m_fadeCounter == FADE_LENGTH)
 	{
 		// Check to see if this should be removed
-		bool isTooOld = m_age >= m_AgeLimit;
+		bool isTooOld = !m_airborne && (m_age >= m_AgeLimit);
 
 		// Fade if too old
 		if (isTooOld)

@@ -12,7 +12,7 @@ Player::Player(int x, int y)
 	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
-    
+		
     m_animationDelay = 200;
     m_maxCycles = WALK_CYCLE_LENGTH * WALK_SPEED;
 
@@ -27,6 +27,7 @@ void Player::InitSprites(void)
     int clip_w = (m_imageSurface->w / WALK_CYCLE_LENGTH);
     int clip_h = (m_imageSurface->h / 4);
     m_HitBox->w = m_AABB->w = clip_w;
+	m_HitBox->h = m_AABB->h = clip_h/2;
 
     for (int i = 0; i < 4; i++)
     {
@@ -104,7 +105,7 @@ void Player::DoMove()
 		y += m_Velocities.y;
 		x += m_Velocities.x;
 
-		UpdateCollidablePos(x, y);
+		UpdateCollidablePos(x, y+m_HitBox->h);
     }
 }
 
@@ -184,10 +185,10 @@ void Player::Update(int delta)
 
 	InitSprites();
     
-    m_AABB->x = x;
-    m_AABB->y = y;
     m_AABB->w = sprites[0][0]->w;
-    m_AABB->h = sprites[0][0]->h;
+    m_AABB->h = sprites[0][0]->h/2;
+    m_AABB->x = x;
+    m_AABB->y = y+m_AABB->h;
 
 	// If the player is moving fast, kick up dirt
 	if (!((m_Velocities.x == 0) && (m_Velocities.y == 0))) // If not still
@@ -200,7 +201,7 @@ void Player::Update(int delta)
 		// Calculate target Y velocity
 		if (this->direction == UP) {
 			m_TargetVelocities.y = -pixelsToMove;
-			m_AABB->y = y + m_Velocities.y;
+			m_AABB->y = y + m_AABB->h + m_Velocities.y;
 		}
 		else if (this->direction == DOWN)
 			m_TargetVelocities.y = pixelsToMove;
@@ -231,7 +232,7 @@ void Player::Update(int delta)
 
 	// Update AABB based on the new velocities
 	if (this->direction == UP)
-		m_AABB->y = y + m_Velocities.y;
+		m_AABB->y = y + m_AABB->h + m_Velocities.y;
 
 	if (this->direction == LEFT)
 		m_AABB->x = x + m_Velocities.x;
@@ -249,10 +250,10 @@ void Player::ApproachTargetVelocity(void)
 	// (x) Horizontal
 	if (m_Velocities.x != m_TargetVelocities.x)
 	{
-
 		const int pol = (m_TargetVelocities.x - m_Velocities.x) > 0 ? 1 : -1;
+
 		const double acceleration = moving? 3*m_Friction : m_Friction;
-		const float changeInVelocity = pol * min(acceleration, fabs(m_TargetVelocities.x - m_Velocities.x));
+		const float changeInVelocity = pol * min((float)acceleration, abs(m_TargetVelocities.x - m_Velocities.x));
 
 		m_Velocities.x += changeInVelocity;
 	}
@@ -263,7 +264,7 @@ void Player::ApproachTargetVelocity(void)
 		const int pol = (m_TargetVelocities.y - m_Velocities.y) > 0 ? 1 : -1;
 		
 		const double acceleration = moving? 3*m_Friction : m_Friction;
-        const float changeInVelocity = pol * min(acceleration, fabs(m_TargetVelocities.y - m_Velocities.y));
+		const float changeInVelocity = pol * min((float)acceleration, abs(m_TargetVelocities.y - m_Velocities.y));
 
 		m_Velocities.y += changeInVelocity;
 	}
@@ -344,8 +345,7 @@ void Player::AddDirtParticles(void)
 
 void Player::Render(void)
 {
-    // For debugging!
-    // Draw the AABB, then the player
+    // Draw the AABB, then the player. For debugging!
     /*Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
     Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
 

@@ -5,33 +5,25 @@
 RoomHub_Lower::RoomHub_Lower(void)
 		: Room(0, -screen->h, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER)
 {
-	// Left and Right Walls (Top)
+	// Left and Right Walls
 	for (int _y = TILE_SIZE; _y < (screen->h); _y += TILE_SIZE) // Loop through height
 	{
-		// Initialise Left and Right
-        Wall* leftWall = new Wall(0, y + _y);
-        Wall* rightWall = new Wall(screen->w - TILE_SIZE, y + _y);
-
 		// Make them into collidables
-        g_game->addCollidable(leftWall, true);
-        g_game->addCollidable(rightWall, true);
+        g_game->addCollidable(new Wall(0, y + _y));
+        g_game->addCollidable(new Wall(screen->w - TILE_SIZE, y + _y));
 	}
 	
-	// Top and Bottom Walls (Top)
+	// Top and Bottom Walls
 	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
 	{
 		// Don't put walls in the doorways
 		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
 		{
-			// Initialise Top and Bottom
-			Wall* topWallTop = new Wall(_x, y);
-			Wall* topWall0 = new Wall(_x, y + (1*TILE_SIZE));
-			Wall* topWall1 = new Wall(_x, y + (2*TILE_SIZE));
-
 			// Make them into collidables
-			g_game->addCollidable(topWallTop, true);
-			g_game->addCollidable(topWall0, true);
-			g_game->addCollidable(topWall1, true);
+			g_game->addCollidable(new Wall(_x, y));
+			g_game->addCollidable(new Wall(_x, y + (1*TILE_SIZE)));
+			g_game->addCollidable(new Wall(_x, y + (2*TILE_SIZE)));
+			g_game->addCollidable(new Wall(_x, y + (3*TILE_SIZE)));
 		}
 
 		// Don't put walls in the doorways
@@ -152,9 +144,8 @@ void RoomHub_Lower::CreateStationWalls(const int _x, const int _y)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		int j = 2;
-		Wall* bottomWall = new Wall(x + i*TILE_SIZE + _x, y + j*TILE_SIZE + _y);
-		g_game->addCollidable(bottomWall, true);
+		g_game->addCollidable(new Wall(x + i*TILE_SIZE + _x, y + 2*TILE_SIZE + _y));
+		g_game->addCollidable(new Wall(x + i*TILE_SIZE + _x, y + 3*TILE_SIZE + _y));
 	}
 }
 

@@ -6,7 +6,7 @@
 std::vector<Room*> Room::s_Rooms;
 
 Room::Room(const int x, const int y, const Dimensions& size, RoomElement element, const int renderPriority) 
-	: GameObject(x, y), m_Size(size), m_BaseE(element)
+	: GameObject(x, y), m_Size(size), m_BaseE(element), m_Machine(nullptr)
 {
 	// TODO rename Environment spritesheet to Room spritesheet?
 	m_imageSurface = g_resources->GetEnvironmentImage();

@@ -10,6 +10,9 @@
 #include "Wallet.h"
 #include "EffectMagnetism.h"
 #include "ParticleSimple.h"
+
+#include "Sinkhole_Top.h"
+#include "Sinkhole_Bottom.h"
 #include "RoomOriginal_Upper.h"
 #include "RoomOriginal_Lower.h"
 #include "RoomHub_Upper.h"
@@ -33,12 +36,8 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
 	srand((unsigned int)time(nullptr));
 
 	// Initialise all ENTITIES
-	machine = new Machine((7*TILE_SIZE), (TILE_SIZE));
-	g_machine = machine;
 	player = new Player((9.5*TILE_SIZE), (8*TILE_SIZE));
     g_player = player;
-	prompt = new Prompt(machine);
-	addGameObject(prompt);
     
     m_EffectManager = new EffectManager();
 
@@ -47,11 +46,10 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
     
 	m_CollisionManager = new CollisionManager(this);
 	
-    addCollidable(machine);
 	m_GameObjects.push_back(player);
 
 	// Set up the key responses
-	keys = KeyCode(player, machine);
+	keys = KeyCode();
 
 	// Initialise the Camera
 	g_camera = new Camera();
@@ -109,6 +107,8 @@ void Game::InitEnvironment(void)
 	addGameObject( new RoomIce_Upper() );
 	addGameObject( new RoomFire_Lower() );
 	addGameObject( new RoomFire_Upper() );
+	addGameObject( new Sinkhole_Top() );
+	addGameObject( new Sinkhole_Bottom() );
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
@@ -187,10 +187,6 @@ void Game::Update()
     
 	m_CollisionManager->Update(delta);
     m_EffectManager->Update(delta);
-    
-    g_UI->SetCollectedCoins(Wallet::GetCoins());
-    g_UI->SetRequiredCoins(machine->coinCost);
-    g_UI->SetTotalCoins(Wallet::GetTotalCoins());
 }
 
 void Game::Render()
@@ -225,46 +221,46 @@ void Game::Poll()
 			if (testingConsole.IsActive())
 				testingConsole.KeyIn(event.key.keysym);
 		}
-        
-        // Hax0rz!
-//        if( event.type == SDL_MOUSEBUTTONDOWN )
-//        {
-//            //If the left mouse button was pressed
-//            if( event.button.button == SDL_BUTTON_LEFT )
-//            {
-//                //Get the mouse offsets
-//                int x = event.button.x;
-//                int y = event.button.y;
-//                
-//                for (GameObject *go : m_GameObjects) {
-//                    Button *b = dynamic_cast<Button*>(go);
-//                    
-//                    if (b && b->inBounds(x, y)) {
-//                        b->y += 1;
-//                    }
-//                }
-//            }
-//        }
-//        if( event.type == SDL_MOUSEBUTTONUP )
-//        {
-//            //If the left mouse button was pressed
-//            if( event.button.button == SDL_BUTTON_LEFT )
-//            {
-//                //Get the mouse offsets
-//                int x = event.button.x;
-//                int y = event.button.y;
-//                
-//                for (GameObject *go : m_GameObjects) {
-//                    Button *b = dynamic_cast<Button*>(go);
-//                    
-//                    if (b && b->inBounds(x, y)) {
-//                        b->y -= 1;
-//                        b->Click();
-//                    }
-//                }
-//            }
-//        }
 	}
+
+	// Hax0rz!
+	//        if( event.type == SDL_MOUSEBUTTONDOWN )
+	//        {
+	//            //If the left mouse button was pressed
+	//            if( event.button.button == SDL_BUTTON_LEFT )
+	//            {
+	//                //Get the mouse offsets
+	//                int x = event.button.x;
+	//                int y = event.button.y;
+	//                
+	//                for (GameObject *go : m_GameObjects) {
+	//                    Button *b = dynamic_cast<Button*>(go);
+	//                    
+	//                    if (b && b->inBounds(x, y)) {
+	//                        b->y += 1;
+	//                    }
+	//                }
+	//            }
+	//        }
+	//        if( event.type == SDL_MOUSEBUTTONUP )
+	//        {
+	//            //If the left mouse button was pressed
+	//            if( event.button.button == SDL_BUTTON_LEFT )
+	//            {
+	//                //Get the mouse offsets
+	//                int x = event.button.x;
+	//                int y = event.button.y;
+	//                
+	//                for (GameObject *go : m_GameObjects) {
+	//                    Button *b = dynamic_cast<Button*>(go);
+	//                    
+	//                    if (b && b->inBounds(x, y)) {
+	//                        b->y -= 1;
+	//                        b->Click();
+	//                    }
+	//                }
+	//            }
+	//        }
 }
 
 void Game::addGameObject(GameObject* gameObject, bool toFront)

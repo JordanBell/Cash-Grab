@@ -10,14 +10,14 @@ RoomFire_Lower::RoomFire_Lower(void)
 	for (int _x = x+TILE_SIZE; _x < x + m_Size.x; _x += TILE_SIZE) 
 	{
 		g_game->addCollidable(new Wall(_x, y+m_Size.y-TILE_SIZE));
-		g_game->addCollidable(new Wall(_x, y+2*TILE_SIZE));
+		g_game->addCollidable(new Wall(_x, y+3*TILE_SIZE));
 	}
 
 	// Side Walls
 	for (int _y = y; _y < y + m_Size.y; _y += TILE_SIZE)
 	{
 		// Left Walls
-		if ((_y != y+7*TILE_SIZE) && (_y != y+8*TILE_SIZE) && (_y != y+9*TILE_SIZE))
+		if ((_y != y+8*TILE_SIZE) && (_y != y+9*TILE_SIZE))
 			g_game->addCollidable(new Wall(x, _y));
 		
 		// Right Walls

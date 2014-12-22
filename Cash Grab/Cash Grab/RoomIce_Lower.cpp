@@ -11,7 +11,7 @@ RoomIce_Lower::RoomIce_Lower(void)
 	for (int _x = x+TILE_SIZE; _x < x + m_Size.x; _x += TILE_SIZE) 
 	{
 		g_game->addCollidable(new Wall(_x, y+m_Size.y-TILE_SIZE));
-		g_game->addCollidable(new Wall(_x, y+2*TILE_SIZE));
+		g_game->addCollidable(new Wall(_x, y+3*TILE_SIZE));
 	}
 
 	// Side Walls
@@ -21,15 +21,15 @@ RoomIce_Lower::RoomIce_Lower(void)
 		g_game->addCollidable(new Wall(x, _y));
 
 		// Right Walls
-		if ((_y != y+7*TILE_SIZE) && (_y != y+8*TILE_SIZE) && (_y != y+9*TILE_SIZE))
+		if ((_y != y+8*TILE_SIZE) && (_y != y+9*TILE_SIZE))
 			g_game->addCollidable(new Wall(x + screen->w-TILE_SIZE, _y));
 	}
 
 	// Random floor decoration
 	SDL_Rect crack1 = { 29*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack2 = { static_cast<Sint16>(29.5*TILE_SIZE), TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack3 = { 29*TILE_SIZE, static_cast<Sint16>(1.5*TILE_SIZE), TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack4 = { static_cast<Sint16>(29.5*TILE_SIZE), static_cast<Sint16>(1.5*TILE_SIZE), TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack2 = { 29.5*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack3 = { 29*TILE_SIZE, 1.5*TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack4 = { 29.5*TILE_SIZE, 1.5*TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
 	SDL_Rect cracks[] = {crack1, crack2, crack3, crack4};
 
 	for (int i = 0; i < NUM_SNOW; i++)

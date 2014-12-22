@@ -1,4 +1,4 @@
-#include "CoinSilver.h"
+#include "CoinBronze.h"
 #include "Game.h"
 #include "Resources.h"
 #include "Wallet.h"

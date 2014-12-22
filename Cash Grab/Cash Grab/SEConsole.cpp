@@ -7,14 +7,13 @@
 #include "ParticleSnow.h"
 #include "Camera.h"
 
+#define DIVIDES(a, b) (a%b == 0)
+
 /* Temporary calculation function for printing arbitrary calculations used in debugging. 
 Override the contents of this function for your own calculations when appropriate. */
 void Calc(vector<int> args)
 {
-	// Drop a snowflake
-	ParticleSnow* p = new ParticleSnow(300, 300, 100);
-	g_game->addGameObject(p);
-	p->Drop();
+	// Nothing
 }
 
 /* Launch all coins at the player */
@@ -34,7 +33,8 @@ void Pull(vector<int> args)
 void ParticleExplosion(vector<int> args)
 {
 	int s_x, s_y; // Start coords
-	s_x = s_y = 10*TILE_SIZE;
+	s_x = screen->w/2 - TILE_SIZE/2;
+	s_y = screen->h/2 - TILE_SIZE/2+2*TILE_SIZE;
 
 	int e_x, e_y; // End coords
 
@@ -43,14 +43,17 @@ void ParticleExplosion(vector<int> args)
 	for (int i = 0; i < num; i++)
 	{
 		// Dirt flies somewhere around behind the player
-		e_x = s_x + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
+		e_x = s_x + (rand() % (6*TILE_SIZE)) - 3*TILE_SIZE;
 		e_y = s_y + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
 
-		particles.push_back(new ParticleSimple(s_x, s_y, e_x, e_y));
+		ParticleSimple* part = new ParticleSimple(s_x, s_y, e_x, e_y);
+
+		particles.push_back(part);
+		g_game->addGameObject(part);
 	}
 
 	for (Particle* p : particles)
-		p->Launch();
+		p->Launch(1);
 }
 
 
@@ -163,7 +166,8 @@ void j(vector<int> args)
 	Mute(args);*/
 	
 	g_camera->DisableUpdate();
-	s_renderingOffset_y = screen->h*2;
+	s_renderingOffset_x = -screen->w;
+	s_renderingOffset_y = screen->h+10*TILE_SIZE;
 }
 
 

@@ -11,7 +11,6 @@
 #define LAYER_ENV_UPPER 3
 #define LAYER_AIR 4
 #define LAYER_UI 10
-#define SHOW_WALLS false
 
 #include <list>
 #include "KeyCode.h"
@@ -45,7 +44,7 @@ public:
     void removeCollidable(Collidable* collidable);
 	bool IsMuted(void) { return m_muted; }
 	void Mute(void) { m_muted = true; }
-    void Unmute(void) { m_muted = false; }
+	void Unmute(void) { m_muted = false; }
 
 private:
 	SEConsole testingConsole;
@@ -59,7 +58,6 @@ private:
 	bool m_muted;
 
 	//GameObjects
-	Machine *machine;
 	Prompt *prompt;
 	list<GameObject*> m_GameObjects;
     list<unique_ptr<GameObject>> m_GameObjectDeleteQueue;

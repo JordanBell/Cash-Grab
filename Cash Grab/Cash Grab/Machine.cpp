@@ -5,7 +5,12 @@
 #include "PowerupPull.h"
 #include "PowerupSmash.h"
 
+#include "CoinBronze.h"
+#include "CoinSilver.h"
+#include "CoinGold.h"
+
 Machine* g_machine = nullptr;
+#define ANGLE_SUPPRESSION 1
 
 Machine::Machine(int x, int y) 
 	: Collidable(x, y), coins(), GameObject(x, y), m_dispensing(false), m_ticker(0), 
@@ -112,7 +117,7 @@ void Machine::Update(int delta)
 	}
 }
 
-void Machine::dispense()
+void Machine::Dispense()
 {
 	// Can the player afford it?
 	if (!m_dispensing && canAfford())
@@ -212,7 +217,7 @@ void Machine::LaunchCoin(int count, int slotNum)
 		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
 		// Create a new coin for that destination
 		Coin_Type* coin = new Coin_Type(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
-		coin->Launch();
+		coin->Launch(ANGLE_SUPPRESSION);
 		// Add it to the collidables list
 		g_game->addCollidable(coin);
 

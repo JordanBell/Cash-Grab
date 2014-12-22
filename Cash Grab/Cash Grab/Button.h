@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __Cash_Grab__Button__
-#define __Cash_Grab__Button__
+#pragma once
 
 #include "GameObject.h"
 #include <functional>
@@ -31,4 +30,3 @@ public:
     virtual void Render() override;
 };
 
-#endif /* defined(__Cash_Grab__Button__) */

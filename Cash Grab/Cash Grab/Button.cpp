@@ -11,7 +11,9 @@
 
 Button::Button(int x, int y, ClickHandler clickHandler) : GameObject(x, y), m_clickHandler(clickHandler)
 {
-    m_color = { 0, 0, 0 };
+    m_color.r = 0;
+    m_color.g = 0;
+    m_color.b = 0;
 }
 
 bool Button::inBounds(int x, int y)
@@ -20,7 +22,7 @@ bool Button::inBounds(int x, int y)
             y >= m_imageRect->y && y <= m_imageRect->y + m_imageRect->h);
 }
 
-void Button::Render()
+void Button::Render(void)
 {
     apply_surface(x, y, m_imageSurface, screen);
 }

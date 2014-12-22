@@ -45,8 +45,10 @@ void RoomHallways_Upper::RenderLeft(void)
 	apply_surface(x+6*TILE_SIZE, y+screen->h-1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP][e]);
 
 	// Open Tops
+	apply_surface(x+3*TILE_SIZE, y+screen->h-1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TR][e]);
 	apply_surface(x+4*TILE_SIZE, y+screen->h-1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_LEFT][e]);
 	apply_surface(x+5*TILE_SIZE, y+screen->h-1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP_OPEN_RIGHT][e]);
+	apply_surface(x+6*TILE_SIZE, y+screen->h-1*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TL][e]);
 	
 	// Wall Linings
 	apply_surface(x+3*TILE_SIZE, y+screen->h-2*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_T][e]);

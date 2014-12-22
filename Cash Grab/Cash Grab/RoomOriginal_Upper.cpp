@@ -30,7 +30,7 @@ void RoomOriginal_Upper::Render(void)
 	
 	// Top & Bottom Linings
 	for (int i = TILE_SIZE; i < screen->w - TILE_SIZE; i+=TILE_SIZE) {
-		apply_surface(i, 0 + 0, m_imageSurface, screen, tiles[WALL_TOPBORDER_B][m_BaseE]); 
+		apply_surface(i, 0, m_imageSurface, screen, tiles[WALL_TOPBORDER_B][m_BaseE]); 
 		apply_surface(i, screen->h- 2*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_T][m_BaseE]); 
 	}
 
@@ -48,8 +48,8 @@ void RoomOriginal_Upper::Render(void)
 	apply_surface(0, screen->h - 2*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TR][m_BaseE]); 
 	apply_surface(screen->w-TILE_SIZE, screen->h - 2*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_TL][m_BaseE]);
 
-		// The very outer top decors
-	for (int j = -screen->h; j < screen->h-TILE_SIZE; j+=TILE_SIZE)
+	// The very outer top decors
+	for (int j = 0; j < screen->h-TILE_SIZE; j+=TILE_SIZE)
 	{
 		// Left & Right
 		apply_surface(0, j, m_imageSurface, screen, tiles[WALL_TOPBORDER_L][m_BaseE]); 
@@ -57,8 +57,7 @@ void RoomOriginal_Upper::Render(void)
 	}
 	for (int i = 0; i < screen->w; i+=TILE_SIZE)
 	{
-		// Top & Bottom
-		apply_surface(i, -screen->h, m_imageSurface, screen, tiles[WALL_TOPBORDER_T][m_BaseE]); 
+		// Bottom 
 		apply_surface(i, screen->h-2*TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOPBORDER_B][m_BaseE]); 
 	}
 }
