@@ -7,7 +7,6 @@
 //
 
 #include "MenuScreen.h"
-#include "Menu.h"
 
 void MenuScreen::Update(int delta)
 {

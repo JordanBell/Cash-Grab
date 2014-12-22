@@ -9,11 +9,11 @@
 #ifndef __Cash_Grab__Menu__
 #define __Cash_Grab__Menu__
 
+#include "MenuScreen.h"
 #include <map>
+#include <string>
 
 using namespace std;
-
-class MenuScreen;
 
 class Menu {
 protected:
