@@ -3,8 +3,8 @@
 #include "Collidable.h"
 #include <math.h>
 #include <string>
-#include "TruthSwitch.h"
 #include "SpeechBubble.h"
+#include "Prompt.h"
 
 #define MAX_SPEED 0.50f // The max movement speed cap
 #define MIN_SPEED 0.1f // The minimum (base) movement speed
@@ -42,16 +42,18 @@ public:
 	void move(int direction);
 	void stop_moving(void);
     void SetCanMove(bool canMove);
-	void Update(int delta);
     void DoMove(void);
 	void Smash(int radius);
 	void SmashWave() { smashCount = 0; }
 	void IncSpeed(const float amount);
 
-	void Render(void) override;
+	void Update(int delta) override final;
+	void Render(void) override final;
 
-	// Create a speech bubble above the player saying the given string phrase
-	void Say(const string phrase);
+	// Create a speech bubble above the player saying the given string phrase. No timeout.
+	//void SayIndef(const string phrase);
+	// Create a speech bubble above the player saying the given string phrase. Optionally sets the timeout proportionally to the length of the message.
+	void Say(const string phrase, bool useProportionalTimeout = false);
 
 protected:
     void SnapToGrid(void);
@@ -69,9 +71,10 @@ private:
 	bool moving;
 	SDL_Rect* sprites[ 4 ][ 4 ]; //The 16 sprite locations in the sprite sheet
 	XY m_TargetVelocities; // Pushing force in a given frame, for movement
-	TruthSwitch m_ChangedZone;
+	Prompt* m_Prompt;
 
 	void InitSprites(void) override;
+	void ReplaceSpeech(SpeechBubble* sPtr);
 	void SmashUpdate(void);
 	void AddDirtParticles(void);
 	void ApproachTargetVelocity(void);

@@ -2,6 +2,7 @@
 #include "XY.h"
 #include "GameObject.h"
 #include "Game.h"
+#include "Machine.h"
 
 #define FRICTION_DEFAULT 0.90f
 #define FRICTION_ICE 0.1f
@@ -11,12 +12,18 @@
 class Room : public GameObject
 {
 public:
+
 	~Room(void)
 	{
 		for (int i = 0; i < SHEET_WIDTH; i++)
 			for (int j = 0; j < SHEET_HEIGHT; j++)
 				delete tiles[i][j];
 	}
+
+	// The element tile palette of this room
+	enum RoomElement {
+		NORMAL, ICE, FIRE
+	} m_BaseE;
 
 	virtual void Render(void) override = 0;
 
@@ -41,12 +48,11 @@ public:
     Machine* GetMachine(void)
     { return m_Machine; }
 
-protected:
-	// The element tile palette of this room
-	enum RoomElement {
-		NORMAL, ICE, FIRE
-	} m_BaseE;
+	// Get this room's machine
+	Machine* GetMachine(void)
+		{ return m_Machine; }
 
+protected:
 	Room(const int x, const int y, const Dimensions& size, const RoomElement element, const int renderPriority);
 
 	// Spritesheet Rects for rooms

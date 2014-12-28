@@ -12,11 +12,11 @@ Player *g_player = nullptr;
 Player::Player(int x, int y) 
 	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
 	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED), 
-	m_Speech(nullptr), m_ChangedZone(false), m_Interaction(nullptr)
+	m_Speech(nullptr), m_Interaction(nullptr), m_Prompt(nullptr)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
 		
-    m_animationDelay = 200;
+    //m_animationDelay = 200;
     m_maxCycles = WALK_CYCLE_LENGTH * WALK_SPEED;
 
 	InitSprites();
@@ -62,8 +62,15 @@ Player::~Player(void)
 
 void Player::Interact(void) 
 { 
-	if (m_Interaction) 
-		m_Interaction->OnInteract(); 
+	try 
+	{
+		if (m_Interaction) 
+			m_Interaction->OnInteract(); 
+	}
+	catch (exception e)
+	{
+		Say(e.what(), false);
+	}
 }
 
 void Player::move(int direction)
@@ -77,17 +84,58 @@ void Player::move(int direction)
     }
 }
 
-void Player::Say(const string phrase)
+//// Say something indefinitely - without timeout
+//void Player::SayIndef(const string phrase)
+//{
+//	// Delete the old SpeechBubble, if exists.
+//	if (m_Speech)
+//		m_Speech->Deactivate();
+//	
+//	// Create the new speech bubble
+//	SpeechBubble* newSpeech = new SpeechBubble(this, phrase);
+//
+//	// Add it to the game loop and set it as the player's speech
+//	g_game->addGameObject(newSpeech);
+//	m_Speech = newSpeech;
+//}
+
+
+void Player::Say(const string phrase, bool useProportionalTimeout)
 {
 	// Delete the old SpeechBubble, if exists.
+	/*if (m_Speech)
+		(*m_Speech)->Deactivate();*/
+	
+	// Create the new speech bubble
+	int timeout = useProportionalTimeout? 20*phrase.length() : 200;
 	if (m_Speech)
-		m_Speech->Deactivate();
-	
-	SpeechBubble* newSpeech = new SpeechBubble(this, phrase);
-	g_game->addGameObject(newSpeech);
-	m_Speech = newSpeech;
-	
-	//g_game->addGameObject(new SpeechBubble(this, phrase, 25*phrase.length()));
+	{
+		m_Speech->SetPhrase(phrase);
+		m_Speech->SetTimeout(timeout);
+		m_Speech->Activate();
+	}
+	else
+	{
+		m_Speech = new SpeechBubble(this, phrase, timeout);
+		g_game->addGameObject(m_Speech);
+	}
+}
+
+void Player::ReplaceSpeech(SpeechBubble* sPtr)
+{
+	static int speechCount = 0;
+	speechCount++;
+	printf("Speech #%d\n", speechCount);
+
+	// Delete the current speech
+	//if (m_Speech) g_game->removeGameObject(*m_Speech);
+	if (m_Speech) (m_Speech)->Deactivate();
+
+	// Set argument as the new speach
+	m_Speech = sPtr;
+
+	// Add it to the game loop and set it as the player's speech
+	g_game->addGameObject(m_Speech);
 }
 
 void Player::Smash(int radius)
@@ -198,14 +246,19 @@ void Player::Update(int delta)
 	// Update Friction
 	m_Friction = Room::GetPlayerRoom()->GetFriction();
 
+	if (m_Prompt == nullptr)
+	{
+		m_Prompt = new Prompt(this);
+		g_game->addGameObject(m_Prompt);
+	}
+
+
     //IncCycle();
 	Sprite::Update(delta);
 	SmashUpdate();
 
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
 		DecaySpeed();
-
-	InitSprites();
     
     m_AABB->w = sprites[0][0]->w;
     m_AABB->h = sprites[0][0]->h/2;
@@ -242,32 +295,20 @@ void Player::Update(int delta)
 
 		// The player has moved, so make sure he's still in the same room
 		g_camera->FocusOnPlayerRoom();
-
-		// Check if this is in an Interact Zone
-		bool wasInZone = m_Interaction != nullptr;
-		m_Interaction = nullptr;
-		for (auto zone : g_interactZones) {
-			if (zone->OverlapsWith(m_HitBox, direction)) {
-				m_Interaction = zone;
-				if (!wasInZone)
-					m_ChangedZone.Set(); // Moved into zone
-			}
-		}
-		if (m_Interaction == nullptr && wasInZone) // Moved out of zone
-			m_ChangedZone.Set();
-
-		if (m_ChangedZone.Read()) {
-			if (m_Interaction)
-				Say("F");
-			else
-				m_Speech->Deactivate();
-		}
     } 
 	else 
 	{
 		m_TargetVelocities.x = 0;
 		m_TargetVelocities.y = 0;
 	}
+
+	// Check again for if this is in a zone
+	m_Interaction = nullptr;
+	for (InteractZone* zone : g_interactZones)
+		if (zone->OverlapsWith(m_HitBox, direction))
+			m_Interaction = zone;
+
+	m_Prompt->SetVisible(m_Interaction != nullptr);
 	
 	// Adjust the actual velocity to accelerate toward the set target velocities
 	ApproachTargetVelocity();

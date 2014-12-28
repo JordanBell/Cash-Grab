@@ -117,7 +117,7 @@ void CollisionManager::MovableCollision(Collidable* collidable)
 {
     ((Throwable*)collidable)->OnCollect();
     
-    m_Game->removeCollidable(collidable);
+	m_Game->removeCollidable(collidable);
 }
 
 void CollisionManager::ImmovableCollision(Collidable* collidable)

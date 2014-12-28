@@ -24,8 +24,6 @@ public:
     SDL_Surface* GetPowerupSheet() { return m_PowerupSheet; }
 	SDL_Surface* GetPromptImage() { return m_Prompt; }
     SDL_Surface* GetButtonSheet() { return m_ButtonSheet; }
-    SDL_Surface* GetTestImage() { return m_Square; }
-    SDL_Surface* GetSpeedParticle() { return m_SpeedParticle; }
     SDL_Surface* GetSinkholeSheet() { return m_Sinkhole; }
     SDL_Surface* GetSpeechBubble() { return m_Speech; }
     

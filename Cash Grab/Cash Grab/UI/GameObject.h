@@ -35,7 +35,9 @@ public:
 	virtual void Update(int delta) {};
 
 	// Render this object on the screen. Called on each run of the game cycle.
-	virtual void Render(void) { apply_surface(x, y, m_imageSurface, screen, m_imageRect); }
+	virtual void Render(void) { 
+		apply_surface(x, y, m_imageSurface, screen, m_imageRect); 
+	}
 
 	const int GetRenderPriority(void) const { return m_renderPriority; }
 

@@ -4,8 +4,12 @@
 
 void SpeechBubble::Init(const string phrase)
 {
+	// Render this as UI
+	m_renderPriority = LAYER_UI;
+
 	// Get the speech bubble resource sheet
-	m_imageSurface = g_resources->GetSpeechBubble();
+	if (m_imageSurface == nullptr) 
+		m_imageSurface = g_resources->GetSpeechBubble();
 
 	// Initialise the text surface
 	InitText(phrase);
@@ -13,7 +17,7 @@ void SpeechBubble::Init(const string phrase)
 	// Fit the speechbubble around the text
 	const Dimensions textSize = Dimensions(m_TextSurface->w, m_TextSurface->h);
 	Dimensions bubbleSize = Dimensions(textSize.x / TILE_SIZE, textSize.y / TILE_SIZE); // In terms of tiles
-	bubbleSize.x = (int)bubbleSize.x; // Round down
+	bubbleSize.x = (int)(bubbleSize.x + 1); // Round up
 	bubbleSize.y = (int)bubbleSize.y; // Round down
 	bubbleSize.x++; // Increment for margin.
 	bubbleSize.y++; // Increment for margin.
@@ -27,6 +31,7 @@ void SpeechBubble::Init(const string phrase)
 
 	// Initialise the speech bubble segment information (rendering pairs)
 	int count = 0;
+	m_RenderPairs.clear();
 	for (int i = 0; i <= textTileWidth; i++) // Note: Inclusive of textTile size bounds, as a minimum size speech bubble will be 2x2 tiles (four corners)
 	{
 		for (int j = 0; j <= textTileHeight; j++)
@@ -71,38 +76,52 @@ void SpeechBubble::Init(const string phrase)
 
 void SpeechBubble::InitText(const string phrase)
 {
+	// Close any existing font
+	if (m_Font == nullptr)
+		TTF_CloseFont(m_Font);
+
 	// Create a new text object with the phrase
 	m_Font = TTF_OpenFont("joystix monospace.ttf", TEXT_SIZE);
 
 	SDL_Color black;
 	black.r = black.g = black.b = 0;
+
+	// Free any existing surface
+	if (m_TextSurface == nullptr)
+		SDL_FreeSurface(m_TextSurface);
+
+	// Replace it with a new TTF text surface
 	m_TextSurface = TTF_RenderText_Solid(m_Font, m_Phrase.c_str(), black);
 }
 
 void SpeechBubble::Render(void)
 {
-	// Render each of the bubble segments
-	for (pair<SDL_Rect*, Position> pair : m_RenderPairs)
-		apply_surface(x + pair.second.x, y + pair.second.y, m_imageSurface, screen, pair.first);
+	if (!deactivated)
+	{
+		// Render each of the bubble segments
+		for (pair<SDL_Rect*, Position> pair : m_RenderPairs)
+			apply_surface(x + pair.second.x, y + pair.second.y, m_imageSurface, screen, pair.first);
 
-	// Render the text surface
-	//apply_surface(x-m_TextPosition.x+2, y-m_TextPosition.y+TILE_SIZE/2+3, m_TextSurface, screen, nullptr);
-	apply_surface(x+m_TextPosition.x, y+m_TextPosition.y, m_TextSurface, screen, nullptr);
+		// Render the text surface
+		//apply_surface(x-m_TextPosition.x+2, y-m_TextPosition.y+TILE_SIZE/2+3, m_TextSurface, screen, nullptr);
+		apply_surface(x+m_TextPosition.x, y+m_TextPosition.y, m_TextSurface, screen, nullptr);
+	}
 }
 
 void SpeechBubble::Update(int delta)
 {
-	if (m_Timeout == -10)
-		BooleanUpdate();
-	else
-		TimeoutUpdate();
+	if (!deactivated)
+	{
+		if (m_Timeout == -10)
+			BooleanUpdate();
+		else
+			TimeoutUpdate();
+	}
 }
 
 void SpeechBubble::BooleanUpdate(void)
 {
-	if (deactivated)
-		g_game->removeGameObject(this);
-	else
+	if (!deactivated)
 	{
 		// Follow the source
 		if (m_Source)
@@ -126,6 +145,13 @@ void SpeechBubble::TimeoutUpdate(void)
 			y = m_Source->y + OFFSET_Y;
 		}
 	}
-	else
-		g_game->removeGameObject(this);
+	else 
+		Deactivate();
 }
+
+void SpeechBubble::SetPhrase(string phrase)
+{
+	m_Phrase = phrase;
+	Init(phrase);
+}
+

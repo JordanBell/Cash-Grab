@@ -12,7 +12,7 @@ void CoinSilver::OnCollect(void)
     Mix_PlayChannel(-1, g_resources->GetCoinSound_Silver(), 0);
     
 	Wallet::IncCoinsBy(value);
-	Coin::OnCollect();
+	g_player->IncSpeed(SPEED_GAIN*value);
 }
 
 void CoinSilver::InitSprites(void)

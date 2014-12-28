@@ -26,7 +26,7 @@ RoomHallways_Lower::RoomHallways_Lower(void)
 		m_SnowPositions.push_back(
 			pair<Position, SDL_Rect>(
 				Position(rand() % (HALLWAY_WIDTH/8) * 8, 
-						 rand() % (HALLWAY_HEIGHT/8) * 8),
+						 rand() % ((HALLWAY_HEIGHT-TILE_SIZE)/8) * 8),
 				cracks[rand()%4]
 			)
 		);

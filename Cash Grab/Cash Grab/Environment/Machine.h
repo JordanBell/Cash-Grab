@@ -3,7 +3,8 @@
 
 #include "Collidable.h"
 #include "Game.h"
-#include "LaunchData.h"
+#include "LevelProgress.h"
+#include "TruthSwitch.h"
 
 #include <vector>
 #include <iostream>
@@ -31,12 +32,18 @@ public:
 
 	SDL_Rect CoinLaunchInfo(int slotNum);
 
+	LevelProgress* GetProgress(void) { return m_Progress; }
+
 private:    
 	struct XY { float x, y; };
 	
 	LaunchData::CoinType m_coinType;
 	LaunchData::DispenseStyle m_dispenseStyle;
 	LaunchData::DispensePattern m_dispensePattern;
+
+	LevelProgress* m_Progress;
+	TruthSwitch m_LaunchKey;
+	bool m_KeyLaunched;
 
     pair<int, int> dispenser_pos;
     pair<int, int> coin_slots[NUM_SLOTS];
@@ -45,6 +52,8 @@ private:
 	int m_timeElapsed;
 	int m_ticker;
     vector<Coin*> coins;
+	int m_cashDispensed;
+	int m_cashToDispense;
 	
 	XY GetLeftCircleCoords(bool addRightCoords = false);
 	XY GetRightCircleCoords() { return GetLeftCircleCoords(true); }

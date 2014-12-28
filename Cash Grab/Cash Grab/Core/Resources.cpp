@@ -3,7 +3,6 @@
 #include "Player.h"
 #include "Coin.h"
 #include "Machine.h"
-#include "Prompt.h"
 
 #include <stdexcept>
 // TODO: Make resources a namespace? Replace constructor and destructor with Init()/Load() and Deinit()/Free() respectively?
@@ -19,10 +18,11 @@ Resources::Resources(void)
 	m_EnvironmentImage =	load_image("environment.png");
 	m_MoneyMachineSheet =	load_image("moneyMachine.png");
     m_PowerupSheet =        load_image("powerupSheet.png");
-	m_Prompt =				load_image("Press Enter.png");
+	m_Prompt =				load_image("promptSignSheet.png");
     m_Sinkhole =			load_image("sinkhole.png");
     m_ButtonSheet =         load_image("buttons.png");
     m_Speech =			    load_image("speechBubble.png");
+    m_KeySheet=			    load_image("keySheet.png");
 	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size set
     
     m_Music = Mix_LoadMUS("Main2.wav");
@@ -45,6 +45,7 @@ Resources::Resources(void)
         !m_Sinkhole				||
 		!m_ButtonSheet			||
         !m_Speech				||
+        !m_KeySheet				||
         !m_Music)
 		{
 
@@ -58,6 +59,7 @@ Resources::Resources(void)
             printf("Sinkhole: %s\n", CHECK_NULL(m_Sinkhole));
             printf("Buttons: %s\n", CHECK_NULL(m_ButtonSheet));
             printf("Speech Bubble: %s\n", CHECK_NULL(m_Speech));
+            printf("Key: %s\n", CHECK_NULL(m_KeySheet));
             printf("music: %s\n", CHECK_NULL(m_Music));
 
 			// Let me see!!
@@ -81,10 +83,12 @@ Resources::~Resources(void)
 	SDL_FreeSurface(m_CoinSheet);
 	SDL_FreeSurface(m_EnvironmentImage);
 	SDL_FreeSurface(m_MoneyMachineSheet);
+	SDL_FreeSurface(m_PowerupSheet);
 	SDL_FreeSurface(m_Prompt);
     SDL_FreeSurface(m_Sinkhole);
     SDL_FreeSurface(m_ButtonSheet);
     SDL_FreeSurface(m_Speech);
+    SDL_FreeSurface(m_KeySheet);
 	TTF_CloseFont(m_Font);
     
     Mix_FreeMusic(m_Music);

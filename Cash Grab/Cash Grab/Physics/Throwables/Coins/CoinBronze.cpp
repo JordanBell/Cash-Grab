@@ -12,7 +12,7 @@ void CoinBronze::OnCollect(void)
 //    Mix_FadeInChannel(-1, g_resources->GetCoinSound_Bronze(), 0, rand() % 300);
     
 	Wallet::IncCoinsBy(value); 
-	Coin::OnCollect();
+	g_player->IncSpeed(SPEED_GAIN*value);
 }
 
 void CoinBronze::InitSprites(void)

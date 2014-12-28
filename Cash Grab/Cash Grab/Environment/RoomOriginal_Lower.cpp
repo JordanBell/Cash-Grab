@@ -5,6 +5,8 @@
 #include "Wallet.h"
 #include "InteractZone.h"
 #include "UI.h"
+#include "Machine.h"
+#include "Door.h"
 
 RoomOriginal_Lower::RoomOriginal_Lower(void)
 		: Room(0, 0, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER) 
@@ -73,6 +75,10 @@ RoomOriginal_Lower::RoomOriginal_Lower(void)
         g_game->addCollidable(leftWall, true);
         g_game->addCollidable(rightWall, true);
 	}
+
+	// Add the doors.  Set as initially open if testing, closed in full game.
+	g_game->addGameObject(new Door(TILE_SIZE*4, 3*TILE_SIZE, m_BaseE, DOOR_ID_TOHUB, GAME_TYPE == "testing"));
+	g_game->addGameObject(new Door(TILE_SIZE*14, 3*TILE_SIZE, m_BaseE, DOOR_ID_TOHUB, GAME_TYPE == "testing"));
 }
 
 void RoomOriginal_Lower::Update(int delta)
@@ -147,17 +153,17 @@ void RoomOriginal_Lower::Render(void)
 	// Walls that aren't walls
 	for (int _x = 0; _x < screen->w; _x += TILE_SIZE) // Loop through width
 	{
-		// Sometimes the bottom of a wall, sometimes a door. Door is on upper layers, so leave room.
+		// Sometimes the bottom of a wall, sometimes a door, so leave room.
 		if ((_x != TILE_SIZE*4) && (_x != TILE_SIZE*5) && (_x != TILE_SIZE*14) && (_x != TILE_SIZE*15))
-			apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]); // Bottom Wall, Bottom Room
+			apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]); // Bottom Wall, Bottom 
 
-		// Left side of BOTTOM ROOM door
-		if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14))
-			apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[DOOR_LEFT][m_BaseE]); // Door
-		
-		// Right side of BOTTOM ROOM door
-		if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15))
-			apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[DOOR_RIGHT][m_BaseE]); // Door
+		//// Left side of door
+		//if ((_x == TILE_SIZE*4) || (_x == TILE_SIZE*14))
+		//	apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[DOOR_LEFT][m_BaseE]); // Door
+		//
+		//// Right side of door
+		//if ((_x == TILE_SIZE*5) || (_x == TILE_SIZE*15))
+		//	apply_surface(_x, 3*TILE_SIZE, m_imageSurface, screen, tiles[DOOR_RIGHT][m_BaseE]); // Door
 	}
 
 	// Papers

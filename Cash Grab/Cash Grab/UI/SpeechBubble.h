@@ -15,21 +15,28 @@ class SpeechBubble : public GameObject
 public:
 	// Construct based on a game object source.
 	SpeechBubble(GameObject* source, const string phrase)
-		: GameObject(source->x + OFFSET_X, source->y + OFFSET_Y), m_Phrase(phrase), m_Source(source), m_Timeout(-10), deactivated(false)
-		{ Init(phrase); }
+		: GameObject(source->x + OFFSET_X, source->y + OFFSET_Y), m_Phrase(phrase), m_Source(source), m_Timeout(-10), deactivated(false),
+		m_TextSurface(nullptr), m_Font(nullptr)
+		{ m_imageSurface = nullptr; Init(phrase); }
 
 	SpeechBubble(GameObject* source, const string phrase, const int timeout) 
-		: GameObject(source->x + OFFSET_X, source->y + OFFSET_Y), m_Phrase(phrase), m_Source(source), m_Timeout(timeout), deactivated(false)
-		{ Init(phrase); }
+		: GameObject(source->x + OFFSET_X, source->y + OFFSET_Y), m_Phrase(phrase), m_Source(source), m_Timeout(timeout), deactivated(false),
+		m_TextSurface(nullptr), m_Font(nullptr)
+		{ m_imageSurface = nullptr; Init(phrase); }
 
 
 	// Construct independently
 	SpeechBubble(const int _x, const int _y, const string phrase, const int timeout = 100) 
-		: GameObject(_x + OFFSET_X, _y + OFFSET_Y), m_Phrase(phrase), m_Source(nullptr), m_Timeout(timeout), deactivated(false)
-		{ Init(phrase); }
+		: GameObject(_x + OFFSET_X, _y + OFFSET_Y), m_Phrase(phrase), m_Source(nullptr), m_Timeout(timeout), deactivated(false),
+		m_TextSurface(nullptr), m_Font(nullptr)
+		{ m_imageSurface = nullptr; Init(phrase); }
 
 	// Manually delete this speechBubble
 	void Deactivate(void) { deactivated = true; }
+	void Activate(void) { deactivated = false; }
+
+	void SetPhrase(string phrase);
+	void SetTimeout(int timeout) { m_Timeout = timeout; }
 
 	void Render(void) override final;
 	void Update(int delta) override final;
