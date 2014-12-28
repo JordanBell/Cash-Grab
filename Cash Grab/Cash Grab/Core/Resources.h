@@ -8,7 +8,7 @@
 class Resources
 {
 private:
-	SDL_Surface* m_PlayerSheet, *m_CoinSheet, *m_EnvironmentImage, *m_MoneyMachineSheet, *m_PowerupSheet, *m_Prompt, *m_Square, *m_SpeedParticle, *m_ButtonSheet, *m_Sinkhole;
+	SDL_Surface* m_PlayerSheet, *m_CoinSheet, *m_EnvironmentImage, *m_MoneyMachineSheet, *m_PowerupSheet, *m_Prompt, *m_Square, *m_SpeedParticle, *m_ButtonSheet, *m_Sinkhole, *m_Speech;
 	TTF_Font* m_Font;
     Mix_Music* m_Music;
     Mix_Chunk* m_CoinSounds[NUM_COIN_SOUNDS];
@@ -27,6 +27,7 @@ public:
     SDL_Surface* GetTestImage() { return m_Square; }
     SDL_Surface* GetSpeedParticle() { return m_SpeedParticle; }
     SDL_Surface* GetSinkholeSheet() { return m_Sinkhole; }
+    SDL_Surface* GetSpeechBubble() { return m_Speech; }
     
     TTF_Font* GetFont() { return m_Font; }
     

@@ -82,7 +82,7 @@ void Game::run()
 	InitEnvironment();
 	g_camera->FocusOnPlayerRoom();
     
-    Mix_PlayMusic(g_resources->GetMusic(), -1);
+//    Mix_PlayMusic(g_resources->GetMusic(), -1);
     
     m_GameObjects.sort(GameObject_Compare);
     

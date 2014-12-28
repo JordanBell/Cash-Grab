@@ -49,15 +49,15 @@ public:
     void removeGameObject(GameObject* gameObject);
     void removeCollidable(Collidable* collidable);
     
-//	void Mute(void) { m_muted = true; }
-//	void Unmute(void) { m_muted = false; }
+	void Mute(void) { /*m_muted = true;*/ }
+	void Unmute(void) { /*m_muted = false;*/ }
 
 private:
     CollisionManager* m_CollisionManager;
     EffectManager* m_EffectManager;
     MenuManager* m_MenuManager;
     
-	SEConsole testingConsole;
+	CGConsole testingConsole;
 	int consoleCooldownCounter;
 	KeyCode keys;
 	Timer m_FPSTimer;
