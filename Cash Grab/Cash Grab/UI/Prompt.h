@@ -1,24 +1,33 @@
 #ifndef prompt_h
 #define prompt_h
 
-#include "gameObject.h"
-#include "Machine.h"
+#include "Sprite.h"
+
+class Player;
 
 #define MS_OF_FLASH 500
 class Prompt :
-	public GameObject
+	public Sprite
 {
 public:
-	Prompt(Machine* machine);
+	Prompt(Player* player);
 	~Prompt(void) {}
 
-	void Update(int delta);
-	void Render(void) { if (visible) GameObject::Render(); }
+	void Update(int delta) override final;
+	void Render(void) override final { 
+		if (m_Visible) 
+			GameObject::Render(); 
+	}
+	void SetVisible(bool b) { m_Visible = b; }
+
+protected:
+	void InitSprites(void) override final;
+	void UpdateImageRect(void) { m_imageRect = sprites[m_cycle/m_animationSpeed]; }
 
 private:
-	int timeSinceFlash;
-	Machine* machine;
-	bool visible;
+	Player* m_Source;
+	bool m_Visible;
+	SDL_Rect* sprites[4];
 };
 
 #endif

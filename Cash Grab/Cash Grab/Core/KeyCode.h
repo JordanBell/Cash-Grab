@@ -17,7 +17,6 @@ struct KeyCode
 	void f()			{ g_player->Interact(); }
 	void no_direction()	{ g_player->stop_moving();}
 	void _1();
-	void enter();
 
 	static void ToggleBool1(void) { bool1 = !bool1; }
 private:

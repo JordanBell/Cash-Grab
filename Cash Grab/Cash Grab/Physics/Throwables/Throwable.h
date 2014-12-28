@@ -21,8 +21,6 @@ public:
 	void SetHoming(int distance, int speed) { m_homingDistance = distance; m_homingSpeed = speed; }
 	void SetBouncy(bool bouncy) { m_isBouncy = bouncy; }
 
-	//virtual void Render(void) override {};
-
 protected:
 
 	// Adjust the animation speed, and handle other animation related changes accordingly

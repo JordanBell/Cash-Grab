@@ -1,6 +1,7 @@
 #include "RoomHub_Lower.h"
 #include "EnvrionmentSheetIndexes.h"
 #include "Wall.h"
+#include "Door.h"
 
 RoomHub_Lower::RoomHub_Lower(void)
 		: Room(0, -screen->h, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER)
@@ -34,9 +35,28 @@ RoomHub_Lower::RoomHub_Lower(void)
 		//apply_surface(_x, y + (screen->h - TILE_SIZE), m_imageSurface, screen, tiles[WALL][m_BaseE]);
 	}
 
+	// Add doors. Set as initially open if testing, closed in full game.
+	g_game->addGameObject(new Door(TILE_SIZE*4, 3*TILE_SIZE-screen->h, (RoomElement)ELEMENT_ICE, DOOR_ID_TOICE, GAME_TYPE == "testing"));
+	g_game->addGameObject(new Door(TILE_SIZE*14, 3*TILE_SIZE-screen->h, (RoomElement)ELEMENT_FIRE, DOOR_ID_TOFIRE, GAME_TYPE == "testing"));
+
 	// Room's item station walls
 	CreateStationWalls(TILE_SIZE * 4, TILE_SIZE * 5);
+	// Add its InteractZone
+	SDL_Rect* interactArea = new SDL_Rect();
+	interactArea->x = x+TILE_SIZE*4;
+	interactArea->y = y+TILE_SIZE*9;
+	interactArea->w = TILE_SIZE*4;
+	interactArea->h = TILE_SIZE/3;
+	InteractZone* zone1 = new InteractZone(interactArea, [] { printf("Shopping!\n"); }, Player::Direction::UP);
+
 	CreateStationWalls(TILE_SIZE * 12, TILE_SIZE * 5);
+	// Add its InteractZone
+	interactArea = new SDL_Rect();
+	interactArea->x = x+TILE_SIZE*12;
+	interactArea->y = y+TILE_SIZE*9;
+	interactArea->w = TILE_SIZE*4;
+	interactArea->h = TILE_SIZE/3;
+	InteractZone* zone2 = new InteractZone(interactArea, [] { printf("Shopping!\n"); }, Player::Direction::UP);
 }
 
 void RoomHub_Lower::Render(void)
@@ -114,14 +134,14 @@ void RoomHub_Lower::Render(void)
 		/*if ((_x != TILE_SIZE*5) && (_x != TILE_SIZE*4) && (_x != TILE_SIZE*15) && (_x != TILE_SIZE*14))
 			apply_surface(_x, 3*TILE_SIZE - screen->h, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]);*/
 
-		if (_x == TILE_SIZE*4)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LEFT][ELEMENT_ICE]); // Door
-		if (_x == TILE_SIZE*5)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_RIGHT][ELEMENT_ICE]); // Door
-		if (_x == TILE_SIZE*14)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LEFT][ELEMENT_FIRE]); // Door
-		if (_x == TILE_SIZE*15)
-				apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_RIGHT][ELEMENT_FIRE]); // Door
+		//if (_x == TILE_SIZE*4)
+		//		apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LEFT][ELEMENT_ICE]); // Door
+		//if (_x == TILE_SIZE*5)
+		//		apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_RIGHT][ELEMENT_ICE]); // Door
+		//if (_x == TILE_SIZE*14)
+		//		apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_LEFT][ELEMENT_FIRE]); // Door
+		//if (_x == TILE_SIZE*15)
+		//		apply_surface(_x, 3*TILE_SIZE-screen->h, m_imageSurface, screen, tiles[DOOR_RIGHT][ELEMENT_FIRE]); // Door
 	}
 
 	// Left and Right Walls

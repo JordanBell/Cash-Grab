@@ -141,14 +141,6 @@ void DoubleCoins(vector<int> args)
 void Dispense(vector<int> args)
 	{ g_machine->ForceDispense(args.front()); }
 
-/* Force Launch Tier */
-void ForceTier(vector<int> args)
-	{ LaunchData::ForceTier(args.front()); }
-
-/* Print Information about the Tier's Launch Info */
-void PrintLaunchInfo(vector<int> args)
-	{ LaunchData::PrintLaunchInfo(); }
-
 /* Print Information about the Tier's Launch Info */
 void Talk(vector<int> args)
 { 
@@ -285,20 +277,6 @@ CGConsole::CGConsole(void)
 		"Homing in on player.", 
 		"Sets all collectables' homing property to true.",
 		HomeIn)
-	);
-
-	commands.push_back( 
-		Command("force_tier", 
-		"Setting launch tier to manual value. WARNING: Collecting a coin will reset it.", 
-		"Overrides the launch tier, which determines the possible launch patterns and styles unlocked. Also affects the type of coins launched.",
-		ForceTier)
-	);
-
-	commands.push_back( 
-		Command("print_launch_info", 
-		"", 
-		"Prints the kind of launch info available at the currently set tier.",
-		PrintLaunchInfo)
 	);
 
 	commands.push_back( 

@@ -20,8 +20,3 @@ void KeyCode::_1(void)
 		}
 	}
 }
-
-void KeyCode::enter(void)
-{
-	g_camera->GetRoomFocus()->Dispense();
-}

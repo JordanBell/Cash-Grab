@@ -38,7 +38,7 @@ RoomIce_Lower::RoomIce_Lower(void)
 		m_SnowPositions.push_back(
 			pair<Position, SDL_Rect>(
 				Position(rand() % (screen->w / 8) * 8, 
-						 rand() % ((2*screen->h-5*TILE_SIZE) / 8) * 8 + 4*TILE_SIZE),
+						 rand() % ((2*screen->h-6*TILE_SIZE) / 8) * 8 + 4*TILE_SIZE),
 				cracks[rand()%4]
 			)
 		);

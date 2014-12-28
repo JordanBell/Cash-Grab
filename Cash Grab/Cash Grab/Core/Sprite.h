@@ -13,7 +13,7 @@ public:
 
 protected:
 	//The Delay before cycling through each sprite. Make smaller to speed up the animation
-	int m_animationDelay;
+	int m_animationSpeed;
 
 	// An incremented counter cycle used in animation
 	int m_cycle;

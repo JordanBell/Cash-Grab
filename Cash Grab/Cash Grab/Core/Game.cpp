@@ -150,7 +150,6 @@ void Game::HandleKeys()
 		}
 		else keys.no_direction();
 	
-		if (keystates[SDLK_RETURN]) keys.enter();
 		if (keystates[SDLK_1])		keys._1();
 		if (keystates[SDLK_f])		keys.f();
 
@@ -297,7 +296,7 @@ void Game::AddEffect(Effect *effect)
 
 void Game::removeGameObject(GameObject* gameObject)
 {
-    m_GameObjectDeleteQueue.emplace_back(unique_ptr<GameObject>(gameObject)); // Warning: Will this in-line declaration delete the pointer when out of scope?
+    m_GameObjectDeleteQueue.emplace_back(unique_ptr<GameObject>(gameObject));
 }
 
 void Game::removeCollidable(Collidable *collidable)
@@ -314,7 +313,7 @@ void Game::removeCollidable(Collidable *collidable)
 
 void Game::DeleteGameObjects()
 {
-    for (unique_ptr<GameObject>& gameObject_ptr : m_GameObjectDeleteQueue)
+    for (auto& gameObject_ptr : m_GameObjectDeleteQueue)
     {
         m_GameObjects.remove(gameObject_ptr.get());
     }

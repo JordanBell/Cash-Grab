@@ -4,6 +4,9 @@
 #include "PowerupMagnetism.h"
 #include "PowerupPull.h"
 #include "PowerupSmash.h"
+#include "Door.h"
+#include "Key.h"
+#include "CashWad.h"
 
 #include "CoinBronze.h"
 #include "CoinSilver.h"
@@ -11,14 +14,18 @@
 
 Machine* g_machine = nullptr;
 #define ANGLE_SUPPRESSION 1
+#define KEY_LAUNCH_VAL 5
+#define CASH_INTERVAL 25
+#define CASH_AMOUNT 100
 
 Machine::Machine(int x, int y) 
 	: Collidable(x, y), coins(), GameObject(x, y), m_dispensing(false), m_ticker(0), 
-	m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_coinType(LaunchData::BRONZE), 
-	m_dispensePattern(LaunchData::NORM), m_dispenseStyle(LaunchData::SPUTTER)
+	m_numDispensed(0), coinCost(START_MONEY), m_timeElapsed(0), m_coinType(LaunchData::BRONZE), m_cashDispensed(0), m_cashToDispense(0),
+	m_dispensePattern(LaunchData::NORM), m_dispenseStyle(LaunchData::SPUTTER), m_LaunchKey(false), m_KeyLaunched(false)
 {
+	m_Progress = new LevelProgress();
 	// Initialise launch data
-	LaunchData::Notify(0);
+	m_Progress->Notify(0);
 
 	m_imageSurface = g_resources->GetMoneyMachineSheet();
     
@@ -45,6 +52,37 @@ void Machine::Update(int delta)
     if ((m_dispensing) && (m_timeElapsed >= DISPENSING_STUTTER))
 	{
 		m_timeElapsed = 0;
+
+		// Launch the key if told to
+		if (m_LaunchKey.Read())
+		{
+			Key* key = new Key(x+m_imageSurface->w/2, y+TILE_SIZE*2, screen->w/2-16, screen->h/2-16, DOOR_ID_TOHUB);
+			key->Launch(1);
+			g_game->addCollidable(key);
+			m_KeyLaunched = true;
+		}
+
+		// Launch cash if told to
+		while (m_cashToDispense > 0)
+		{
+			m_cashToDispense--;
+
+			// Get a random position in the board
+			int randX, randY;
+			bool valid;
+
+			do
+			{
+				randX = rand() % (screen->w - 3*TILE_SIZE) + TILE_SIZE;
+				randY = rand() % (screen->h - 7*TILE_SIZE) + 4*TILE_SIZE; 
+				valid = ValidLandingPosition(randX, randY);
+			} while (!valid);
+
+			Cash* cash = new Cash(x+m_imageSurface->w/2, y+TILE_SIZE*2, randX, randY, CASH_AMOUNT);
+			cash->Launch(1);
+			g_game->addCollidable(cash);
+		}
+
 
 		if (m_dispenseStyle == LaunchData::BURST)
 		{
@@ -120,20 +158,51 @@ void Machine::Update(int delta)
 void Machine::Dispense()
 {
 	// Can the player afford it?
-	if (!m_dispensing && canAfford())
+	if (!m_dispensing)
 	{
-		m_dispensing = true;
-		// Take the player's money
-		Wallet::Remove(coinCost);
-		// Increase the cost of the next coin set by the increase constant.
-		coinCost *= COIN_INCREASE; 
-		// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
+		if (canAfford())
+		{
+			m_dispensing = true;
+			// Take the player's money
+			Wallet::Remove(coinCost);
+
+			// Should we launch the key?
+			if (!m_KeyLaunched) {
+				if (coinCost >= KEY_LAUNCH_VAL) {
+					m_LaunchKey.Set();
+				}
+			}
+
+			int accountedCoins = (m_cashDispensed * CASH_INTERVAL);
+			int unaccountedCoins = Wallet::GetTotalCoins() - accountedCoins;
+			while ( unaccountedCoins > CASH_INTERVAL )
+			{
+				m_cashToDispense++;
+				unaccountedCoins -= CASH_INTERVAL;
+			}
+
+
+			// Increase the cost of the next coin set by the increase constant.
+			coinCost *= COIN_INCREASE; 
+			// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
 		
-		// Set the launch data
-		LaunchData::DataPacket launchData = LaunchData::GetDataPacket();
-		m_coinType = launchData.coinType;
-		m_dispensePattern = launchData.pattern;
-		m_dispenseStyle = launchData.style;
+			// Set the launch data
+			LaunchData::DataPacket launchData = m_Progress->GetDataPacket();
+			m_coinType = launchData.coinType;
+			m_dispensePattern = launchData.pattern;
+			m_dispenseStyle = launchData.style;
+		}
+		else {
+			int r = rand() % 3;
+			
+			// Get a random error phrase for the player to say
+			switch (r)
+			{
+				case 0: throw exception("Need. More. MONEY!");
+				case 1: throw exception("Insufficient Funds.");
+				case 2: throw exception("Can't invest yet.");
+			}
+		}
 	}
 }
 
@@ -215,9 +284,11 @@ void Machine::LaunchCoin(int count, int slotNum)
 	{
 		// Find this Coin's launch info
 		SDL_Rect launchInfo = CoinLaunchInfo(slotNum);
+
 		// Create a new coin for that destination
 		Coin_Type* coin = new Coin_Type(launchInfo.x, launchInfo.y, launchInfo.w, launchInfo.h);
 		coin->Launch(ANGLE_SUPPRESSION);
+
 		// Add it to the collidables list
 		g_game->addCollidable(coin);
 
@@ -309,6 +380,7 @@ SDL_Rect Machine::CoinLaunchInfo(int slotNum)
 		} while (!valid);
 	}
 
+	// TODO: the Uint conversion for the last two will mess with other rooms launch values at negative coordinates. Replace output type with Position pair.
 	SDL_Rect r_rect = { static_cast<Sint16>(coin_slots[slotNum].first), static_cast<Sint16>(coin_slots[slotNum].second), static_cast<Uint16>(coinX), static_cast<Uint16>(coinY) };
 	return r_rect;
 }

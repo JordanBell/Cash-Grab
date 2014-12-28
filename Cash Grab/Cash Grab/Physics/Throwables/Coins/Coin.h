@@ -16,9 +16,6 @@ public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
 	~Coin(void);
 
-	// When collected, increase the player speed. Subclasses increase the wallet's money accordingly.
-	virtual void OnCollect(void) override { g_player->IncSpeed(SPEED_GAIN); }
-
 	static list<Coin*> CoinsAround(int x, int y, int radius);
 	static list<Coin*> CoinsAroundPlayer(int radius);
 protected:

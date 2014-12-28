@@ -185,7 +185,9 @@ vector<int> TestingConsole::ExtractArguments(string argumentsString)
 	string head = "";
 	string tail = argumentsString;
 
-	for (int i = 0; i < argumentsString.size(); i++)
+	int size = argumentsString.size();
+
+	for (int i = 0; i < size; i++)
 	{
 		char c = argumentsString.at(i);
 		tail.erase(0, 1);

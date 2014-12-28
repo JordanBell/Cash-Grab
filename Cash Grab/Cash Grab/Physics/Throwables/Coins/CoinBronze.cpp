@@ -15,7 +15,7 @@ void CoinBronze::OnCollect(void)
     }
     
 	Wallet::IncCoinsBy(value); 
-	Coin::OnCollect();
+	g_player->IncSpeed(SPEED_GAIN*value);
 }
 
 void CoinBronze::InitSprites(void)

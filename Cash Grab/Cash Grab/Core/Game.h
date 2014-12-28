@@ -11,13 +11,13 @@
 #define LAYER_ENV_UPPER 3
 #define LAYER_AIR 4
 #define LAYER_UI 10
+#define GAME_TYPE "full"
 
 #include <list>
 #include "KeyCode.h"
 #include "Sprite.h"
 #include "Player.h"
 #include "Coin.h"
-#include "Prompt.h"
 #include "Timer.h"
 #include "CGConsole.h"
 #include "EffectManager.h"
@@ -27,7 +27,6 @@ using namespace std;
 
 class CollisionManager;
 class Machine;
-class Prompt;
 
 class Game
 {	
@@ -58,7 +57,6 @@ private:
 	bool m_muted;
 
 	//GameObjects
-	Prompt *prompt;
 	list<GameObject*> m_GameObjects;
     list<unique_ptr<GameObject>> m_GameObjectDeleteQueue;
 	bool running;
