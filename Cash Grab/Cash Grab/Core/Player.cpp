@@ -67,9 +67,9 @@ void Player::Interact(void)
 		if (m_Interaction) 
 			m_Interaction->OnInteract(); 
 	}
-	catch (exception e)
+	catch (string s)
 	{
-		Say(e.what(), false);
+		Say(s, false);
 	}
 }
 

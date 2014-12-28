@@ -1,6 +1,8 @@
 #include "LevelProgress.h"
 #include "LaunchData.h"
 #include "Wallet.h"
+#include <cstdlib>
+
 using namespace LaunchData;
 
 LevelProgress::LevelProgress(void)
@@ -172,7 +174,7 @@ DispensePattern LevelProgress::ComputePattern(void)
 	for (pair<d_pat, int> patternAndWeight : possiblePatterns)
 		totalWeight += patternAndWeight.second;
 
-	int randAllocator = rand() % totalWeight;
+    int randAllocator = rand() % totalWeight;
 	for (auto pair : possiblePatterns)
 	{
 		if (randAllocator <= pair.second)

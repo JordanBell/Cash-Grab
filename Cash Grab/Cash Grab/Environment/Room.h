@@ -48,10 +48,6 @@ public:
     Machine* GetMachine(void)
     { return m_Machine; }
 
-	// Get this room's machine
-	Machine* GetMachine(void)
-		{ return m_Machine; }
-
 protected:
 	Room(const int x, const int y, const Dimensions& size, const RoomElement element, const int renderPriority);
 

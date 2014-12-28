@@ -197,9 +197,9 @@ void Machine::Dispense()
 			// Get a random error phrase for the player to say
 			switch (r)
 			{
-				case 0: throw exception("Need. More. MONEY!");
-				case 1: throw exception("Insufficient Funds.");
-				case 2: throw exception("Can't invest yet.");
+				case 0: throw string("Need. More. MONEY!");
+				case 1: throw string("Insufficient Funds.");
+				case 2: throw string("Can't invest yet.");
 			}
 		}
 	}
