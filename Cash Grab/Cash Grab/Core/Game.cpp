@@ -163,6 +163,11 @@ void Game::HandleKeys()
 		if (keystates[SDLK_RETURN]) keys.enter();
 		if (keystates[SDLK_1])		keys._1();
 		if (keystates[SDLK_f])		keys.f();
+        
+        if (keystates[SDLK_p]) {
+            m_MenuManager->GoToMenu(PAUSE);
+            m_MenuManager->SetActive(true);
+        }
 
 		// Screen Formatting
 		//if (keystates[SDLK_f]) toggleScreenFormat();

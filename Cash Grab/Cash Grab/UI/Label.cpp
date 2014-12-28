@@ -7,9 +7,8 @@
 //
 
 #include "Label.h"
-#include "Resources.h"
 
-Label::Label(int x, int y, string text, SDL_Color color) : GameObject(x, y), m_Text(text), m_Color(color)
+Label::Label(int x, int y, string text, SDL_Color color, TTF_Font *font) : GameObject(x, y), m_Text(text), m_Font(font), m_Color(color)
 {
     Update(0);
 }
@@ -22,7 +21,7 @@ void Label::Update(int delta)
         SDL_FreeSurface(m_imageSurface);
     }
     
-    m_imageSurface = TTF_RenderText_Solid(g_resources->GetFont(), m_Text.c_str(), m_Color);
+    m_imageSurface = TTF_RenderText_Solid(m_Font, m_Text.c_str(), m_Color);
     
     if (!m_imageRect) {
         m_imageRect = new SDL_Rect();

@@ -9,13 +9,14 @@
 #include "MenuManager.h"
 #include "Menu.h"
 #include "StartMenu.h"
+#include "PauseMenu.h"
 
 MenuManager* g_menuManager = nullptr;
 
 MenuManager::MenuManager()
 {
     m_menus[START] = new StartMenu();
-//    m_menus[PAUSE] = pauseMenu;
+    m_menus[PAUSE] = new PauseMenu();
     
     m_currentMenu = m_menus[START];
 }
