@@ -3,18 +3,27 @@
 #include "EnvrionmentSheetIndexes.h"
 #include "Wall.h"
 #include "Wallet.h"
+#include "InteractZone.h"
 #include "UI.h"
 
 RoomOriginal_Lower::RoomOriginal_Lower(void)
 		: Room(0, 0, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER) 
-{ 
+{
 	// Initialise the dispenser
 	Machine* machine = new Machine(x + (7*TILE_SIZE), y + (TILE_SIZE));
+	SDL_Rect* zoneRect = new SDL_Rect();
+	zoneRect->x = machine->x;
+	zoneRect->y = machine->y + 3*TILE_SIZE;
+	zoneRect->w = 6*TILE_SIZE;
+	zoneRect->h = TILE_SIZE/2;
+
+	InteractZone* machineActivation = new InteractZone(zoneRect, [machine] { machine->Dispense();}, Player::Direction::UP);
+
 	SetMachine(machine);
 	g_game->addCollidable(machine);
 
 	// Create a prompt, linking to that machine TODO: Link it to the wallet instead.
-	g_game->addGameObject(new Prompt(machine));
+	//g_game->addGameObject(new Prompt(machine));
 
 	// Build the walls
 	// Left and Right Walls (Bottom)

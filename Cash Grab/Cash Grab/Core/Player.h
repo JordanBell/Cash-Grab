@@ -2,6 +2,9 @@
 #define player_h
 #include "Collidable.h"
 #include <math.h>
+#include <string>
+#include "TruthSwitch.h"
+#include "SpeechBubble.h"
 
 #define MAX_SPEED 0.50f // The max movement speed cap
 #define MIN_SPEED 0.1f // The minimum (base) movement speed
@@ -12,6 +15,10 @@
 #define STILL 1
 #define SMASH_LIMIT 500
 #define SMASH_INTERVAL 50
+
+using namespace std;
+
+class InteractZone;
 
 class Player : public Collidable, public Sprite {
 public:
@@ -31,6 +38,7 @@ public:
 		NULLDIR
 	} Directions;
 
+	void Interact(void);
 	void move(int direction);
 	void stop_moving(void);
     void SetCanMove(bool canMove);
@@ -42,11 +50,16 @@ public:
 
 	void Render(void) override;
 
+	// Create a speech bubble above the player saying the given string phrase
+	void Say(const string phrase);
+
 protected:
     void SnapToGrid(void);
 	void UpdateImageRect(void) override { m_imageRect = (moving) ? sprites[direction][m_cycle/WALK_SPEED] : sprites[direction][STILL]; };
 
 private:
+	SpeechBubble* m_Speech;
+	InteractZone* m_Interaction;
 	float m_Friction;
 	bool m_evasion1;
 	bool m_evasion2;
@@ -56,6 +69,7 @@ private:
 	bool moving;
 	SDL_Rect* sprites[ 4 ][ 4 ]; //The 16 sprite locations in the sprite sheet
 	XY m_TargetVelocities; // Pushing force in a given frame, for movement
+	TruthSwitch m_ChangedZone;
 
 	void InitSprites(void) override;
 	void SmashUpdate(void);

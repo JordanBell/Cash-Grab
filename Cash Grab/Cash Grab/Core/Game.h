@@ -19,7 +19,7 @@
 #include "Coin.h"
 #include "Prompt.h"
 #include "Timer.h"
-#include "SEConsole.h"
+#include "CGConsole.h"
 #include "EffectManager.h"
 #include "MenuManager.h"
 #include "EventHandler.h"

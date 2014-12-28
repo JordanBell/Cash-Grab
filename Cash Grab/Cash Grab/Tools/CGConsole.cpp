@@ -1,4 +1,4 @@
-#include "SEConsole.h"
+#include "CGConsole.h"
 #include "Coin.h"
 #include "Player.h"
 #include "Game.h"
@@ -147,6 +147,12 @@ void ForceTier(vector<int> args)
 void PrintLaunchInfo(vector<int> args)
 	{ LaunchData::PrintLaunchInfo(); }
 
+/* Print Information about the Tier's Launch Info */
+void Talk(vector<int> args)
+{ 
+	g_player->Say("F");
+}
+
 
 /* Jordan's debug preset */
 void j(vector<int> args)
@@ -178,7 +184,7 @@ void SetRenderOffset(vector<int> args)
 
 
 
-SEConsole::SEConsole(void)
+CGConsole::CGConsole(void)
 {
 	// All recognised commands
 	commands.push_back( 
@@ -319,5 +325,12 @@ SEConsole::SEConsole(void)
 		"Exploding particles", 
 		"Adds a small, standard explosion of simple particles at (320,320).",
 		ParticleExplosion)
+	);
+
+	commands.push_back( 
+		Command("talk", 
+		"", 
+		"Tests speech bubbles by making the player talk",
+		Talk)
 	);
 }

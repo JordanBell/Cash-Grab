@@ -8,7 +8,7 @@ void KeyCode::_1(void)
 {
 	if (bool1)
 	{
-		// Pull (code originally taken from SEConsole)
+		// Pull (code originally taken from CGConsole)
 		//int suppression = 0; // Change this based on what we feel is most effective
 		int suppression = 0;
 
