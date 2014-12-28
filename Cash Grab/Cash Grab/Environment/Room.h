@@ -36,6 +36,10 @@ public:
 	// If this room has a machine, dispense from it.
 	void Dispense() 
 		{ if (m_Machine) m_Machine->Dispense(); }
+    
+    // Get this room's machine
+    Machine* GetMachine(void)
+    { return m_Machine; }
 
 protected:
 	// The element tile palette of this room
@@ -53,10 +57,6 @@ protected:
 	// Set this room's machine
 	void SetMachine(Machine* machine)
 		{ m_Machine = machine; }
-
-	// Set this room's machine
-	Machine* GetMachine(void)
-		{ return m_Machine; }
 
 private:
 	static std::vector<Room*> s_Rooms;

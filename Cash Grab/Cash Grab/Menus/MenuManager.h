@@ -10,6 +10,7 @@
 #define __Cash_Grab__MenuManager__
 
 #include "Menu.h"
+#include "EventHandler.h"
 #include <map>
 #include <string>
 
@@ -20,14 +21,15 @@ typedef enum {
     PAUSE
 } MenuType;
 
-class MenuManager {
+class MenuManager : public EventHandler {
 protected:
     map<MenuType, Menu*> m_menus;
-    Menu* m_currentMenu;
     
     bool m_active;
     
 public:
+    Menu* m_currentMenu;
+    
     MenuManager();
     ~MenuManager();
     
@@ -38,6 +40,10 @@ public:
     
     void SetActive(bool active) { m_active = active; }
     bool IsActive() { return m_active; }
+    
+    void OnEvent(SDL_Event event);
 };
+
+extern MenuManager* g_menuManager;
 
 #endif /* defined(__Cash_Grab__MenuManager__) */

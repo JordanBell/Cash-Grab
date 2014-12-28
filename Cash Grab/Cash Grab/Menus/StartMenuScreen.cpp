@@ -9,12 +9,15 @@
 #include "StartMenuScreen.h"
 #include "TextButton.h"
 #include "Menu.h"
+#include "Game.h"
 
 StartMenuScreen::StartMenuScreen(Menu* parent) : MenuScreen(parent)
 {
     ClickHandler newGameHandler = [this] { NewGame(); };
     ClickHandler continueHandler = [this] { Continue(); };
-    ClickHandler settingsHandler = [this] { m_ParentMenu->GoToScreen("settings"); };
+    ClickHandler settingsHandler = [this] {
+        m_ParentMenu->GoToScreen(SETTINGS);
+    };
     
     Button *newGameButton = new TextButton(0, 100, newGameHandler, "New Game");
     Button *continueButton = new TextButton(0, 150, continueHandler, "Continue");
@@ -23,6 +26,11 @@ StartMenuScreen::StartMenuScreen(Menu* parent) : MenuScreen(parent)
     m_Buttons.push_back(newGameButton);
     m_Buttons.push_back(continueButton);
     m_Buttons.push_back(settingsButton);
+    
+    // Center all buttons according to width of this menu
+    for (Button* b : m_Buttons) {
+        b->Center(parent->m_Background.w);
+    }
 }
 
 void StartMenuScreen::Update(int delta)
@@ -33,6 +41,7 @@ void StartMenuScreen::Update(int delta)
 void StartMenuScreen::NewGame()
 {
     printf("New game\n");
+    g_game->NewGame();
 }
 
 void StartMenuScreen::Continue()

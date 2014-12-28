@@ -253,7 +253,7 @@ void Player::ApproachTargetVelocity(void)
 		const int pol = (m_TargetVelocities.x - m_Velocities.x) > 0 ? 1 : -1;
 
 		const double acceleration = moving? 3*m_Friction : m_Friction;
-		const float changeInVelocity = pol * min((float)acceleration, abs(m_TargetVelocities.x - m_Velocities.x));
+		const float changeInVelocity = pol * min((float)acceleration, fabsf(m_TargetVelocities.x - m_Velocities.x));
 
 		m_Velocities.x += changeInVelocity;
 	}
@@ -264,7 +264,7 @@ void Player::ApproachTargetVelocity(void)
 		const int pol = (m_TargetVelocities.y - m_Velocities.y) > 0 ? 1 : -1;
 		
 		const double acceleration = moving? 3*m_Friction : m_Friction;
-		const float changeInVelocity = pol * min((float)acceleration, abs(m_TargetVelocities.y - m_Velocities.y));
+		const float changeInVelocity = pol * min((float)acceleration, fabsf(m_TargetVelocities.y - m_Velocities.y));
 
 		m_Velocities.y += changeInVelocity;
 	}

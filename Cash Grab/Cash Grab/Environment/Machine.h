@@ -62,6 +62,4 @@ private:
 	bool canAfford();
 };
 
-extern Machine* g_machine;
-
 #endif

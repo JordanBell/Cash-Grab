@@ -15,9 +15,9 @@ RoomHallways_Lower::RoomHallways_Lower(void)
 
 	// Initialise the little snow positions
 	SDL_Rect crack1 = { 29*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack2 = { 29.5*TILE_SIZE, TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack3 = { 29*TILE_SIZE, 1.5*TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
-	SDL_Rect crack4 = { 29.5*TILE_SIZE, 1.5*TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack2 = { static_cast<Sint16>(29.5*TILE_SIZE), TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack3 = { 29*TILE_SIZE, static_cast<Sint16>(1.5*TILE_SIZE), TILE_SIZE/2, TILE_SIZE/2 };
+	SDL_Rect crack4 = { static_cast<Sint16>(29.5*TILE_SIZE), static_cast<Sint16>(1.5*TILE_SIZE), TILE_SIZE/2, TILE_SIZE/2 };
 	SDL_Rect cracks[] = {crack1, crack2, crack3, crack4};
 
 	for (int i = 0; i < NUM_SNOW; i++)

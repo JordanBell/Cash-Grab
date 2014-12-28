@@ -9,7 +9,7 @@
 // TODO: Make resources a namespace? Replace constructor and destructor with Init()/Load() and Deinit()/Free() respectively?
 Resources* g_resources = nullptr;
 
-#define CHECK_NULL(x) x ? "false" : "true"
+#define CHECK_NULL(x) x ? "loaded" : "null"
 
 Resources::Resources(void)
 {

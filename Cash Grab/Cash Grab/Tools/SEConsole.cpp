@@ -135,11 +135,9 @@ void AddCoins_Large(vector<int> args)
 void DoubleCoins(vector<int> args)
 	{ Wallet::IncCoinsBy(Wallet::GetCoins()); }
 
-
-
 /* Dispense Coins */
 void Dispense(vector<int> args)
-	{ g_machine->ForceDispense(args.front()); }
+	{ g_camera->GetRoomFocus()->GetMachine()->ForceDispense(args.front()); }
 
 /* Force Launch Tier */
 void ForceTier(vector<int> args)

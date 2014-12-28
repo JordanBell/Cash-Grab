@@ -11,6 +11,8 @@
 #define SCREEN_HEIGHT 480
 #define SCREEN_BPP 16
 
+#define NUM_MIX_CHANNELS 50
+
 extern SDL_Surface* screen;
 extern SDL_Color textColor;
 extern SDL_Color machineTextColor;

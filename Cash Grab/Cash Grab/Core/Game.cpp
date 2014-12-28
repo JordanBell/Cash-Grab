@@ -30,7 +30,7 @@ using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
+Game::Game() : running(true), consoleCooldownCounter(0)
 {
     delta = 0;
 	srand((unsigned int)time(nullptr));
@@ -42,9 +42,14 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_muted(false)
     m_EffectManager = new EffectManager();
 
     // Add persisting magnetism effect (should only be one of this throughout the duration of the game)
-    AddEffect(new EffectMagnetism(nullptr));
+    AddEffect(new EffectMagnetism(NULL));
     
 	m_CollisionManager = new CollisionManager(this);
+    
+    m_MenuManager = new MenuManager();
+    g_menuManager = m_MenuManager;
+    m_MenuManager->SetActive(true);
+    m_EventHandlers.push_back(m_MenuManager);
 	
 	m_GameObjects.push_back(player);
 
@@ -67,12 +72,19 @@ Game::~Game(void)
     delete m_CollisionManager;
 }
 
+void Game::NewGame()
+{
+    m_MenuManager->SetActive(false);
+}
+
 void Game::run()
 {    
 	InitEnvironment();
 	g_camera->FocusOnPlayerRoom();
     
-    //Mix_PlayMusic(g_resources->GetMusic(), -1);
+    Mix_PlayMusic(g_resources->GetMusic(), -1);
+    
+    m_GameObjects.sort(GameObject_Compare);
     
     m_FPSTimer.start();
     lastUpdate = m_FPSTimer.get_ticks();
@@ -129,14 +141,12 @@ void Game::RegulateFrameRate()
 	
 	delta = ticks - lastUpdate;
     lastUpdate = ticks;
-
-	//g_UI->SetTotalCoins(1000/delta);
 }
 
 void Game::HandleKeys()
 {
 	//Get the keystates
-	Uint8 *keystates = SDL_GetKeyState(nullptr);
+	Uint8 *keystates = SDL_GetKeyState(NULL);
 
 	if (!testingConsole.IsActive())
 	{
@@ -176,30 +186,43 @@ void Game::Update()
 //	if (consoleCooldownCounter == 0) g_player->Smash(50);
 	HandleKeys();
 	
-	for (GameObject* e : m_GameObjects)
-        e->Update(delta);
-    
-	// Update the camera
-	g_camera->UpdateFocus();
+    if (m_MenuManager->IsActive()) {
+        m_MenuManager->Update(delta);
+    }
+    else {
+        for (GameObject* e : m_GameObjects)
+            e->Update(delta);
+        
+        // Update the camera
+        g_camera->UpdateFocus();
 
-    // Sort game objects
-    m_GameObjects.sort(GameObject_Compare);
-    
-	m_CollisionManager->Update(delta);
-    m_EffectManager->Update(delta);
+        // Sort game objects
+//        m_GameObjects.sort(GameObject_Compare);
+        
+        m_CollisionManager->Update(delta);
+        m_EffectManager->Update(delta);
+        
+        if (delta)
+            g_UI->SetTotalCoins(1000 / delta);
+    }
 }
 
 void Game::Render()
 {
     // Clear the screen
-    SDL_FillRect(screen,NULL,0x000000);
+    SDL_FillRect(screen, NULL, 0x000000);
     
-	// Render all of the entities
-	for (GameObject* go : m_GameObjects) 
-		go->Render();
+    if (m_MenuManager->IsActive()) {
+        m_MenuManager->Render();
+    }
+    else {
+        // Render all of the entities
+        for (GameObject* go : m_GameObjects)
+            go->Render();
 
-	// Render the UI above everything
-    g_UI->Render();
+        // Render the UI above everything else
+        g_UI->Render();
+    }
 
 	// Flip (update) the screen
 	SDL_Flip(screen);
@@ -221,46 +244,12 @@ void Game::Poll()
 			if (testingConsole.IsActive())
 				testingConsole.KeyIn(event.key.keysym);
 		}
+        
+        // Pass this event to all listening EventHandlers
+        for (EventHandler* eh : m_EventHandlers) {
+            eh->OnEvent(event);
+        }
 	}
-
-	// Hax0rz!
-	//        if( event.type == SDL_MOUSEBUTTONDOWN )
-	//        {
-	//            //If the left mouse button was pressed
-	//            if( event.button.button == SDL_BUTTON_LEFT )
-	//            {
-	//                //Get the mouse offsets
-	//                int x = event.button.x;
-	//                int y = event.button.y;
-	//                
-	//                for (GameObject *go : m_GameObjects) {
-	//                    Button *b = dynamic_cast<Button*>(go);
-	//                    
-	//                    if (b && b->inBounds(x, y)) {
-	//                        b->y += 1;
-	//                    }
-	//                }
-	//            }
-	//        }
-	//        if( event.type == SDL_MOUSEBUTTONUP )
-	//        {
-	//            //If the left mouse button was pressed
-	//            if( event.button.button == SDL_BUTTON_LEFT )
-	//            {
-	//                //Get the mouse offsets
-	//                int x = event.button.x;
-	//                int y = event.button.y;
-	//                
-	//                for (GameObject *go : m_GameObjects) {
-	//                    Button *b = dynamic_cast<Button*>(go);
-	//                    
-	//                    if (b && b->inBounds(x, y)) {
-	//                        b->y -= 1;
-	//                        b->Click();
-	//                    }
-	//                }
-	//            }
-	//        }
 }
 
 void Game::addGameObject(GameObject* gameObject, bool toFront)
@@ -274,7 +263,7 @@ void Game::addGameObject(GameObject* gameObject, bool toFront)
         m_GameObjects.push_back(gameObject);
     }
     
-//    m_GameObjects.sort(GameObject_Compare);
+    m_GameObjects.sort(GameObject_Compare);
 }
 
 void Game::addCollidable(Collidable* collidable, bool toFront)

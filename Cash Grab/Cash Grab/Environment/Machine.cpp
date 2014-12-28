@@ -9,7 +9,6 @@
 #include "CoinSilver.h"
 #include "CoinGold.h"
 
-Machine* g_machine = nullptr;
 #define ANGLE_SUPPRESSION 1
 
 Machine::Machine(int x, int y) 

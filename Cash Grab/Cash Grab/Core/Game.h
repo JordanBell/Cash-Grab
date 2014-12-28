@@ -21,7 +21,11 @@
 #include "Timer.h"
 #include "SEConsole.h"
 #include "EffectManager.h"
+#include "MenuManager.h"
+#include "EventHandler.h"
+
 #include <memory>
+#include <map>
 
 using namespace std;
 
@@ -36,32 +40,39 @@ public:
     
 	Game();
 	~Game(void);
+    
+    void NewGame();
 	void run();
     void addGameObject(GameObject* gameObject, bool toFront = false);
     void addCollidable(Collidable* collidable, bool toFront = false);
     void AddEffect(Effect* effect);
     void removeGameObject(GameObject* gameObject);
     void removeCollidable(Collidable* collidable);
-	bool IsMuted(void) { return m_muted; }
-	void Mute(void) { m_muted = true; }
-	void Unmute(void) { m_muted = false; }
+    
+//	void Mute(void) { m_muted = true; }
+//	void Unmute(void) { m_muted = false; }
 
 private:
+    CollisionManager* m_CollisionManager;
+    EffectManager* m_EffectManager;
+    MenuManager* m_MenuManager;
+    
 	SEConsole testingConsole;
 	int consoleCooldownCounter;
 	KeyCode keys;
-    CollisionManager* m_CollisionManager;
-    EffectManager* m_EffectManager;
 	Timer m_FPSTimer;
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking
-	bool m_muted;
 
 	//GameObjects
 	Prompt *prompt;
 	list<GameObject*> m_GameObjects;
     list<unique_ptr<GameObject>> m_GameObjectDeleteQueue;
+    list<EventHandler*> m_EventHandlers;
 	bool running;
+    
+    // Render list
+    map<int, GameObject*> m_RenderList;
 
 	void InitEnvironment(void);
 	void Update(void);

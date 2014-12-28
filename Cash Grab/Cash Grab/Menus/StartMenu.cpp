@@ -8,8 +8,12 @@
 
 #include "StartMenu.h"
 #include "StartMenuScreen.h"
+#include "SettingsMenu.h"
 
 StartMenu::StartMenu()
 {
+//    currentMenu = this;
     m_screen = new StartMenuScreen(this);
+    
+    next[SETTINGS] = new SettingsMenu(this);
 }

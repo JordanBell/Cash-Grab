@@ -14,7 +14,7 @@
 class TextButton : public Button {
     
 public:
-    TextButton(int x, int y, ClickHandler clickHandler, const char *text);
+    TextButton(int x, int y, ClickHandler clickHandler, const char *text, bool repeatClick = false);
 };
 
 #endif /* defined(__Cash_Grab__TextButton__) */

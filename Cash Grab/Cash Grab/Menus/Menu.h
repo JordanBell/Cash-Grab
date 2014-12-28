@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 Tristan Bell. All rights reserved.
 //
 
-#ifndef __Cash_Grab__Menu__
-#define __Cash_Grab__Menu__
+#pragma once
 
 #include "MenuScreen.h"
 #include <map>
@@ -15,23 +14,35 @@
 
 using namespace std;
 
+typedef enum {
+    NEW_GAME,
+    CONTINUE,
+    QUIT,
+    SETTINGS
+} MenuName;
+
 class Menu {
 protected:
     MenuScreen* m_screen;
     
-    // Menu tree structure
-    Menu* currentMenu;
-    map<string, Menu*> next;
-    Menu* prev;
+    void Init();
     
 public:
+    SDL_Rect m_Background;
+    
+    // Menu tree structure
+    map<MenuName, Menu*> next;
+    Menu* prev;
+    
+    Menu();
+    Menu(Menu* previous);
     virtual ~Menu() { }
     
     virtual void Update(int delta);
     virtual void Render();
     
-    void GoToScreen(string screenName);
+    void GoToScreen(MenuName screenName);
     void Back();
+    
+    virtual void OnEvent(SDL_Event event);
 };
-
-#endif /* defined(__Cash_Grab__Menu__) */

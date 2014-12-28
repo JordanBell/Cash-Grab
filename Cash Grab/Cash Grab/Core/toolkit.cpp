@@ -49,11 +49,11 @@ bool SDL_init()
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
         return false;
     
-    Mix_AllocateChannels(50);
+    Mix_AllocateChannels(NUM_MIX_CHANNELS);
     
     // Pan each channel differently, for variety
-    for (int i = 0; i < 50; ++i) {
-        int offset = 50 - i * 2;
+    for (int i = 0; i < NUM_MIX_CHANNELS; ++i) {
+        int offset = NUM_MIX_CHANNELS - i * 2;
         int left = 127 + offset;
         
         if (i % 2 == 0) {
@@ -144,7 +144,7 @@ bool GameObject_Compare(const GameObject* first, const GameObject* second)
 		// If either or both are not coins, return false
 		if (!coin1 || !coin2)
 			return false;
-    
+        
 		return first->y < second->y;
 	}
 }

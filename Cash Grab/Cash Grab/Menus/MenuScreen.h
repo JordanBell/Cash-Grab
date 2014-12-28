@@ -34,6 +34,8 @@ public:
     virtual void Update(int delta);
     
     virtual void Render();
+    
+    virtual void OnEvent(SDL_Event event);
 };
 
 #endif

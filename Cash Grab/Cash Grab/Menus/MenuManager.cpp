@@ -8,13 +8,16 @@
 
 #include "MenuManager.h"
 #include "Menu.h"
+#include "StartMenu.h"
+
+MenuManager* g_menuManager = nullptr;
 
 MenuManager::MenuManager()
 {
-    
-    
-//    m_menus[START] = startMenu;
+    m_menus[START] = new StartMenu();
 //    m_menus[PAUSE] = pauseMenu;
+    
+    m_currentMenu = m_menus[START];
 }
 
 MenuManager::~MenuManager()
@@ -40,5 +43,12 @@ void MenuManager::Render()
 {
     if (IsActive()) {
         m_currentMenu->Render();
+    }
+}
+
+void MenuManager::OnEvent(SDL_Event event)
+{
+    if (m_active) {
+        m_currentMenu->OnEvent(event);
     }
 }

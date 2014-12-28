@@ -8,29 +8,61 @@
 
 #include "Menu.h"
 #include "MenuScreen.h"
+#include "MenuManager.h"
+#include "toolkit.h"
+
+Menu::Menu() : prev(nullptr)
+{
+    Init();
+}
+
+Menu::Menu(Menu* previous) : prev(previous)
+{
+    Init();
+}
+
+void Menu::Init()
+{
+    int wOffset = 0;
+    int hOffset = 0;
+    
+    m_Background.x = wOffset;
+    m_Background.y = hOffset;
+    m_Background.w = SCREEN_WIDTH - (wOffset * 2);
+    m_Background.h = SCREEN_HEIGHT - (hOffset * 2);
+}
 
 void Menu::Update(int delta)
 {
-    currentMenu->m_screen->Update(delta);
+//    currentMenu->m_screen->Update(delta);
+    m_screen->Update(delta);
 }
 
 void Menu::Render()
 {
-    currentMenu->m_screen->Render();
+    SDL_FillRect(screen, &m_Background, 0);
+    
+//    currentMenu->m_screen->Render();
+    m_screen->Render();
 }
 
-void Menu::GoToScreen(string screenName)
+void Menu::GoToScreen(MenuName screenName)
 {
-    prev = currentMenu;
-    currentMenu = next.at(screenName);
+//    prev = currentMenu;
+//    currentMenu = currentMenu->next.at(screenName);
+    
+    g_menuManager->m_currentMenu = next.at(screenName);
 }
 
 void Menu::Back()
 {
     if (prev) {
-        currentMenu = prev;
+        g_menuManager->m_currentMenu = prev;
     }
-    else {
-        printf("No previous menu!\n");
-    }
+}
+
+void Menu::OnEvent(SDL_Event event)
+{
+//    currentMenu->m_screen->OnEvent(event);
+    m_screen->OnEvent(event);
 }
