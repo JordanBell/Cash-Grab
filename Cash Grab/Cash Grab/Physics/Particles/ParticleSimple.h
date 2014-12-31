@@ -10,7 +10,7 @@ class ParticleSimple :
 public:
 	ParticleSimple(int end_x, int end_y, int height);
 	ParticleSimple(int start_x, int start_y, int end_x, int end_y);
-	virtual ~ParticleSimple(void) { SDL_FreeSurface(m_imageSurface); s_instanceList.remove(this); }
+    virtual ~ParticleSimple(void) { SDL_FreeSurface(m_imageSurface); s_instanceList.remove(this); }
 
 	// Change the color of the particle surface
 	void Update(int delta) override;

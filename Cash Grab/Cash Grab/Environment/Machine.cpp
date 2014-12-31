@@ -46,6 +46,8 @@ Machine::Machine(int x, int y)
 
 void Machine::Update(int delta)
 {
+    m_dispenseStyle = BURST;
+    
 	m_timeElapsed += delta;
 
     if ((m_dispensing) && (m_timeElapsed >= DISPENSING_STUTTER))

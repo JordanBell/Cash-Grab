@@ -77,7 +77,7 @@ void SpeechBubble::Init(const string phrase)
 void SpeechBubble::InitText(const string phrase)
 {
 	// Close any existing font
-	if (m_Font == nullptr)
+	if (m_Font)
 		TTF_CloseFont(m_Font);
 
 	// Create a new text object with the phrase
@@ -87,7 +87,7 @@ void SpeechBubble::InitText(const string phrase)
 	black.r = black.g = black.b = 0;
 
 	// Free any existing surface
-	if (m_TextSurface == nullptr)
+	if (m_TextSurface)
 		SDL_FreeSurface(m_TextSurface);
 
 	// Replace it with a new TTF text surface

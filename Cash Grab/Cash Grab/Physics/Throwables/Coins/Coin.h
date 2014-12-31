@@ -14,7 +14,7 @@ class Coin : public Throwable
 {
 public:
 	Coin(int start_x, int start_y, int end_x, int end_y);
-	~Coin(void);
+	virtual ~Coin(void);
 
 	static list<Coin*> CoinsAround(int x, int y, int radius);
 	static list<Coin*> CoinsAroundPlayer(int radius);

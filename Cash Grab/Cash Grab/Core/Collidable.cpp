@@ -81,6 +81,12 @@ Collidable::Collidable(int x, int y)
     }
 }
 
+Collidable::~Collidable()
+{
+    delete m_HitBox;
+    delete m_AABB;
+}
+
 bool Collidable::CollidesWith(Collidable *other, int &collisionOverlap)
 {
     return HitTest(m_HitBox, other->m_HitBox, collisionOverlap);
