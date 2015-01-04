@@ -20,6 +20,7 @@ class MenuScreen {
 protected:
     Menu* m_ParentMenu;
     std::vector<Button*> m_Buttons;
+    std::vector<UIElement*> m_UIElements;
     
 public:
     MenuScreen(Menu* parent) : m_ParentMenu(parent) { }
@@ -30,6 +31,9 @@ public:
             delete b;
         }
     }
+    
+    void AddUIElement(UIElement *elem);
+    void AddButton(Button *button);
     
     virtual void Update(int delta);
     

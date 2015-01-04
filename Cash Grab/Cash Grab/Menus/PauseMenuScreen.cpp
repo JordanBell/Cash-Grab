@@ -32,13 +32,7 @@ PauseMenuScreen::PauseMenuScreen(Menu* parent) : MenuScreen(parent)
     resumeButton->Center(parent->m_Background.w);
     settingsButton->Center(parent->m_Background.w);
     
-    m_Buttons.push_back(resumeButton);
-    m_Buttons.push_back(settingsButton);
-}
-
-void PauseMenuScreen::Render()
-{
-    MenuScreen::Render();
-    
-    m_TitleLabel->Render();
+    AddUIElement(m_TitleLabel);
+    AddButton(resumeButton);
+    AddButton(settingsButton);
 }

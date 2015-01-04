@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "GameObject.h"
+#include "UIElement.h"
 #include <functional>
 
 typedef std::function<void ()> ClickHandler;
@@ -16,7 +16,7 @@ typedef std::function<void ()> ClickHandler;
 #define INITIAL_REPEAT_TIMEOUT 400
 #define CONTINUOUS_REPEAT_TIMEOUT 85
 
-class Button : public GameObject {    
+class Button : public UIElement {
 protected:
     SDL_Color m_color, m_highlightedColor;
     bool m_highlighted;
@@ -38,11 +38,8 @@ public:
     void ClickUp();
     virtual void SetHighlight(bool highlight) { m_highlighted = highlight; }
     
-    void Center(int width);
-    
     bool inBounds(int x, int y);
     
     virtual void Update(int delta) override;
-    virtual void Render() override;
 };
 

@@ -14,6 +14,8 @@
 
 class SettingsMenuScreen : public MenuScreen {
 private:
+    bool initialised;
+    
     Uint8 m_MusicVolumeLevel;
     Uint8 m_SFXVolumeLevel;
     
@@ -24,9 +26,12 @@ private:
     
     Button *m_BackButton;
     
+    void UpdateVolumes();
+    void SetMusicVolume();
+    void SetSFXVolume();
+    
 public:
     SettingsMenuScreen(Menu* parent);
     
     void Update(int delta) override;
-    void Render() override;
 };

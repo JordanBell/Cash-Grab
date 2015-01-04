@@ -8,17 +8,28 @@
 
 #include "MenuScreen.h"
 
+void MenuScreen::AddUIElement(UIElement *elem)
+{
+    m_UIElements.push_back(elem);
+}
+
+void MenuScreen::AddButton(Button *button)
+{
+    m_Buttons.push_back(button);
+    AddUIElement(button);
+}
+
 void MenuScreen::Update(int delta)
 {
-    for (Button *b : m_Buttons) {
-        b->Update(delta);
+    for (UIElement *e : m_UIElements) {
+        e->Update(delta);
     }
 }
 
 void MenuScreen::Render()
 {
-    for (Button *b : m_Buttons) {
-        b->Render();
+    for (UIElement *e : m_UIElements) {
+        e->Render();
     }
 }
 

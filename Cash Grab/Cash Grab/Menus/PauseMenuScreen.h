@@ -19,6 +19,4 @@ private:
     
 public:
     PauseMenuScreen(Menu* parent);
-    
-    void Render() override;
 };

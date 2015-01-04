@@ -23,9 +23,9 @@ StartMenuScreen::StartMenuScreen(Menu* parent) : MenuScreen(parent)
     Button *continueButton = new TextButton(0, 150, continueHandler, "Continue");
     Button *settingsButton = new TextButton(0, 200, settingsHandler, "Settings");
     
-    m_Buttons.push_back(newGameButton);
-    m_Buttons.push_back(continueButton);
-    m_Buttons.push_back(settingsButton);
+    AddButton(newGameButton);
+    AddButton(continueButton);
+    AddButton(settingsButton);
     
     // Center all buttons according to width of this menu
     for (Button* b : m_Buttons) {

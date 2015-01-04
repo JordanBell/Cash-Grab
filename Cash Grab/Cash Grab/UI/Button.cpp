@@ -9,21 +9,11 @@
 #include "Button.h"
 #include "Resources.h"
 
-Button::Button(int x, int y, ClickHandler clickHandler, bool repeatClick) : GameObject(x, y), m_clickHandler(clickHandler), m_highlighted(false), m_clickedDown(false), m_shouldRepeatClick(repeatClick), m_repeatCounter(0)
+Button::Button(int x, int y, ClickHandler clickHandler, bool repeatClick) : UIElement(x, y), m_clickHandler(clickHandler), m_highlighted(false), m_clickedDown(false), m_shouldRepeatClick(repeatClick), m_repeatCounter(0)
 {
     m_color.r = 0;
     m_color.g = 0;
     m_color.b = 0;
-}
-
-void Button::Center(int width)
-{
-    SDL_Rect centerRect = GetCenter();
-    
-    int centerX = width / 2;
-    
-    x += centerX - centerRect.x;
-    m_imageRect->x = x;
 }
 
 bool Button::inBounds(int x, int y)
@@ -34,7 +24,7 @@ bool Button::inBounds(int x, int y)
 
 void Button::Update(int delta)
 {
-    GameObject::Update(delta);
+    UIElement::Update(delta);
     
     if (m_shouldRepeatClick && m_clickedDown) {
         m_repeatCounter += delta;
@@ -51,11 +41,6 @@ void Button::Update(int delta)
             m_repeatCounter = 0;
         }
     }
-}
-
-void Button::Render(void)
-{
-    apply_surface(x, y, m_imageSurface, screen);
 }
 
 void Button::ClickDown()

@@ -16,8 +16,10 @@
 
 using namespace std;
 
-SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), m_MusicVolumeLevel(100), m_SFXVolumeLevel(100)
+SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), initialised(false)
 {
+    UpdateVolumes();
+    
     // TODO: remove code duplication
     SDL_Color color;
     color.r = 255;
@@ -45,8 +47,10 @@ SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), m_Mus
     
     ClickHandler leftMusicArrowCH = [this] {
         if (m_MusicVolumeLevel > 0) {
-            m_MusicVolumeLevel -= 5;
-            if (m_MusicVolumeLevel == 95 || m_MusicVolumeLevel == 5) {
+            m_MusicVolumeLevel -= 1;
+            SetMusicVolume();
+            
+            if (m_MusicVolumeLevel == 9 || m_MusicVolumeLevel == 1) {
                 m_MusicVolumeDisplay->x += 5;
             }
         }
@@ -55,8 +59,10 @@ SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), m_Mus
     
     ClickHandler leftSFXArrowCH = [this] {
         if (m_SFXVolumeLevel > 0) {
-            m_SFXVolumeLevel -= 5;
-            if (m_SFXVolumeLevel == 95 || m_SFXVolumeLevel == 5) {
+            m_SFXVolumeLevel -= 1;
+            SetSFXVolume();
+            
+            if (m_SFXVolumeLevel == 9 || m_SFXVolumeLevel == 1) {
                 m_SFXVolumeDisplay->x += 5;
             }
         }
@@ -64,8 +70,10 @@ SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), m_Mus
     Button *leftSFXButton = new ImageButton((parent->m_Background.w / 2) - 35, 196, leftArrow, leftSFXArrowCH, true);
     
     ClickHandler rightMusicArrowCH = [this] {
-        if (m_MusicVolumeLevel < 100) {
-            m_MusicVolumeLevel += 5;
+        if (m_MusicVolumeLevel < 10) {
+            m_MusicVolumeLevel += 1;
+            SetMusicVolume();
+            
             if (m_MusicVolumeLevel == 100 || m_MusicVolumeLevel == 10) {
                 m_MusicVolumeDisplay->x -= 5;
             }
@@ -74,8 +82,10 @@ SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), m_Mus
     Button *rightMusicButton = new ImageButton((parent->m_Background.w / 2) + 19, 126, rightArrow, rightMusicArrowCH, true);
     
     ClickHandler rightSFXArrowCH = [this] {
-        if (m_SFXVolumeLevel < 100) {
-            m_SFXVolumeLevel += 5;
+        if (m_SFXVolumeLevel < 10) {
+            m_SFXVolumeLevel += 1;
+            SetSFXVolume();
+            
             if (m_SFXVolumeLevel == 100 || m_SFXVolumeLevel == 10) {
                 m_SFXVolumeDisplay->x -= 5;
             }
@@ -83,23 +93,26 @@ SettingsMenuScreen::SettingsMenuScreen(Menu* parent) : MenuScreen(parent), m_Mus
     };
     Button *rightSFXButton = new ImageButton((parent->m_Background.w / 2) + 19, 196, rightArrow, rightSFXArrowCH, true);
     
-    m_Buttons.push_back(m_BackButton);
-    m_Buttons.push_back(leftMusicButton);
-    m_Buttons.push_back(leftSFXButton);
-    m_Buttons.push_back(rightMusicButton);
-    m_Buttons.push_back(rightSFXButton);
+    AddUIElement(m_MusicVolumeLabel);
+    AddUIElement(m_MusicVolumeDisplay);
+    AddUIElement(m_SFXVolumeLabel);
+    AddUIElement(m_SFXVolumeDisplay);
+    
+    AddButton(m_BackButton);
+    AddButton(leftMusicButton);
+    AddButton(leftSFXButton);
+    AddButton(rightMusicButton);
+    AddButton(rightSFXButton);
 }
 
 void SettingsMenuScreen::Update(int delta)
 {
     MenuScreen::Update(delta);
     
-    // Map volume from 0-100 to 0-MIX_MAX_VOLUME
-    int musicVolume = (float)m_MusicVolumeLevel / 100 * MIX_MAX_VOLUME;
-    int sfxVolume = (float)m_SFXVolumeLevel / 100 * MIX_MAX_VOLUME;
-    
-    Mix_VolumeMusic(musicVolume);
-    Mix_Volume(-1, sfxVolume); // Set volume of all channels
+    if (!initialised) {
+        UpdateVolumes();
+        initialised = true;
+    }
     
     m_MusicVolumeDisplay->SetText(to_string(m_MusicVolumeLevel));
     m_SFXVolumeDisplay->SetText(to_string(m_SFXVolumeLevel));
@@ -108,12 +121,24 @@ void SettingsMenuScreen::Update(int delta)
     m_SFXVolumeDisplay->Update(delta);
 }
 
-void SettingsMenuScreen::Render()
+void SettingsMenuScreen::UpdateVolumes()
 {
-    MenuScreen::Render();
+    int musicVolume = (float)Mix_VolumeMusic(-1) / MIX_MAX_VOLUME * 10;
+    int sfxVolume = (float)Mix_Volume(-1, -1) / MIX_MAX_VOLUME * 10;
+    m_MusicVolumeLevel = (int)musicVolume;
+    m_SFXVolumeLevel = (int)sfxVolume;
+}
+
+void SettingsMenuScreen::SetMusicVolume()
+{
+    int musicVolume = (float)m_MusicVolumeLevel / 10 * MIX_MAX_VOLUME;
     
-    m_MusicVolumeLabel->Render();
-    m_MusicVolumeDisplay->Render();
-    m_SFXVolumeLabel->Render();
-    m_SFXVolumeDisplay->Render();
+    Mix_VolumeMusic(musicVolume);
+}
+
+void SettingsMenuScreen::SetSFXVolume()
+{
+    int sfxVolume = (float)m_SFXVolumeLevel / 10 * MIX_MAX_VOLUME;
+    
+    Mix_Volume(-1, sfxVolume); // Set volume of all channels
 }
