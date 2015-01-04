@@ -2,7 +2,7 @@
 #include "Collidable.h"
 #include <list>
 #include "Throwable.h"
-#include "Player.h"
+#include "Game.h"
 
 using namespace std;
 class Coin;
@@ -13,13 +13,16 @@ extern list<Coin*> g_coins;
 class Coin : public Throwable
 {
 public:
-	Coin(int start_x, int start_y, int end_x, int end_y);
+	Coin(const int start_x, const int start_y, const int end_x, const int end_y, const int ele);
 	~Coin(void);
 
 	static list<Coin*> CoinsAround(int x, int y, int radius);
 	static list<Coin*> CoinsAroundPlayer(int radius);
 protected:
     SDL_Rect* sprites[8];
+
+	// The element of the coin
+	int m_Element;
 
 	// When landing, slow the animation to a calmer speed
 	void OnLanding(void) override final;

@@ -1,6 +1,6 @@
 #include "LevelProgress.h"
 #include "LaunchData.h"
-#include "Wallet.h"
+#include "Inventory.h"
 #include <cstdlib>
 
 using namespace LaunchData;
@@ -53,7 +53,7 @@ vector<int> LevelProgress::ComputeActivationLevels(bool print)
 	return r_thresholds;
 }
 
-DataPacket LevelProgress::GetDataPacket()
+DataPacket* LevelProgress::GetDataPacket(void)
 {
 	// The current tier determines the launch data
 	int tier = recordedTier;
@@ -63,12 +63,11 @@ DataPacket LevelProgress::GetDataPacket()
 	d_style r_style = ComputeStyle();
 	d_pat r_pat = ComputePattern();
 
-	return DataPacket(r_style, r_pat, r_coin);
+	return new DataPacket(r_style, r_pat, r_coin);
 }
 
 void LevelProgress::Notify(const int totalCoins)
 {
-
 	int oldTier = recordedTier;
 	recordedTotal = totalCoins;
 	UpdateTier();
@@ -77,6 +76,8 @@ void LevelProgress::Notify(const int totalCoins)
 	if (recordedTier != oldTier)
 	{
 		//printf("*!*!* NEW TIER, %d, REACHED !*!*!\n", recordedTier);
+
+		// Rebuild the lists TODO: Try not doing this. You know it can be done better.
 		possibleStyles.clear();
 		possiblePatterns.clear();
 		if (recordedTier >= 0)

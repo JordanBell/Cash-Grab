@@ -2,12 +2,12 @@
 #include "XY.h"
 #include "GameObject.h"
 #include "Game.h"
-#include "Machine.h"
+#include "Dispenser.h"
 
 #define FRICTION_DEFAULT 0.90f
 #define FRICTION_ICE 0.1f
 #define SHEET_WIDTH 30
-#define SHEET_HEIGHT 4
+#define SHEET_HEIGHT 6
 
 class Room : public GameObject
 {
@@ -19,11 +19,6 @@ public:
 			for (int j = 0; j < SHEET_HEIGHT; j++)
 				delete tiles[i][j];
 	}
-
-	// The element tile palette of this room
-	enum RoomElement {
-		NORMAL, ICE, FIRE
-	} m_BaseE;
 
 	virtual void Render(void) override = 0;
 
@@ -42,14 +37,18 @@ public:
 
 	// If this room has a machine, dispense from it.
 	void Dispense() 
-		{ if (m_Machine) m_Machine->Dispense(); }
+		{ if (m_Dispenser) m_Dispenser->Dispense(); }
     
     // Get this room's machine
-    Machine* GetMachine(void)
-    { return m_Machine; }
+    Dispenser* GetDispenser(void)
+		{ return m_Dispenser; }
+
+	Element GetElement(void) { return m_BaseE; }
 
 protected:
-	Room(const int x, const int y, const Dimensions& size, const RoomElement element, const int renderPriority);
+	Room(const int x, const int y, const Dimensions& size, const Element element, const int renderPriority);
+
+	Element m_BaseE;
 
 	// Spritesheet Rects for rooms
 	SDL_Rect* tiles[SHEET_WIDTH][SHEET_HEIGHT];
@@ -57,12 +56,18 @@ protected:
 	Dimensions m_Size;
 
 	// Set this room's machine
-	void SetMachine(Machine* machine)
-		{ m_Machine = machine; }
+	void SetMachine(Dispenser* dispenser)
+		{ m_Dispenser = dispenser; }
+
+	// Build a station object starting at a given top left position
+	void CreateStationWalls(const int _x, const int _y) const;
+	void RenderStationLower(const int _x, const int _y) const;
+	void RenderStationUpper(const int _x, const int _y) const;
+
 
 private:
 	static std::vector<Room*> s_Rooms;
-	Machine* m_Machine;
+	Dispenser* m_Dispenser;
 	bool m_IsLarge;
 };
 	

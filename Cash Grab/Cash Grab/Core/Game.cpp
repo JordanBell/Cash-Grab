@@ -7,7 +7,7 @@
 #include "UI.h"
 #include <time.h>
 #include <sstream>
-#include "Wallet.h"
+#include "Inventory.h"
 #include "EffectMagnetism.h"
 #include "ParticleSimple.h"
 
@@ -26,17 +26,21 @@
 
 #include "TextButton.h"
 
+#define INTERACT_COOLDOWN 15
+
 using namespace std;
 
 Game* g_game = nullptr;
 
-Game::Game() : running(true), consoleCooldownCounter(0)
+Game::Game() : running(true), consoleCooldownCounter(0), m_InteractCooldown(0)
 {
     delta = 0;
 	srand((unsigned int)time(nullptr));
 
 	// Initialise all ENTITIES
-	player = new Player((9.5*TILE_SIZE), (8*TILE_SIZE));
+	//player = new Player((9.5*TILE_SIZE), (8*TILE_SIZE)); // NORM START
+	player = new Player(1.5*screen->w-TILE_SIZE/2, -screen->h + 2*TILE_SIZE); // FIRE ROOM
+	//player = new Player(-0.5*screen->w-TILE_SIZE/2, -screen->h + 2*TILE_SIZE); // ICE ROOM
     g_player = player;
     
     m_EffectManager = new EffectManager();
@@ -119,8 +123,6 @@ void Game::InitEnvironment(void)
 	addGameObject( new RoomIce_Upper() );
 	addGameObject( new RoomFire_Lower() );
 	addGameObject( new RoomFire_Upper() );
-	addGameObject( new Sinkhole_Top() );
-	addGameObject( new Sinkhole_Bottom() );
 }
 
 // Regulate the frame rate, and return the time (ms) since the last call
@@ -160,8 +162,16 @@ void Game::HandleKeys()
 		}
 		else keys.no_direction();
 	
-		if (keystates[SDLK_1])		keys._1();
-		if (keystates[SDLK_f])		keys.f();
+		if (keystates[SDLK_1]) keys._1();
+
+		// Interact has a cooldown
+		if (m_InteractCooldown == 0) {
+			if (keystates[SDLK_f]) {
+				keys.f();
+				m_InteractCooldown = INTERACT_COOLDOWN;
+			}
+		}
+		else m_InteractCooldown--;
         
         if (keystates[SDLK_p]) {
             m_MenuManager->GoToMenu(PAUSE);
@@ -197,7 +207,7 @@ void Game::Update()
     else {
         for (GameObject* e : m_GameObjects)
             e->Update(delta);
-        
+
         // Update the camera
         g_camera->UpdateFocus();
 
@@ -267,8 +277,6 @@ void Game::addGameObject(GameObject* gameObject, bool toFront)
     {
         m_GameObjects.push_back(gameObject);
     }
-    
-    m_GameObjects.sort(GameObject_Compare);
 }
 
 void Game::addCollidable(Collidable* collidable, bool toFront)

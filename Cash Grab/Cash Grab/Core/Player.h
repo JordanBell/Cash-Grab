@@ -47,6 +47,8 @@ public:
 	void SmashWave() { smashCount = 0; }
 	void IncSpeed(const float amount);
 
+	void SetSpeed(const float newSpeed);
+
 	void Update(int delta) override final;
 	void Render(void) override final;
 
@@ -72,15 +74,21 @@ private:
 	SDL_Rect* sprites[ 4 ][ 4 ]; //The 16 sprite locations in the sprite sheet
 	XY m_TargetVelocities; // Pushing force in a given frame, for movement
 	Prompt* m_Prompt;
+	int m_DamageImmunityCounter;
 
 	void InitSprites(void) override;
 	void ReplaceSpeech(SpeechBubble* sPtr);
 	void SmashUpdate(void);
+	void UpdateDamageDetection(void);
 	void AddDirtParticles(void);
 	void ApproachTargetVelocity(void);
 	const float ComputeDecay(void);
 	const float ComputeSpeedPercentage(void) { return m_speed/MAX_SPEED; }
 	void DecaySpeed(void) { IncSpeed(-ComputeDecay()); }
+	void SetImmunityCounter(const int newCount);
+
+	// Respond to taking damage
+	void OnDamage(const float damagePercentage);
 };
 
 extern Player *g_player;

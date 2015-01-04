@@ -18,7 +18,7 @@ Button::Button(int x, int y, ClickHandler clickHandler, bool repeatClick) : Game
 
 void Button::Center(int width)
 {
-    SDL_Rect centerRect = GetCenter();
+    SDL_Rect centerRect = GetCenterRect();
     
     int centerX = width / 2;
     

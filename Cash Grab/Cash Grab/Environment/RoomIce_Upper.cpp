@@ -1,5 +1,5 @@
 #include "RoomIce_Upper.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 #include "ParticleSnow.h"
 
 #define SNOWFLAKE_CHANCE 3
@@ -15,6 +15,9 @@ void RoomIce_Upper::Render(void)
 		apply_surface(x, _y, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
 	for (int _y = y+10*TILE_SIZE; _y < y + m_Size.y; _y += TILE_SIZE)
 		apply_surface(x + screen->w-TILE_SIZE, _y, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);
+
+	// Station
+	RenderStationUpper(8*TILE_SIZE, 3*TILE_SIZE);
 }
 
 void RoomIce_Upper::Update(int delta)

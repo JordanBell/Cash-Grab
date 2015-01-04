@@ -11,7 +11,7 @@
 #define LAYER_ENV_UPPER 3
 #define LAYER_AIR 4
 #define LAYER_UI 10
-#define GAME_TYPE "full"
+#define GAME_TYPE "testing"
 
 #include <list>
 #include "KeyCode.h"
@@ -31,6 +31,10 @@ using namespace std;
 
 class CollisionManager;
 class Machine;
+
+enum Element {
+	NORMAL, ICE, FIRE
+};
 
 class Game
 {	
@@ -62,6 +66,7 @@ private:
 	Timer m_FPSTimer;
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking
+	int m_InteractCooldown;
 
 	//GameObjects
 	list<GameObject*> m_GameObjects;

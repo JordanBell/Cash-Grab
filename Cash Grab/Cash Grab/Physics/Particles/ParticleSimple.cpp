@@ -13,7 +13,8 @@ Uint32 ParticleSimple::s_color = 0x00655c5c; // Tile-ish
 #define FADE_LENGTH 35
 
 ParticleSimple::ParticleSimple(int end_x, int end_y, int height) 
-		: PhysicsObject(end_x, end_y, height), GameObject(end_x, end_y-height), m_size(3, 3), m_fadeCounter(FADE_LENGTH), m_age(0), m_AgeLimit(AGE_LIMIT)
+		: PhysicsObject(end_x, end_y, height), GameObject(end_x, end_y-height), m_size(3, 3), 
+		m_fadeCounter(FADE_LENGTH), m_age(0), m_AgeLimit(AGE_LIMIT)
 { 
 	// Create a square surface of this particle's color and size TODO: Create all surfaces in video memory (HWSURFACE)
 	m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32,

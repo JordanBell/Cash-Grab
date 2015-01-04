@@ -5,7 +5,7 @@ class RoomHallways_Upper :
 {
 public:
 	RoomHallways_Upper(void)
-		: Room(0, -2*screen->h, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_UPPER) {}
+		: Room(0, -2*screen->h, Dimensions(screen->w, screen->h), Element::NORMAL, LAYER_ENV_UPPER) {}
 
 	void Render(void) override final;
 

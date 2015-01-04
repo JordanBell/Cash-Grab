@@ -7,7 +7,6 @@ class Sprite :
 public:
 	//Constructors
 	Sprite(const int x, const int y) : GameObject(x, y), m_cycle(0) {}
-	virtual ~Sprite(void) {}
 
 	virtual void Update(int delta) { IncCycle(); UpdateImageRect(); }
 

@@ -45,7 +45,7 @@ void Label::SetText(string text)
 
 void Label::Center(int width)
 {
-    SDL_Rect centerRect = GetCenter();
+    SDL_Rect centerRect = GetCenterRect();
     
     int centerX = width / 2;
     

@@ -5,6 +5,17 @@
 #include "Camera.h"
 #include "SpeechBubble.h"
 #include "InteractZone.h"
+#include "Room.h"
+#include "FirePit.h"
+#include "Inventory.h"
+
+#include "CoinBronze.h"
+#include "CoinSilver.h"
+#include "CoinGold.h"
+
+#define ON_DAMAGE_IMMUNITY 150
+#define DAMAGE_IMMUNITY_FLASH_RATE 5
+#define DAMAGE_COIN_LOSS_RADIUS (2*TILE_SIZE)
 
 Player *g_player = nullptr;
 
@@ -12,7 +23,7 @@ Player *g_player = nullptr;
 Player::Player(int x, int y) 
 	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
 	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED), 
-	m_Speech(nullptr), m_Interaction(nullptr), m_Prompt(nullptr)
+	m_Speech(nullptr), m_Interaction(nullptr), m_Prompt(nullptr), m_DamageImmunityCounter(0)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
 		
@@ -243,6 +254,12 @@ const float Player::ComputeDecay(void)
 
 void Player::Update(int delta)
 {
+	// Handle Sprite Update
+	Sprite::Update(delta);
+
+	// Update the beta update for the smash ability
+	SmashUpdate();
+
 	// Update Friction
 	m_Friction = Room::GetPlayerRoom()->GetFriction();
 
@@ -251,11 +268,6 @@ void Player::Update(int delta)
 		m_Prompt = new Prompt(this);
 		g_game->addGameObject(m_Prompt);
 	}
-
-
-    //IncCycle();
-	Sprite::Update(delta);
-	SmashUpdate();
 
 	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
 		DecaySpeed();
@@ -309,6 +321,9 @@ void Player::Update(int delta)
 			m_Interaction = zone;
 
 	m_Prompt->SetVisible(m_Interaction != nullptr);
+
+	// Check for collisions with damage objects
+	UpdateDamageDetection();
 	
 	// Adjust the actual velocity to accelerate toward the set target velocities
 	ApproachTargetVelocity();
@@ -324,6 +339,96 @@ void Player::Update(int delta)
     m_AABB->h += fabs(m_Velocities.y);
 
     UpdateCollidablePos(x, y);
+}
+
+void Player::UpdateDamageDetection(void)
+{
+	// First, check for immunity
+	if (m_DamageImmunityCounter <= 0)
+	{
+		// Check against all fire pits
+		for (FirePit* pit : g_firePits)
+		{
+			if (pit->IsErupting())
+				if (pit->OverlapsWith(m_AABB))
+					OnDamage(pit->GetDamagePercentage());
+		}
+
+		// TODO Check against all existing Stalactites
+	}
+	else
+		m_DamageImmunityCounter--;
+
+}
+
+void Player::SetImmunityCounter(const int newCount)
+{
+	m_DamageImmunityCounter = newCount;
+}
+
+void Player::SetSpeed(const float newSpeed)
+{
+	m_TargetVelocities.x = m_TargetVelocities.y = m_Velocities.x = m_Velocities.y = m_speed = newSpeed;
+}
+
+
+void Player::OnDamage(const float damagePercentage)
+{
+	SetImmunityCounter(ON_DAMAGE_IMMUNITY);
+
+	// Slow down the player to minimum speed
+	SetSpeed(MIN_SPEED);
+
+	// Find the element of the room to determine the element of the coins lost
+	const Element currentRoomElement = g_camera->GetRoomFocus()->GetElement(); 
+	// Get the room's wallet
+	Wallet* roomWallet = Inventory::GetCoinWallet(currentRoomElement);
+	// How much is in that wallet?
+	const int numCoinsOwned = roomWallet->GetAmount();
+	// Based on the damage percentage, find out how many are dropped
+	const int numCoinsLost = (float)numCoinsOwned * damagePercentage;
+
+	// Remove those coins from the wallet
+	roomWallet->Remove(numCoinsLost);
+
+	// Get a DispenseList from the current room's dispenser. This will maintain the kinds of coins that were picked up as the dispenser holds that data.
+	DispenseList dispenseList = g_camera->GetRoomFocus()->GetDispenser()->DetermineCoinList(numCoinsLost);
+
+	// Throw those coins around the player
+	for (auto dispensePair : dispenseList)
+	{
+		// Throw the coins there
+		const string type = dispensePair.first;
+		int& amount = dispensePair.second;
+
+		// Launch that amount of coins
+		while (amount > 0)
+		{
+			// Find a random angle around the circle to shoot this to
+			Position circlePos = Position();
+			Position center = GetCenter();
+
+			float angle = rand()%628; // A value out of 2*pi
+			angle /= 100; // Radians
+
+			circlePos.x = x + DAMAGE_COIN_LOSS_RADIUS * cos(angle);
+			circlePos.y = y + DAMAGE_COIN_LOSS_RADIUS * sin(angle) * 7/8; // Squish the y-axis a bit
+
+			// Create a new coin object based on the dispense pair's type
+			Coin* coin;
+
+			if (type == "bronzecoin")
+				coin = new CoinBronze(center.x, center.y, circlePos.x, circlePos.y, currentRoomElement);
+			if (type == "silvercoin")
+				coin = new CoinSilver(center.x, center.y, circlePos.x, circlePos.y, currentRoomElement);
+			if (type == "goldcoin")
+				coin = new CoinGold(center.x, center.y, circlePos.x, circlePos.y, currentRoomElement);
+
+			coin->Launch();
+			g_game->addCollidable(coin);
+			amount--;
+		}
+	}
 }
 
 void Player::ApproachTargetVelocity(void)
@@ -437,5 +542,7 @@ void Player::Render(void)
     SDL_FillRect(screen, &r1, aabbColor);
     SDL_FillRect(screen, &r2, hitBoxColor);*/
     
-    Sprite::Render();
+	// Check for recent damage flashing
+	if (m_DamageImmunityCounter % (2*DAMAGE_IMMUNITY_FLASH_RATE) < DAMAGE_IMMUNITY_FLASH_RATE) // True half of the time, alternating every 'n' seconds (n = DAMAGE_IMMUNITY_FLASH_RATE)
+		Sprite::Render();
 }

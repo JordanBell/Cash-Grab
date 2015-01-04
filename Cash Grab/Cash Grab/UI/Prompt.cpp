@@ -49,7 +49,7 @@ void Prompt::InitSprites(void)
 
 //void Prompt::Update(int delta)
 //{
-//    bool shouldFlash = Wallet::GetCoins() >= machine->coinCost;
+//    bool shouldFlash = Inventory::GetCoins() >= machine->coinCost;
 //
 //	if (shouldFlash)
 //	{

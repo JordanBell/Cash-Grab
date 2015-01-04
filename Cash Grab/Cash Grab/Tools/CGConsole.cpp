@@ -2,7 +2,7 @@
 #include "Coin.h"
 #include "Player.h"
 #include "Game.h"
-#include "Wallet.h"
+#include "Inventory.h"
 #include "LaunchData.h"
 #include "ParticleSnow.h"
 #include "Camera.h"
@@ -62,7 +62,7 @@ void BounceUp(vector<int> args)
 {
 	for (Throwable* t : g_throwables)
 		if (!t->IsAirborne())
-			t->BounceUp();
+			t->Bounce( rand()%15 + 5);
 }
 
 /* Make all coins bounce in place */
@@ -123,26 +123,32 @@ void Unmute(vector<int> args)
 /* Add any number of coins to the wallet */
 void AddCoins(vector<int> args)
 {
-	int numCoins = args.front();
-	Wallet::IncCoinsBy(numCoins);
+	const int numCoins = args.front();
+
+	// Get the current room element
+	Element ele = g_camera->GetRoomFocus()->GetElement();
+	Inventory::GetCoinWallet(ele)->Add(numCoins);
 }
 
-/* Add a ludicrous number of coins to the wallet */
+/* Add a ludicrous number of coins to the wallet of the current room */
 void AddCoins_Large(vector<int> args)
-	{ Wallet::IncCoinsBy(999999999); }
+	{ Inventory::GetCoinWallet(g_camera->GetRoomFocus()->GetElement())->Add(99999999); }
 
-/* Doubles the player's coins */
+/* Doubles the player's coins in their room */
 void DoubleCoins(vector<int> args)
-	{ Wallet::IncCoinsBy(Wallet::GetCoins()); }
+{ 
+	int currentNumber = Inventory::GetCoinWallet(g_camera->GetRoomFocus()->GetElement())->GetAmount();
+	Inventory::GetCoinWallet(g_camera->GetRoomFocus()->GetElement())->Add(currentNumber * 2); 
+}
 
 /* Dispense Coins */
 void Dispense(vector<int> args)
-	{ g_camera->GetRoomFocus()->GetMachine()->ForceDispense(args.front()); }
+	{ g_camera->GetRoomFocus()->GetDispenser()->ForceDispense(args.front()); }
 
 /* Print Information about the Tier's Launch Info */
 void Talk(vector<int> args)
 { 
-	g_player->Say("F");
+	g_player->Say("Hey.");
 }
 
 
@@ -161,6 +167,7 @@ void j(vector<int> args)
 	/*g_machine->ForceDispense(1000);
 	Mute(args);*/
 	
+	// Focus the camera over the fire room's sinkhole.
 	g_camera->DisableUpdate();
 	s_renderingOffset_x = -screen->w;
 	s_renderingOffset_y = screen->h+10*TILE_SIZE;
@@ -179,133 +186,133 @@ void SetRenderOffset(vector<int> args)
 CGConsole::CGConsole(void)
 {
 	// All recognised commands
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("pull", 
 		"Pulling all coins toward the player.", 
 		"Launches all coins to the player.", 
 		Pull)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("bounce", 
 		"Bouncing.", 
 		"Bounces all throwables up into the air.", 
 		BounceUp)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("set_bounce", 
 		"Bouncing set.", 
 		"Pass an int boolean to set the bounciness of all throwables.", 
 		SetBouncy)
 	);
 	
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("toggle_pull", 
 		"Pull toggled. When enabled, press 1 to pull all coins toward the player.", 
 		"Toggles the pull ability. Activate by pressing hotkey: 1", 
 		TogglePull)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("mag", 
 		"Magnetism Toggled", 
 		"Toggles player magnetism, making it easier to collect coins.",
 		ToggleMagnetism)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("smash", 
 		"Smash Activated.", 
 		"Simulates the 'Smash' Ability.",
 		Smash)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("smash_wave", 
 		"Wave Smash activated.", 
 		"Simulates the 'Smash Wave' Ability.",
 		SmashWave)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("mute", 
 		"Muted all sounds.", 
 		"Mutes coin collection sound effects.",
 		Mute)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("unmute", 
 		"Restored all sounds.", 
 		"Restores all coin collection sound effects.",
 		Unmute)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("add_coins", 
 		"Coins added.", 
 		"Adds a specified number of coins to the player's wallet.",
 		AddCoins)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("max", 
 		"Coins added. So many coins.", 
 		"Adds 999999999 coins to the player's wallet.",
 		AddCoins_Large)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("double_coins", 
 		"Coins have been doubled", 
 		"Doubles the player's coins in their wallet.",
 		DoubleCoins)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("dispense", 
 		"Dispensing...", 
 		"Dispenses a specified number of coins directly into the game. May be unstable.",
 		Dispense)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("home", 
 		"Homing in on player.", 
 		"Sets all collectables' homing property to true.",
 		HomeIn)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("calc", 
 		"Calculating: ", 
 		"Performs a calculation. May change depending on the developer's choice of debug calculation.",
 		Calc)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("offset", 
 		"Setting the offset ", 
 		"Gives a manual value to the rendering offset values, x and y respectively.",
 		SetRenderOffset)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("j", 
 		"Yes sir.", 
 		"Jordan's preset of debug calls. Changes upon his mood. Originally [mag], [toggle_pull] and [mute].",
 		j)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("exp", 
 		"Exploding particles", 
 		"Adds a small, standard explosion of simple particles at (320,320).",
 		ParticleExplosion)
 	);
 
-	commands.push_back( 
+	m_commands.push_back( 
 		Command("talk", 
 		"", 
 		"Tests speech bubbles by making the player talk",

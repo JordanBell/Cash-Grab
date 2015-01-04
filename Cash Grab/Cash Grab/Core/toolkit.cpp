@@ -39,7 +39,7 @@ bool SDL_init()
 	inFullScreen = true;
 	toggleScreenFormat();
 	
-	SDL_WM_SetCaption("Sustainable Economy", nullptr);
+	SDL_WM_SetCaption("Cash Grab", nullptr);
 	if (screen == nullptr) return false;
     
 	//Init SDL_ttf
