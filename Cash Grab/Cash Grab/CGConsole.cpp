@@ -325,7 +325,7 @@ CGConsole::CGConsole(void)
 		Talk)
 	);
     
-    commands.push_back(
+    m_commands.push_back(
         Command("collision_debug",
         "",
         "Draws the player's hit box and AABB for collision debugging.",

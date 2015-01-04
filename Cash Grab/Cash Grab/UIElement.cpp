@@ -34,7 +34,7 @@ void UIElement::Center(UIElement *other)
 
 void UIElement::Render()
 {
-    apply_surface(x, y, m_imageSurface, screen);
+    apply_surface(x, y, m_imageSurface, screen, nullptr, false);
 }
 
 int UIElement::GetWidth()

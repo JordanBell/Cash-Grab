@@ -115,12 +115,18 @@ SDL_Surface* load_image(std::string filename)
 	return optimizedImage;
 }
 
-void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip)
+void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip, bool applyRenderingOffset)
 {
 	SDL_Rect offset;
 
-	offset.x = x + s_renderingOffset_x;
-	offset.y = y + s_renderingOffset_y;
+	offset.x = x;
+	offset.y = y;
+
+	if (applyRenderingOffset)
+	{
+		offset.x += s_renderingOffset_x;
+		offset.y += s_renderingOffset_y;
+	}
 
 	//// Only blit if it is within the screen
 	//bool shouldBlit = true;
