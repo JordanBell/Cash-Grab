@@ -14,7 +14,7 @@ UIElement::UIElement(int x, int y) : GameObject(x, y)
 
 void UIElement::Center(int width)
 {
-    SDL_Rect centerRect = GetCenter();
+    SDL_Rect centerRect = GetCenterRect();
     
     int centerX = width / 2;
     
@@ -24,8 +24,8 @@ void UIElement::Center(int width)
 
 void UIElement::Center(UIElement *other)
 {
-    SDL_Rect centerRect = GetCenter();
-    SDL_Rect otherCenterRect = other->GetCenter();
+    SDL_Rect centerRect = GetCenterRect();
+    SDL_Rect otherCenterRect = other->GetCenterRect();
     
     x += otherCenterRect.x - centerRect.x;
     
