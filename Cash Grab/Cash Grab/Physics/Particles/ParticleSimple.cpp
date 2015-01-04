@@ -31,8 +31,7 @@ ParticleSimple::ParticleSimple(int end_x, int end_y, int height)
 
 ParticleSimple::ParticleSimple(int start_x, int start_y, int end_x, int end_y) 
 		: PhysicsObject(start_x, start_y, end_x, end_y), GameObject(start_x, start_y), m_size(3, 3), m_fadeCounter(FADE_LENGTH), m_age(0)
-{ 
-	
+{	
 	// Create a square surface of this particle's color and size TODO: Create all surfaces in video memory (HWSURFACE)
 	m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32,
 									 0,0,0,0);
@@ -70,7 +69,7 @@ void ParticleSimple::Render(void)
 
 
 void ParticleSimple::Update(int delta) 
-{ 
+{
 	// Update the PhysicsObject portion
 	PhysicsObject::MoveUpdate();
 
@@ -79,7 +78,7 @@ void ParticleSimple::Update(int delta)
 	
 	// Sync GameObject position with PhysicsObject position
 	x = m_pos.x; 
-	y = m_pos.y; 
+	y = m_pos.y;
 
 	// Increment age
 	if (!this->IsAirborne())
@@ -87,7 +86,7 @@ void ParticleSimple::Update(int delta)
 
 	// Check if a fade has started
 	if (m_fadeCounter == FADE_LENGTH)
-	{
+    {
 		// Check to see if this should be removed
 		bool isTooOld = !m_airborne && (m_age >= m_AgeLimit);
 
@@ -112,7 +111,7 @@ void ParticleSimple::Update(int delta)
 	else // Between the max (FADE_LENGTH) and minimum (0)
 	{
 		// Decrement counter
-		m_fadeCounter--;
+        m_fadeCounter--;
 
 		// Change the alpha value of the rect
 		float alphaPercentage = (float)m_fadeCounter / (float)FADE_LENGTH;

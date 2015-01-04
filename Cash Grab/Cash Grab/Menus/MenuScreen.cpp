@@ -43,8 +43,26 @@ void MenuScreen::OnEvent(SDL_Event event)
                     }
                 }
                 else if (event.type == SDL_MOUSEBUTTONUP) {
+                    b->SetHighlight(false);
                     b->ClickUp();
                 }
+            }
+        }
+    }
+    
+    if (event.type == SDL_MOUSEMOTION) {
+        //Get the mouse offsets
+        int x = event.button.x;
+        int y = event.button.y;
+        
+        // Highlight button mouse is over
+        for (Button *b : m_Buttons) {
+            if (b->inBounds(x, y))
+            {
+                b->SetHighlight(true);
+            }
+            else {
+                b->SetHighlight(false);
             }
         }
     }

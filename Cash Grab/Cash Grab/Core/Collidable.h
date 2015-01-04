@@ -19,7 +19,7 @@ protected:
     SDL_Rect* m_AABB;
     
 public:
-    virtual ~Collidable(void) { }
+    virtual ~Collidable(void);
     
     bool m_IsMoveable; // ie Walls are not moveable
     

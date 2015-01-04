@@ -7,5 +7,6 @@ class ParticleAsh :
 public:
 	ParticleAsh(int end_x, int end_y, int height)
 		: ParticleType_Powder(end_x, end_y, height) { SetColor(0x00333333); }
+    
 };
 

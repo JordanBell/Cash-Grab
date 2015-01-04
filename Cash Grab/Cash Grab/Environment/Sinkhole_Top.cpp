@@ -174,7 +174,6 @@ const Position Sinkhole_Top::GetLaunchTo(void)
 	const int bottom = m_TargetBounds->y + m_TargetBounds->h;
 
 	DispensePattern dispensePattern = m_LaunchData->pattern;
-	dispensePattern = BOTH;
 
 	// Find a landing position based on the type of dispensing
 	if (dispensePattern == LaunchData::POINT)

@@ -23,7 +23,7 @@ Player *g_player = nullptr;
 Player::Player(int x, int y) 
 	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
 	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED), 
-	m_Speech(nullptr), m_Interaction(nullptr), m_Prompt(nullptr), m_DamageImmunityCounter(0)
+	m_Speech(nullptr), m_Interaction(nullptr), m_Prompt(nullptr), m_DamageImmunityCounter(0), m_Debug(false)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
 		
@@ -533,14 +533,17 @@ void Player::AddDirtParticles(void)
 
 void Player::Render(void)
 {
-    // Draw the AABB, then the player. For debugging!
-    /*Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
-    Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
+    if (m_Debug) {
+        // Draw the AABB, then the player
+        Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
+        Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
 
-    SDL_Rect r1 = { m_AABB->x+s_renderingOffset_x, m_AABB->y+s_renderingOffset_y, m_AABB->w, m_AABB->h };
-    SDL_Rect r2 = { m_HitBox->x+s_renderingOffset_x, m_HitBox->y+s_renderingOffset_y, m_HitBox->w, m_HitBox->h };
-    SDL_FillRect(screen, &r1, aabbColor);
-    SDL_FillRect(screen, &r2, hitBoxColor);*/
+        SDL_Rect r1 = { static_cast<Sint16>(m_AABB->x+s_renderingOffset_x), static_cast<Sint16>(m_AABB->y+s_renderingOffset_y), m_AABB->w, m_AABB->h };
+        SDL_Rect r2 = { static_cast<Sint16>(m_HitBox->x+s_renderingOffset_x), static_cast<Sint16>(m_HitBox->y+s_renderingOffset_y), m_HitBox->w, m_HitBox->h };
+        
+        SDL_FillRect(screen, &r1, aabbColor);
+        SDL_FillRect(screen, &r2, hitBoxColor);
+    }
     
 	// Check for recent damage flashing
 	if (m_DamageImmunityCounter % (2*DAMAGE_IMMUNITY_FLASH_RATE) < DAMAGE_IMMUNITY_FLASH_RATE) // True half of the time, alternating every 'n' seconds (n = DAMAGE_IMMUNITY_FLASH_RATE)
