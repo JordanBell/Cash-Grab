@@ -1,9 +1,9 @@
 #pragma once
 struct XY 
 { 
-	// Default Constructor - give unusual negative value to show that it had been uninitialised
+	// Default Constructor
 	XY(void) 
-		: x(-1), y(-1) {}
+		: x(0), y(0) {}
 
 	// Standard Constructor - set values for x and y
 	XY(float _x, float _y) 

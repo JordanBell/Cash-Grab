@@ -15,6 +15,7 @@ public:
 	void Drop(void);
 	void Launch(int angleSuppression = 0, int speedOverride = -1);
 	void LaunchTo(int _x, int _y, int angleSuppression = 0, int speedOverride = -1);
+	void Bounce(int speed) { Launch(-1, speed); }
 
 	const bool IsAirborne(void) const { return m_airborne; }
 

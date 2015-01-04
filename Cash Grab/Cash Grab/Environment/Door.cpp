@@ -1,11 +1,11 @@
 #include "Door.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 #include "Game.h"
 #include "Resources.h"
 #include "Key.h"
-#include "Wallet.h"
+#include "Inventory.h"
 
-Door::Door(const int _x, const int _y, const Room::RoomElement ele, const int doorID, bool isOpen)
+Door::Door(const int _x, const int _y, const int ele, const int doorID, bool isOpen)
 	: GameObject(_x, _y), m_IsOpen(isOpen), m_Wall(nullptr), m_Element(ele), m_InteractZone(nullptr), m_ID(doorID)
 { 
 	m_imageSurface = g_resources->GetEnvironmentImage();
@@ -30,7 +30,7 @@ void Door::OnInteract(void)
 {
 	bool canOpen = false;
 
-	vector<int> ownedKeys = Wallet::GetKeys();
+	vector<int> const& ownedKeys = Inventory::GetInstance().GetKeys();
 
 	for (auto keyID : ownedKeys)
 		if (keyID == m_ID)

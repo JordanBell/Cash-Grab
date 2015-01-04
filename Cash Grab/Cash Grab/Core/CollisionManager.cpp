@@ -9,6 +9,8 @@
 #include "CollisionManager.h"
 #include "Game.h"
 #include "Resources.h"
+#include "Camera.h"
+#include "Inventory.h"
 
 using namespace std;
 
@@ -115,8 +117,19 @@ void CollisionManager::AddCollidable(Collidable* collidable, bool toFront)
 
 void CollisionManager::MovableCollision(Collidable* collidable)
 {
+	// Get the current total coins
+	const Element roomElement = g_camera->GetRoomFocus()->GetElement();
+	const int totalCoinsBefore = Inventory::GetCoinWallet(roomElement)->GetTotal();
+
+	// Call the OnCollect of the throwable
     ((Throwable*)collidable)->OnCollect();
-    
+
+	// If the total has changed, notify level progress of a new collection
+	const int totalCoinsNow = Inventory::GetCoinWallet(roomElement)->GetTotal();
+	if (totalCoinsBefore != totalCoinsNow)
+		g_camera->GetRoomFocus()->GetDispenser()->GetProgress()->Notify(totalCoinsNow);
+
+	// Remove the collidable
 	m_Game->removeCollidable(collidable);
 }
 

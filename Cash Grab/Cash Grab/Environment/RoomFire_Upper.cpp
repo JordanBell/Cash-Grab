@@ -1,11 +1,13 @@
 #include "RoomFire_Upper.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 #include "ParticleAsh.h"
 
 #define ASH_CHANCE 2
 
 void RoomFire_Upper::Render(void)
 {
+	RenderStationUpper(8*TILE_SIZE, 3*TILE_SIZE);
+
 	// Top Walls
 	for (int _x = x+TILE_SIZE; _x < x + m_Size.x; _x += TILE_SIZE) 
 		apply_surface(_x, y+m_Size.y-TILE_SIZE, m_imageSurface, screen, tiles[WALL_TOP][m_BaseE]);

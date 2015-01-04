@@ -1,5 +1,5 @@
 #include "RoomHallways_Lower.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 #include <math.h>
 #include "Wall.h"
 
@@ -8,7 +8,7 @@
 #define NUM_SNOW 50
 
 RoomHallways_Lower::RoomHallways_Lower(void)
-	: Room(0, -2*screen->h, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER), m_SnowPositions()
+	: Room(0, -2*screen->h, Dimensions(screen->w, screen->h), Element::NORMAL, LAYER_ENV_LOWER), m_SnowPositions()
 {
 	BuildWallsLeft();
 	BuildWallsRight();
@@ -93,7 +93,7 @@ void RoomHallways_Lower::Render(void)
 void RoomHallways_Lower::RenderLeft(void)
 {
 	// Build the Left Hallway as ICE
-	RoomElement e = ICE;
+	Element e = ICE;
 	
 	// Floor
 	for (int _x = x; _x < x + HALLWAY_WIDTH; _x += TILE_SIZE)
@@ -133,7 +133,7 @@ void RoomHallways_Lower::RenderLeft(void)
 		}
 	}
 
-	// Snow Piles
+	// Corner Snow Piles
 	SDL_Rect snowPileCornerRight = RECT_DEF_SNOW_CORNER_LARGE_RIGHT;
 	SDL_Rect snowPileCornerLeft = RECT_DEF_SNOW_CORNER_SMALL_LEFT;
 	apply_surface(TILE_SIZE, y + screen->h - HALLWAY_HEIGHT - TILE_SIZE, m_imageSurface, screen, &snowPileCornerLeft);
@@ -146,7 +146,7 @@ void RoomHallways_Lower::RenderLeft(void)
 void RoomHallways_Lower::RenderRight(void)
 {
 	// Build the Right Hallway as FIRE
-	RoomElement e = FIRE;
+	Element e = FIRE;
 	
 	// Floor
 	for (int _x = x+screen->w - HALLWAY_WIDTH; _x < x + screen->w; _x += TILE_SIZE)

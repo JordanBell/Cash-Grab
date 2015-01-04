@@ -2,11 +2,13 @@
 #include "Game.h"
 #include "toolkit.h"
 #include "Resources.h"
+#include "EnvironmentSheetIndexes.h"
+#include "Wall.h"
 
 std::vector<Room*> Room::s_Rooms;
 
-Room::Room(const int x, const int y, const Dimensions& size, RoomElement element, const int renderPriority) 
-	: GameObject(x, y), m_Size(size), m_BaseE(element), m_Machine(nullptr)
+Room::Room(const int x, const int y, const Dimensions& size, Element element, const int renderPriority) 
+	: GameObject(x, y), m_Size(size), m_BaseE(element), m_Dispenser(nullptr)
 {
 	// TODO rename Environment spritesheet to Room spritesheet?
 	m_imageSurface = g_resources->GetEnvironmentImage();
@@ -37,10 +39,37 @@ Room::Room(const int x, const int y, const Dimensions& size, RoomElement element
 		Room::s_Rooms.push_back(this);
 }
 
+void Room::CreateStationWalls(const int _x, const int _y) const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		g_game->addCollidable(new Wall(x + i*TILE_SIZE + _x, y + 2*TILE_SIZE + _y));
+		g_game->addCollidable(new Wall(x + i*TILE_SIZE + _x, y + 3*TILE_SIZE + _y));
+	}
+}
+
+
+void Room::RenderStationLower(const int _x, const int _y) const
+{
+	for (int i = 0; i < 4; i++) {
+		apply_surface(x + i*TILE_SIZE + _x, y + 2*TILE_SIZE + _y, m_imageSurface, screen, tiles[i+(2*4)-2][VENDOR_MACHINE + m_BaseE]);
+		apply_surface(x + i*TILE_SIZE + _x, y + 3*TILE_SIZE + _y, m_imageSurface, screen, tiles[i+(2*4)+2][VENDOR_MACHINE + m_BaseE]);
+	}
+}
+
+void Room::RenderStationUpper(const int _x, const int _y) const
+{
+	apply_surface(x + TILE_SIZE + _x, y + _y, m_imageSurface, screen, tiles[0][VENDOR_MACHINE + m_BaseE]);
+	apply_surface(x + 2*TILE_SIZE + _x, y + _y, m_imageSurface, screen, tiles[1][VENDOR_MACHINE + m_BaseE]);
+	
+	for (int i = 0; i < 4; i++)
+		apply_surface(x + i*TILE_SIZE + _x, y + _y+TILE_SIZE, m_imageSurface, screen, tiles[i+2][VENDOR_MACHINE + m_BaseE]);
+}
+
 Room* Room::GetPlayerRoom(void)
 {
 	// All variables used for boundary checking
-	Position playerPos(g_player->GetCenter().x, g_player->GetCenter().y);
+	Position playerPos = g_player->GetCenter();
 	int roomLeft, roomRight, roomTop, roomBottom;
 	bool inLeft, inRight, inTop, inBottom;
 

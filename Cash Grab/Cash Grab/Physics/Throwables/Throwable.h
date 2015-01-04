@@ -16,7 +16,6 @@ public:
 
 	virtual void Update(int delta);
 	virtual void OnCollect(void) = 0; // A throwable's effect when collected
-	void BounceUp(void);
 
 	void SetHoming(int distance, int speed) { m_homingDistance = distance; m_homingSpeed = speed; }
 	void SetBouncy(bool bouncy) { m_isBouncy = bouncy; }

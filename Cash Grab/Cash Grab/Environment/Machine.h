@@ -1,10 +1,12 @@
 #ifndef machine_h
 #define machine_h
 
+#include "Dispenser.h"
 #include "Collidable.h"
 #include "Game.h"
 #include "LevelProgress.h"
 #include "TruthSwitch.h"
+#include "XY.h"
 
 #include <vector>
 #include <iostream>
@@ -12,63 +14,30 @@
 using namespace std;
 
 #define NUM_SLOTS 6
-#define DISPENSING_STUTTER 35
-#define BURST_DELAY 5
-#define QUANTITY_THRESHOLD 20
 
 class Machine :
-	public Collidable, public GameObject
+	public Collidable, public Dispenser
 {
 public:
-	int coinCost;
+	Machine(const int x, const int y);
 
-	Machine(int x, int y);
-	~Machine(void) {}
-	
-	void Update(int delta);
-	void Dispense();
+protected:
+	// Return a position to be launched to.
+	const Position GetLaunchTo(void) override final;
 
-	void ForceDispense(int coinNum);
-
-	SDL_Rect CoinLaunchInfo(int slotNum);
-
-	LevelProgress* GetProgress(void) { return m_Progress; }
+	void OnDump(DispenseList& dispenseList) override final;
+	void OnBurst(DispenseList& dispenseList) override final;
+	void OnSputter(DispenseList& dispenseList) override final;
+	void OnSerpentine(DispenseList& dispenseList) override final;
 
 private:    
-	struct XY { float x, y; };
-	
-	LaunchData::CoinType m_coinType;
-	LaunchData::DispenseStyle m_dispenseStyle;
-	LaunchData::DispensePattern m_dispensePattern;
-
-	LevelProgress* m_Progress;
 	TruthSwitch m_LaunchKey;
 	bool m_KeyLaunched;
 
-    pair<int, int> dispenser_pos;
-    pair<int, int> coin_slots[NUM_SLOTS];
-	bool m_dispensing;
-	int m_numDispensed;
-	int m_timeElapsed;
-	int m_ticker;
-    vector<Coin*> coins;
-	int m_cashDispensed;
-	int m_cashToDispense;
+    Position CoinSlots[NUM_SLOTS];
 	
-	XY GetLeftCircleCoords(bool addRightCoords = false);
-	XY GetRightCircleCoords() { return GetLeftCircleCoords(true); }
-
-	void ShootCoinFrom(int slotNum) { ShootCoinsFrom(slotNum, 1, false); }
-	void ShootCoinsFrom(int slotNum, int totalValue) { ShootCoinsFrom(slotNum, totalValue, true); }
-	void ShootCoinsFrom(int slotNum, int totalValue, bool intervalCoins);
-	void FinishDispensing();
-
-	// Launch a particular type of coin
-	template <class Coin_Type>
-	void LaunchCoin(int count, int slotNum);
-	
-	bool ValidLandingPosition(int _x, int _y);
-	bool canAfford();
+	const XY GetLeftCircleCoords(const bool addRightCoords = false);
+	const XY GetRightCircleCoords(void) { return GetLeftCircleCoords(true); }
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "RoomHallways_Upper.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 
 #define HALLWAY_WIDTH (7*TILE_SIZE)
 #define HALLWAY_HEIGHT (8*TILE_SIZE)
@@ -12,7 +12,7 @@ void RoomHallways_Upper::Render(void)
 
 void RoomHallways_Upper::RenderLeft(void)
 {
-	RoomElement e = ICE;
+	Element e = ICE;
 
 	// Top wall WALL_TOP
 	for (int _x = x; _x < HALLWAY_WIDTH+TILE_SIZE; _x += TILE_SIZE)
@@ -90,7 +90,7 @@ void RoomHallways_Upper::RenderLeft(void)
 
 void RoomHallways_Upper::RenderRight(void)
 {
-	RoomElement e = FIRE;
+	Element e = FIRE;
 
 	// Top wall WALL_TOP
 	for (int _x = x+screen->w-HALLWAY_WIDTH-TILE_SIZE; _x < screen->w; _x += TILE_SIZE)

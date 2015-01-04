@@ -2,6 +2,7 @@
 #include "Throwable.h"
 #include "Door.h"
 #include "Resources.h"
+#include "Game.h"
 
 class Key : public Throwable
 {
@@ -18,6 +19,6 @@ protected:
 	int m_ID;
 	bool m_OnScreen;
 	SDL_Rect* m_Sprites[8];
-	Room::RoomElement m_Element;
+	Element m_Element;
 };
 

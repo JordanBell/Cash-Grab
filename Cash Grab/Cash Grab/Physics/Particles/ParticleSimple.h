@@ -17,17 +17,21 @@ public:
 	void Render(void) override;
 
 protected:
-	Dimensions m_size;
 	int m_AgeLimit;
 
 	// When the particle has landed, change its render priority
 	void OnLanding(void) override { m_renderPriority = LAYER_GROUND; }
 
+	Uint32 GetColor(void) { return m_color; }
+	Dimensions GetSize(void) { return m_size; }
+
 	void SetColor(const Uint32 color) { SDL_FillRect(m_imageSurface, NULL, color); m_color = color; }
-	void SetSize(Dimensions& size) { m_size = size; m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0,0,0,0); SetColor(m_color); }
+	void SetFadeLength(const int newLength) { m_fadeCounter = newLength; }
+	void SetSize(const Dimensions& size) { m_size = size; m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0,0,0,0); SetColor(m_color); }
 	void SetAgeLimit(int newLimit) { m_AgeLimit = newLimit; }
 
 private:
+	Dimensions m_size;
 	int m_fadeCounter;
 	int m_age;
 	Uint32 m_color;

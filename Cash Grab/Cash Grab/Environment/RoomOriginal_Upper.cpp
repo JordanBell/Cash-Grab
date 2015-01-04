@@ -1,5 +1,5 @@
 #include "RoomOriginal_Upper.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 
 
 void RoomOriginal_Upper::Render(void)

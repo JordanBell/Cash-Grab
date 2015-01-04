@@ -1,10 +1,10 @@
 #include "RoomHub_Lower.h"
-#include "EnvrionmentSheetIndexes.h"
+#include "EnvironmentSheetIndexes.h"
 #include "Wall.h"
 #include "Door.h"
 
 RoomHub_Lower::RoomHub_Lower(void)
-		: Room(0, -screen->h, Dimensions(screen->w, screen->h), RoomElement::NORMAL, LAYER_ENV_LOWER)
+		: Room(0, -screen->h, Dimensions(screen->w, screen->h), Element::NORMAL, LAYER_ENV_LOWER)
 {
 	// Left and Right Walls
 	for (int _y = TILE_SIZE; _y < (screen->h); _y += TILE_SIZE) // Loop through height
@@ -36,27 +36,18 @@ RoomHub_Lower::RoomHub_Lower(void)
 	}
 
 	// Add doors. Set as initially open if testing, closed in full game.
-	g_game->addGameObject(new Door(TILE_SIZE*4, 3*TILE_SIZE-screen->h, (RoomElement)ELEMENT_ICE, DOOR_ID_TOICE, GAME_TYPE == "testing"));
-	g_game->addGameObject(new Door(TILE_SIZE*14, 3*TILE_SIZE-screen->h, (RoomElement)ELEMENT_FIRE, DOOR_ID_TOFIRE, GAME_TYPE == "testing"));
+	g_game->addGameObject(new Door(TILE_SIZE*4, 3*TILE_SIZE-screen->h, (Element)ELEMENT_ICE, DOOR_ID_TOICE, GAME_TYPE == "testing"));
+	g_game->addGameObject(new Door(TILE_SIZE*14, 3*TILE_SIZE-screen->h, (Element)ELEMENT_FIRE, DOOR_ID_TOFIRE, GAME_TYPE == "testing"));
 
 	// Room's item station walls
-	CreateStationWalls(TILE_SIZE * 4, TILE_SIZE * 5);
+	CreateStationWalls(TILE_SIZE * 8, TILE_SIZE * 5);
 	// Add its InteractZone
 	SDL_Rect* interactArea = new SDL_Rect();
-	interactArea->x = x+TILE_SIZE*4;
+	interactArea->x = x+TILE_SIZE*8;
 	interactArea->y = y+TILE_SIZE*9;
 	interactArea->w = TILE_SIZE*4;
 	interactArea->h = TILE_SIZE/3;
 	InteractZone* zone1 = new InteractZone(interactArea, [] { printf("Shopping!\n"); }, Player::Direction::UP);
-
-	CreateStationWalls(TILE_SIZE * 12, TILE_SIZE * 5);
-	// Add its InteractZone
-	interactArea = new SDL_Rect();
-	interactArea->x = x+TILE_SIZE*12;
-	interactArea->y = y+TILE_SIZE*9;
-	interactArea->w = TILE_SIZE*4;
-	interactArea->h = TILE_SIZE/3;
-	InteractZone* zone2 = new InteractZone(interactArea, [] { printf("Shopping!\n"); }, Player::Direction::UP);
 }
 
 void RoomHub_Lower::Render(void)
@@ -67,53 +58,53 @@ void RoomHub_Lower::Render(void)
 			apply_surface(i, y + j, m_imageSurface, screen, tiles[FLOOR][m_BaseE]);
 
 	//apply_surface(x + TILE_SIZE * 2, yVal +  * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 4, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 5, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 6, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 8, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 9, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 10, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 	//apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 	
-	apply_surface(x + TILE_SIZE * 3, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 3, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 3, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 3, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 	
 	//apply_surface(x + TILE_SIZE * 2, y + TILE_SIZE * 11, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 4, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 5, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 6, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 8, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 9, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 10, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 	//apply_surface(x + TILE_SIZE * 7, y + TILE_SIZE * 11, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 	
-	apply_surface(x + TILE_SIZE * 8, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 8, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 8, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 8, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 
 	// RIGHT Brown floor coin
 	//apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 13, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 14, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 15, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	//apply_surface(x + TILE_SIZE * 17, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	
-	apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	
-	//apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 11, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 13, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 14, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 15, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	//apply_surface(x + TILE_SIZE * 17, y + TILE_SIZE * 11, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	
-	apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
-	apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 13, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 14, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 15, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	////apply_surface(x + TILE_SIZE * 17, y + TILE_SIZE * 5, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//
+	//apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 11, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//
+	////apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 11, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 12, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 13, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 14, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 15, y + TILE_SIZE * 10, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	////apply_surface(x + TILE_SIZE * 17, y + TILE_SIZE * 11, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//
+	//apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 6, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 7, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 8, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
+	//apply_surface(x + TILE_SIZE * 16, y + TILE_SIZE * 9, m_imageSurface, screen, tiles[FLOOR_ALT][m_BaseE]);
 
 	// Papers
 	apply_surface(x + TILE_SIZE * 3, y + TILE_SIZE * 12, m_imageSurface, screen, tiles[PAPER_1][m_BaseE]);
@@ -153,34 +144,5 @@ void RoomHub_Lower::Render(void)
 	}
 
 	// Room's item station walls
-	RenderStationWalls(TILE_SIZE * 4, TILE_SIZE * 5);
-	RenderStationWalls(TILE_SIZE * 12, TILE_SIZE * 5);
-	RenderStation(TILE_SIZE * 4, TILE_SIZE * 6);
-	RenderStation(TILE_SIZE * 12, TILE_SIZE * 6);
-}
-
-
-void RoomHub_Lower::CreateStationWalls(const int _x, const int _y)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		g_game->addCollidable(new Wall(x + i*TILE_SIZE + _x, y + 2*TILE_SIZE + _y));
-		g_game->addCollidable(new Wall(x + i*TILE_SIZE + _x, y + 3*TILE_SIZE + _y));
-	}
-}
-
-void RoomHub_Lower::RenderStationWalls(const int _x, const int _y)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		int j = 2;
-		apply_surface(x + i*TILE_SIZE + _x, y + j*TILE_SIZE + _y, m_imageSurface, screen, tiles[i+(j*4)-2][VENDOR_MACHINE]);
-	}
-}
-
-void RoomHub_Lower::RenderStation(const int _x, const int _y)
-{
-	for (int i = 0; i < 4; i++) {
-		apply_surface(x + i*TILE_SIZE + _x, y + 2*TILE_SIZE + _y, m_imageSurface, screen, tiles[i+(2*4)+2][VENDOR_MACHINE]);
-	}
+	RenderStationLower(TILE_SIZE * 8, TILE_SIZE * 5);
 }

@@ -10,7 +10,8 @@
 
 list<Coin*> g_coins;
 
-Coin::Coin(int start_x, int start_y, int end_x, int end_y) : Throwable(start_x, start_y, end_x, end_y)
+Coin::Coin(const int start_x, const int start_y, const int end_x, const int end_y, const int ele) 
+	: Throwable(start_x, start_y, end_x, end_y), m_Element(ele)
 {
 	g_coins.push_back(this);
 

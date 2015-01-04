@@ -1,5 +1,6 @@
 #pragma once
 #include "toolkit.h"
+#include "XY.h"
 
 /*
 A GameObject is an interface for an object that is both Updateable and Renderable
@@ -42,6 +43,7 @@ public:
 	const int GetRenderPriority(void) const { return m_renderPriority; }
 
 	// Get the center of this GameObject's image
-	const SDL_Rect GetCenter(void);
+	const SDL_Rect GetCenterRect(void);
+	const Position GetCenter(void);
 };
 

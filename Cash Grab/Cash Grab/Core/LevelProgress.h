@@ -13,7 +13,7 @@ public:
 	vector<int>  ComputeActivationLevels(bool print = false);
 
 	// Construct and return a data packet containing the launch data example at this level.
-	DataPacket GetDataPacket();
+	DataPacket* GetDataPacket(void);
 
 	// Update the recorded total of coins, and change data accordingly
 	void Notify(const int totalCoins);

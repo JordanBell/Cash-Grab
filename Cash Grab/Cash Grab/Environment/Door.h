@@ -2,7 +2,6 @@
 #include "gameobject.h"
 #include "Wall.h"
 #include "InteractZone.h"
-#include "Room.h"
 
 #define DOOR_ID_TOHUB 0
 #define DOOR_ID_TOICE 1
@@ -12,7 +11,7 @@ class Door :
 	public GameObject
 {
 public:
-	Door(const int _x, const int _y, const Room::RoomElement ele, const int doorID, bool isOpen = false);
+	Door(const int _x, const int _y, const int ele, const int doorID, bool isOpen = false);
 	~Door(void) {}
 
 	void Open(void);
@@ -35,6 +34,6 @@ private:
 	InteractZone* m_InteractZone;
 
 	// The room element of this door graphic.
-	Room::RoomElement m_Element;
+	int m_Element;
 };
 

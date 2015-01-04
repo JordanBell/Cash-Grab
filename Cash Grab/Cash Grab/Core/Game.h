@@ -32,6 +32,10 @@ using namespace std;
 class CollisionManager;
 class Machine;
 
+enum Element {
+	NORMAL, ICE, FIRE
+};
+
 class Game
 {	
 public:
@@ -62,6 +66,7 @@ private:
 	Timer m_FPSTimer;
 	int delta; // The time since the last frame
     int lastUpdate; // Time of last update for delta tracking
+	int m_InteractCooldown;
 
 	//GameObjects
 	list<GameObject*> m_GameObjects;

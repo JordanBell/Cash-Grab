@@ -14,8 +14,8 @@ public:
         
         /* Make it a random size */
         int randSize = rand()%3+1;
-        XY tmp(randSize, randSize);
-        SetSize(tmp);
+        XY newSize(randSize, randSize);
+        SetSize(newSize);
     }
 
 	ParticleType_Powder(int start_x, int start_y, int end_x, int end_y)

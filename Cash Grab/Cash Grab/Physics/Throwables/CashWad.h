@@ -6,7 +6,7 @@ class CashWad :
 	public Throwable
 {
 public:
-	CashWad(const int x1, const int y1, const int x2, const int y2, const int value);
+	CashWad(const int x1, const int y1, const int x2, const int y2, const int value, const int ele);
 
 protected:
 	void UpdateImageRect(void) override final {}
@@ -16,6 +16,7 @@ protected:
 
 private:
 	int m_Value;
+	int m_Element;
 
 	enum WadType {
 		SINGLE, DOUBLE, TRIPLE

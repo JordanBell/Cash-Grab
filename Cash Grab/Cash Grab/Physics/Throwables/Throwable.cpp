@@ -36,24 +36,6 @@ Throwable::~Throwable(void)
 	g_throwables.remove(this); 
 }
 
-void Throwable::BounceUp(void)
-{
-	/// Repeat code from LaunchTo
-    /*cycle /= LOOP_SPEED;
-	LOOP_SPEED = 1;
-	m_maxCycles = 8 * LOOP_SPEED;*/
-
-	//moving = true;
-	// Launch the coin towards the end coordinates
-	/*start.x = x;
-	start.y = y;
-	end.x = x;
-	end.y = y;*/
-	
-	//Initialise the kinematics fields
-	Launch(-1, (rand()%15) + 5);
-}
-
 list<Throwable*> Throwable::ThrowablesAround(const int px, const int py, const int radius)
 {
 	list<Throwable*> r_throwables;
@@ -81,9 +63,9 @@ list<Throwable*> Throwable::ThrowablesAroundPlayer(const int radius)
 
 void Throwable::HomeTowardPlayer(void)
 {
-	// Home in on player
-	SDL_Rect playerCenter = g_player->GetCenter();
-	SDL_Rect thisCenter = this->GetCenter();
+	// Home in on player TODO: Convert these to GetCenter (using Position)
+	SDL_Rect playerCenter = g_player->GetCenterRect();
+	SDL_Rect thisCenter = this->GetCenterRect();
 
 	XY dif;
 	dif.x = (playerCenter.x - thisCenter.x);
@@ -137,7 +119,7 @@ void Throwable::Update(int delta)
 		y = m_pos.y;
 	}
 	else if (m_isBouncy) 
-		BounceUp();
+		Bounce(rand()%15 + 5);
     else if (m_homingDistance > 0)
 		HomeTowardPlayer();
 	else
