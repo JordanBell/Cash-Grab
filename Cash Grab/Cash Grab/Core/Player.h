@@ -22,13 +22,15 @@ class InteractZone;
 
 class Player : public Collidable, public Sprite {
 public:
-	
 	//De/Constructors
 	Player(int x, int y);
 	~Player(void);
     
     // For collision detection
     bool m_CanMove;
+    
+    // For debugging
+    bool m_Debug;
 	
 	enum Direction {
 		UP,
@@ -54,6 +56,8 @@ public:
 	//void SayIndef(const string phrase);
 	// Create a speech bubble above the player saying the given string phrase. Optionally sets the timeout proportionally to the length of the message.
 	void Say(const string phrase, bool useProportionalTimeout = false);
+    
+    void ToggleDebug() { m_Debug = !m_Debug; }
 
 protected:
     void SnapToGrid(void);

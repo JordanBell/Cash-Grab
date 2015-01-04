@@ -18,7 +18,8 @@ typedef std::function<void ()> ClickHandler;
 
 class Button : public GameObject {    
 protected:
-    SDL_Color m_color;
+    SDL_Color m_color, m_highlightedColor;
+    bool m_highlighted;
     bool m_clickedDown;
     bool m_justClicked;
     
@@ -35,6 +36,7 @@ public:
     
     void ClickDown();
     void ClickUp();
+    virtual void SetHighlight(bool highlight) { m_highlighted = highlight; }
     
     void Center(int width);
     

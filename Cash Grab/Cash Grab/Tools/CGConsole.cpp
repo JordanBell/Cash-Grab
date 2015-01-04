@@ -174,6 +174,12 @@ void SetRenderOffset(vector<int> args)
 	s_renderingOffset_y = args.at(1);
 }
 
+/* Draw the player's hit box and AABB */
+void ShowPlayerCollisionBoxes(vector<int> args)
+{
+    g_player->ToggleDebug();
+}
+
 
 
 CGConsole::CGConsole(void)
@@ -311,4 +317,11 @@ CGConsole::CGConsole(void)
 		"Tests speech bubbles by making the player talk",
 		Talk)
 	);
+    
+    commands.push_back(
+        Command("collision_debug",
+        "",
+        "Draws the player's hit box and AABB for collision debugging.",
+        ShowPlayerCollisionBoxes)
+    );
 }
