@@ -9,7 +9,8 @@ class Resources
 {
 private:
 	SDL_Surface *m_PlayerSheet, *m_CoinSheet, *m_EnvironmentImage, *m_MoneyMachineSheet, *m_PowerupSheet, 
-				*m_Prompt, *m_ButtonSheet, *m_Sinkhole, *m_Speech, *m_KeySheet, *m_IceWall, *m_FirePit;
+				*m_Prompt, *m_ButtonSheet, *m_Sinkhole, *m_Speech, *m_KeySheet, *m_IceWall, *m_FirePit, 
+				*m_IceSmasher, *m_Icicle;
 	TTF_Font* m_Font;
     Mix_Music* m_Music;
     Mix_Chunk* m_CoinSounds[NUM_COIN_SOUNDS];
@@ -30,6 +31,8 @@ public:
     SDL_Surface* GetKeySheet() { return m_KeySheet; }
     SDL_Surface* GetIceWall() { return m_IceWall; }
     SDL_Surface* GetFirePit() { return m_FirePit; }
+    SDL_Surface* GetIceSmasher() { return m_IceSmasher; }
+    SDL_Surface* GetIcicle() { return m_Icicle; }
     
     TTF_Font* GetFont() { return m_Font; }
     

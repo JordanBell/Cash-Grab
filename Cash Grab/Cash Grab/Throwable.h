@@ -11,7 +11,8 @@ public:
 	static list<Throwable*> ThrowablesAround(const int x, const int y, const int radius);
 	static list<Throwable*> ThrowablesAroundPlayer(const int radius);
 
-	Throwable(int start_x, int start_y, int end_x, int end_y);
+	Throwable(const int start_x, const int start_y, const int end_x, const int end_y);
+	Throwable(const int end_x, const int end_y, const int height);
 	~Throwable(void);
 
 	virtual void Update(int delta);

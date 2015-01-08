@@ -2,10 +2,6 @@
 #include "Inventory.h"
 #include <string>
 
-#include "CoinBronze.h"
-#include "CoinSilver.h"
-#include "CoinGold.h"
-
 using namespace std;
 
 #define DISPENSING_STUTTER 35
@@ -64,7 +60,6 @@ const int Dispenser::ComputeListTotal(void)
 	return r_total;
 }
 
-
 void Dispenser::Dispense(void)
 {
 	// Only dispense if not currently doing so
@@ -85,6 +80,9 @@ void Dispenser::Dispense(void)
 
 			// Calculate and set the list of throwables to dispense next update
 			DetermineList();
+
+			// Call any subclass's OnDispense implementation
+			OnDispense();
 		}
 		else 
 		{
@@ -100,6 +98,7 @@ void Dispenser::Dispense(void)
 			}
 		}
 	}
+	else throw string("Still going...");
 }
 
 void Dispenser::ForceDispense(int coinNum)
@@ -107,6 +106,7 @@ void Dispenser::ForceDispense(int coinNum)
 	m_Dispensing = true;
 	m_CurrentCost = coinNum;
 	m_LaunchData = m_Progress->GetDataPacket();
+	OnDispense();
 
 	DetermineList();
 }
@@ -133,6 +133,16 @@ void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 	}
 	else
 		throw runtime_error("Dispense style not recognised.");
+}
+
+int Dispenser::GetListTotal(void) const
+{
+	int total = 0;
+
+	for (auto pair : m_DispenseList)
+		total += pair.second;
+
+	return total;
 }
 
 DispenseList Dispenser::DetermineCoinList(const int totalValue) const

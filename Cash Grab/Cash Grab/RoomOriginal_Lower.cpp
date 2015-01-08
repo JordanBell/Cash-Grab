@@ -21,7 +21,7 @@ RoomOriginal_Lower::RoomOriginal_Lower(void)
 
 	InteractZone* machineActivation = new InteractZone(zoneRect, [machine] { machine->Dispense();}, Player::Direction::UP);
 
-	SetMachine(machine);
+	SetDispenser(machine);
 	g_game->addCollidable(machine);
 
 	// Create a prompt, linking to that machine TODO: Link it to the wallet instead.

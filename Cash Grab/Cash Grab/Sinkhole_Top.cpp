@@ -12,14 +12,6 @@
 #define ANGLE_SUPPRESSION 1
 #define POS 1.5*screen->w-5*TILE_SIZE, 3*TILE_SIZE-screen->h
 
-#define DISPENSE_BY_TYPE \
-			if (type == "bronzecoin")\
-				LaunchThrowable<CoinBronze>(launchPos, launchAmount);\
-			if (type == "silvercoin")\
-				LaunchThrowable<CoinSilver>(launchPos, launchAmount);\
-			if (type == "goldcoin")\
-				LaunchThrowable<CoinGold>(launchPos, launchAmount);
-
 Sinkhole_Top::Sinkhole_Top(const SDL_Rect* targetBounds)
 	: Dispenser(POS, Element::FIRE), m_TargetBounds(targetBounds)
 {

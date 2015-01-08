@@ -3,11 +3,26 @@
 #include "LevelProgress.h"
 #include <list>
 
+#include "CoinBronze.h"
+#include "CoinSilver.h"
+#include "CoinGold.h"
+
 typedef list<pair<string, int>> DispenseList;
 
 #define ANGLE_SUPPRESSION 1
 #define BURST_DELAY 5
 #define QUANTITY_THRESHOLD 20
+
+/* This small chunk of code has been defined, as a lot of dispensers 
+use this repeated bit. It will be altered throughout development, so 
+it's usefull to have all in one place. */
+#define DISPENSE_BY_TYPE \
+		if (type == "bronzecoin")\
+			LaunchThrowable<CoinBronze>(launchPos, launchAmount);\
+		if (type == "silvercoin")\
+			LaunchThrowable<CoinSilver>(launchPos, launchAmount);\
+		if (type == "goldcoin")\
+			LaunchThrowable<CoinGold>(launchPos, launchAmount);
 
 class Dispenser :
 	public GameObject
@@ -18,7 +33,7 @@ public:
 	// Update, dispensing over time if set to do so.
 	void Update(int delta) override;
 
-	// Try to dispense. Only does so if player can afford it.
+	// Try to dispense. Only does so if player can afford it. Throws a string for the character to say if something goes wrong.
 	void Dispense(void);
 
 	// Forcibly dispense coins from the dispenser. Used in testing.
@@ -44,23 +59,27 @@ protected:
 	virtual void OnSputter(DispenseList& dispenseList) = 0;
 	virtual void OnSerpentine(DispenseList& dispenseList) = 0;
 
+	virtual void OnDispense(void) {}
+
 	// Launch a particular type of throwable
 	template <class Throw_Type>
 	void LaunchThrowable(const Position start, const int count)
 	{
 		for (int i = 0; i < count; i++)
 		{
-			// Find this Coin's launch info
+			// Find this throwable's target position
 			Position to = GetLaunchTo();
 
-			// Create a new coin for that destination
-			Throw_Type* coin = new Throw_Type(start.x, start.y, to.x, to.y, m_CoinElement);
-			coin->Launch(ANGLE_SUPPRESSION);
+			// Create a new throwable for that destination
+			Throw_Type* throwable = new Throw_Type(start.x, start.y, to.x, to.y, m_CoinElement);
+			throwable->Launch(ANGLE_SUPPRESSION);
 
 			// Add it to the collidables list
-			g_game->addCollidable(coin);
+			g_game->addCollidable(throwable);
 		}
 	}
+
+	int GetListTotal(void) const;
 
 	// The current coin cost to dispense TODO: Move this to LevelProgress
 	int m_CurrentCost;

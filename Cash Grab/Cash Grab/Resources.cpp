@@ -25,6 +25,8 @@ Resources::Resources(void)
     m_KeySheet =			load_image("keySheet.png");
     m_IceWall =			    load_image("iceWall.png");
     m_FirePit =			    load_image("firePit.png");
+    m_IceSmasher =		    load_image("iceSmasher.png");
+    m_Icicle =				load_image("icicle.png");
 	m_Font =				TTF_OpenFont("joystix monospace.ttf", 14); //Custom font import; size set
     
     m_Music = Mix_LoadMUS("Main2.wav");
@@ -50,6 +52,8 @@ Resources::Resources(void)
         !m_KeySheet				||
         !m_IceWall				||
         !m_FirePit				||
+        !m_IceSmasher			||
+        !m_Icicle				||
         !m_Music)
 		{
 
@@ -66,6 +70,8 @@ Resources::Resources(void)
             printf("Key: %s\n", CHECK_NULL(m_KeySheet));
             printf("Ice Wall: %s\n", CHECK_NULL(m_IceWall));
             printf("Fire Pit: %s\n", CHECK_NULL(m_FirePit));
+            printf("Ice Smasher: %s\n", CHECK_NULL(m_IceSmasher));
+            printf("Icicle: %s\n", CHECK_NULL(m_Icicle));
             printf("music: %s\n", CHECK_NULL(m_Music));
 
 			// Let me see!!
@@ -97,6 +103,8 @@ Resources::~Resources(void)
     SDL_FreeSurface(m_KeySheet);
     SDL_FreeSurface(m_IceWall);
     SDL_FreeSurface(m_FirePit);
+    SDL_FreeSurface(m_IceSmasher);
+    SDL_FreeSurface(m_Icicle);
 	TTF_CloseFont(m_Font);
     
     Mix_FreeMusic(m_Music);

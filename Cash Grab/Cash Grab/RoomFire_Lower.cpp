@@ -62,7 +62,7 @@ void RoomFire_Lower::InitialiseDispenser(void)
 
 	Sinkhole_Top* dispenseSinkhole = new Sinkhole_Top(targetBounds);
 	g_game->addGameObject( dispenseSinkhole );
-	SetMachine(dispenseSinkhole);
+	SetDispenser(dispenseSinkhole);
 
 	// Top Interact Zone
 	SDL_Rect* zoneRect = new SDL_Rect();

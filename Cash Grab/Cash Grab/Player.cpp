@@ -8,6 +8,7 @@
 #include "Room.h"
 #include "FirePit.h"
 #include "Inventory.h"
+#include "Icicle.h"
 
 #include "CoinBronze.h"
 #include "CoinSilver.h"
@@ -354,7 +355,13 @@ void Player::UpdateDamageDetection(void)
 					OnDamage(pit->GetDamagePercentage());
 		}
 
-		// TODO Check against all existing Stalactites
+		// Check against all icicles
+		for (Icicle* icicle : g_icicles)
+		{
+			if (!icicle->IsAirborne())
+				if (icicle->OverlapsWith(m_AABB))
+					OnDamage(icicle->GetDamagePercentage());
+		}
 	}
 	else
 		m_DamageImmunityCounter--;

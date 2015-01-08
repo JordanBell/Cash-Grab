@@ -56,7 +56,7 @@ protected:
 	Dimensions m_Size;
 
 	// Set this room's machine
-	void SetMachine(Dispenser* dispenser)
+	void SetDispenser(Dispenser* dispenser)
 		{ m_Dispenser = dispenser; }
 
 	// Build a station object starting at a given top left position

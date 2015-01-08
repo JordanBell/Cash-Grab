@@ -135,6 +135,11 @@ void TestingConsole::Enter(void)
 				// If, for some reason, the called function does not operate correctly and throws an exception, fail and notify the user. Don't crash the game.
 				printf("Error. Called function threw an exception: %s", e.what());
 			}
+			catch (...)
+			{
+				// For everything else that isn't an exception, be more vague.
+				printf("Error caught. Called function and something went wrong.");
+			}
 
 			// Reset the m_line
 			m_line.clear();
@@ -214,7 +219,8 @@ vector<int> TestingConsole::ExtractArguments(string argumentsString)
 	}
 
 	// Add the last argument
-	r_args.push_back(atoi(head.c_str()));
+	if (head != "")
+		r_args.push_back(atoi(head.c_str()));
 
 	return r_args;
 }

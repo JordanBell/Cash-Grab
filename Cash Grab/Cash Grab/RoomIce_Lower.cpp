@@ -3,6 +3,7 @@
 #include "Wall.h"
 #include "InteractZone.h"
 #include "Resources.h"
+#include "IcicleSmasher.h"
 
 #define NUM_SNOW 300
 #define NUM_PILES 0
@@ -13,6 +14,18 @@ RoomIce_Lower::RoomIce_Lower(void)
 	m_IceWall = g_resources->GetIceWall();
 
 	CreateIceWalls();
+
+	// Add the ice smasher
+	IcicleSmasher* smasher = new IcicleSmasher();
+	SetDispenser(smasher);
+	g_game->addGameObject( smasher );
+	// Create it's interact zones
+	SDL_Rect* zoneRect = new SDL_Rect();
+	zoneRect->x = smasher->x;
+	zoneRect->y = smasher->y - TILE_SIZE;
+	zoneRect->w = TILE_SIZE*4;
+	zoneRect->h = TILE_SIZE*4;
+	InteractZone* smasherActivation1 = new InteractZone(zoneRect, [smasher] { smasher->Dispense();}, Player::Direction::DOWN);
 
 	// Top Walls
 	for (int _x = x+TILE_SIZE; _x < x + m_Size.x; _x += TILE_SIZE) 

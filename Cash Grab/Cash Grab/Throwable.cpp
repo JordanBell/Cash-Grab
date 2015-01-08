@@ -13,7 +13,25 @@
 
 list<Throwable*> g_throwables;
 
-Throwable::Throwable(int start_x, int start_y, int end_x, int end_y) 
+Throwable::Throwable(const int end_x, const int end_y, const int height) 
+	: Collidable(end_x, end_y - height), 
+	PhysicsObject(end_x, end_y, height), 
+	Sprite(end_x, end_y - height),
+	m_homingDistance(0), 
+	m_homingSpeed(0), 
+	m_isBouncy(false)
+{
+	g_throwables.push_back(this);
+
+	// Default hitbox values may be overriden later
+	m_HitBox->w = 32;
+    m_HitBox->h = 32;
+
+	// Set the highest render priority for throwables
+	m_renderPriority = LAYER_AIR;
+}
+
+Throwable::Throwable(const int start_x, const int start_y, const int end_x, const int end_y) 
 	: Collidable(start_x, start_y), 
 	PhysicsObject(start_x, start_y, end_x, end_y), 
 	Sprite(start_x, start_y),
@@ -115,8 +133,8 @@ void Throwable::Update(int delta)
 		PhysicsObject::MoveUpdate();
 		
 		// Take on the position calculated as a physics object
-		x = m_pos.x;
-		y = m_pos.y;
+		x = GetPOPosition().x;
+		y = GetPOPosition().y;
 	}
 	else if (m_isBouncy) 
 		Bounce(rand()%15 + 5);

@@ -77,8 +77,8 @@ void ParticleSimple::Update(int delta)
 	GameObject::Update(delta); 
 	
 	// Sync GameObject position with PhysicsObject position
-	x = m_pos.x; 
-	y = m_pos.y;
+	x = GetPOPosition().x; 
+	y = GetPOPosition().y;
 
 	// Increment age
 	if (!this->IsAirborne())

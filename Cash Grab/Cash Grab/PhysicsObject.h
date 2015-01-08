@@ -7,6 +7,7 @@
 #define HALF_ANGLE (PI)
 #define THREEQ_ANGLE (3*PI/2)
 
+// TODO Change m_pos to GetPOPosition()
 class PhysicsObject
 {
 public:		
@@ -45,8 +46,7 @@ protected:
 		m_gravityForce(DEFAULT_GRAVITY),
 		m_airborne(false) {}
 
-	// Rendered position
-	XY m_pos; 
+	Position const& GetPOPosition(void) { return m_pos; }
 
 	// The force of gravity on this object
 	float m_gravityForce;
@@ -72,6 +72,9 @@ private:
 
 	// Initialise kinematic values
 	void InitKin(void);
+
+	// Current render position
+	XY m_pos; 
 
 	// Target end position of an airborne launch
 	XY m_endPos; 

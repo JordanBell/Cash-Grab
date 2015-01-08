@@ -19,7 +19,8 @@ void Calc(vector<int> args)
 /* Launch all coins at the player */
 void Pull(vector<int> args)
 {
-	int suppression = args.empty() ? 0 : args.front();
+	int suppression = args.empty() ? 1 : args.front();
+	printf("supp: %d\n ? %d\n\n", suppression, args.empty());
 
 	for (Throwable* t : g_throwables)
 	{
@@ -32,28 +33,31 @@ void Pull(vector<int> args)
 /* Make a small explosion of simple particles */
 void ParticleExplosion(vector<int> args)
 {
-	int s_x, s_y; // Start coords
-	s_x = screen->w/2 - TILE_SIZE/2;
-	s_y = screen->h/2 - TILE_SIZE/2+2*TILE_SIZE;
-
-	int e_x, e_y; // End coords
-
-	list<Particle*> particles;
-	int num = args.front();
-	for (int i = 0; i < num; i++)
+	if (args.front())
 	{
-		// Dirt flies somewhere around behind the player
-		e_x = s_x + (rand() % (6*TILE_SIZE)) - 3*TILE_SIZE;
-		e_y = s_y + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
+		int s_x, s_y; // Start coords
+		s_x = screen->w/2 - TILE_SIZE/2;
+		s_y = screen->h/2 - TILE_SIZE/2+2*TILE_SIZE;
 
-		ParticleSimple* part = new ParticleSimple(s_x, s_y, e_x, e_y);
+		int e_x, e_y; // End coords
 
-		particles.push_back(part);
-		g_game->addGameObject(part);
+		list<Particle*> particles;
+		int num = args.front();
+		for (int i = 0; i < num; i++)
+		{
+			// Dirt flies somewhere around behind the player
+			e_x = s_x + (rand() % (6*TILE_SIZE)) - 3*TILE_SIZE;
+			e_y = s_y + (rand() % (4*TILE_SIZE)) - 2*TILE_SIZE;
+
+			ParticleSimple* part = new ParticleSimple(s_x, s_y, e_x, e_y);
+
+			particles.push_back(part);
+			g_game->addGameObject(part);
+		}
+
+		for (Particle* p : particles)
+			p->Launch(1);
 	}
-
-	for (Particle* p : particles)
-		p->Launch(1);
 }
 
 
@@ -68,9 +72,12 @@ void BounceUp(vector<int> args)
 /* Make all coins bounce in place */
 void SetBouncy(vector<int> args)
 {
-	for (Throwable* t : g_throwables)
-		if (!t->IsAirborne())
-			t->SetBouncy(args.front());
+	if (args.front())
+	{
+		for (Throwable* t : g_throwables)
+			if (!t->IsAirborne())
+				t->SetBouncy(args.front());
+	}
 }
 
 
@@ -96,7 +103,7 @@ void HomeIn(vector<int> args)
 
 /* Forces Abilty: Smash. Specifies radius. */
 void Smash(vector<int> args)
-	{ g_player->Smash(args.front()); }
+	{ if (args.front()) g_player->Smash(args.front()); }
 
 /* Forces Ability: Smash Wave */
 void SmashWave(vector<int> args)
@@ -123,11 +130,14 @@ void Unmute(vector<int> args)
 /* Add any number of coins to the wallet */
 void AddCoins(vector<int> args)
 {
-	const int numCoins = args.front();
+	if (args.front())
+	{
+		const int numCoins = args.front();
 
-	// Get the current room element
-	Element ele = g_camera->GetRoomFocus()->GetElement();
-	Inventory::GetCoinWallet(ele)->Add(numCoins);
+		// Get the current room element
+		Element ele = g_camera->GetRoomFocus()->GetElement();
+		Inventory::GetCoinWallet(ele)->Add(numCoins);
+	}
 }
 
 /* Add a ludicrous number of coins to the wallet of the current room */
@@ -143,7 +153,7 @@ void DoubleCoins(vector<int> args)
 
 /* Dispense Coins */
 void Dispense(vector<int> args)
-	{ g_camera->GetRoomFocus()->GetDispenser()->ForceDispense(args.front()); }
+	{ if (args.front()) g_camera->GetRoomFocus()->GetDispenser()->ForceDispense(args.front()); }
 
 /* Print Information about the Tier's Launch Info */
 void Talk(vector<int> args)
@@ -155,7 +165,7 @@ void Talk(vector<int> args)
 /* Jordan's debug preset */
 void j(vector<int> args)
 {
-	//TogglePull(args);
+	TogglePull(args);
 	//ToggleMagnetism(args);
 
 	//// Toggle Mute
@@ -166,11 +176,6 @@ void j(vector<int> args)
 
 	/*g_machine->ForceDispense(1000);
 	Mute(args);*/
-	
-	// Focus the camera over the fire room's sinkhole.
-	g_camera->DisableUpdate();
-	s_renderingOffset_x = -screen->w;
-	s_renderingOffset_y = screen->h+10*TILE_SIZE;
 }
 
 

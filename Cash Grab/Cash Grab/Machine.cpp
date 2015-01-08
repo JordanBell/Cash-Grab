@@ -16,15 +16,6 @@
 #define CASH_INTERVAL 25
 #define CASH_AMOUNT 100
 
-#define DISPENSE_BY_TYPE \
-		const Position start = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);\
-		if (type == "bronzecoin")\
-			LaunchThrowable<CoinBronze>(start, perSlot);\
-		if (type == "silvercoin")\
-			LaunchThrowable<CoinSilver>(start, perSlot);\
-		if (type == "goldcoin")\
-			LaunchThrowable<CoinGold>(start, perSlot);
-
 Machine::Machine(const int x, const int y)
 	: Collidable(x, y), Dispenser(x, y, Element::NORMAL), m_LaunchKey(false), m_KeyLaunched(false)
 {
@@ -66,6 +57,8 @@ void Machine::OnDump(DispenseList& dispenseList)
 		for (int slotNum = 0; slotNum < 6; slotNum++)
 		{
 			int perSlot = slotAmounts[slotNum];
+			const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
+			const int launchAmount = perSlot;
 			DISPENSE_BY_TYPE
 		}
 	}
@@ -94,6 +87,8 @@ void Machine::OnBurst(DispenseList& dispenseList)
 					perSlot = maxPerSlot;
 
 				// Launch that number of throwables from this slot
+				const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
+				const int launchAmount = perSlot;
 				DISPENSE_BY_TYPE
 
 				amount -= perSlot;
@@ -131,6 +126,8 @@ void Machine::OnSerpentine(DispenseList& dispenseList)
 		m_SerpentineTicker++;
 
 		// Launch that number of throwables from this slot
+		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
+		const int launchAmount = perSlot;
 		DISPENSE_BY_TYPE
 
 		amount -= perSlot;
@@ -154,6 +151,8 @@ void Machine::OnSputter(DispenseList& dispenseList)
 		int slotNum = rand() % 6;
 
 		// Launch that number of throwables from this slot
+		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
+		const int launchAmount = perSlot;
 		DISPENSE_BY_TYPE
 
 		amount -= perSlot;
