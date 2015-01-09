@@ -20,7 +20,6 @@ void Calc(vector<int> args)
 void Pull(vector<int> args)
 {
 	int suppression = args.empty() ? 1 : args.front();
-	printf("supp: %d\n ? %d\n\n", suppression, args.empty());
 
 	for (Throwable* t : g_throwables)
 	{

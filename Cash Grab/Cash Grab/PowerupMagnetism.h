@@ -16,11 +16,9 @@ class PowerupMagnetism : public Powerup {
 public:
     static int value;
     
-    PowerupMagnetism(int start_x, int start_y, int end_x, int end_y);
-    ~PowerupMagnetism();
+    PowerupMagnetism(int start_x, int start_y, int end_x, int end_y, int _);
     
     void OnCollect(void) override final;
-    
 private:
     void InitSprites(void) override final;
 };

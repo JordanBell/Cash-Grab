@@ -45,5 +45,11 @@ public:
 	// Get the center of this GameObject's image
 	const SDL_Rect GetCenterRect(void);
 	const Position GetCenter(void);
+
+protected:
+	// Render this object on the screen with a given offset.
+	void Render(XY offset) { 
+		apply_surface(x + offset.x, y + offset.y, m_imageSurface, screen, m_imageRect); 
+	}
 };
 

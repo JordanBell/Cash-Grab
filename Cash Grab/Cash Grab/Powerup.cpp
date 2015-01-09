@@ -28,5 +28,5 @@ void Powerup::Update(int delta)
 {
     Throwable::Update(delta);
     
-    IncCycle();
+   // IncCycle();
 }

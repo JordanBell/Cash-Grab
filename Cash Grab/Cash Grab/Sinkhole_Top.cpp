@@ -49,48 +49,40 @@ void Sinkhole_Top::OnDump(DispenseList& dispenseList)
 
 void Sinkhole_Top::OnBurst(DispenseList& dispenseList)
 {
-	if (m_BurstTicker == 0)
+	for (auto& dispensePair : dispenseList)
 	{
-		for (auto& dispensePair : dispenseList)
+		const string type = dispensePair.first;
+		int& amount = dispensePair.second;
+
+		if (amount > 0)
 		{
-			const string type = dispensePair.first;
-			int& amount = dispensePair.second;
+			// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
+			int leftToLaunch;
 
-			if (amount > 0)
+			if (m_BurstAmount <= 5)
+				leftToLaunch = amount;
+			else
+				leftToLaunch = min(amount, m_BurstAmount);
+
+
+			// Dispense a set of throwables for each row
+			for (leftToLaunch; leftToLaunch > 0; leftToLaunch--)
 			{
-				// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
-				int leftToLaunch;
+				Position startOffset = Position(TILE_SIZE, 3*TILE_SIZE);
+				Position start = Position(x + startOffset.x, y + startOffset.y);
 
-				if (m_BurstAmount <= 5)
-					leftToLaunch = amount;
-				else
-					leftToLaunch = min(amount, m_BurstAmount);
+				Position launchPos(start);
+				launchPos.x += rand()%(6*TILE_SIZE);
 
+				int launchAmount = 1;
 
-				// Dispense a set of throwables for each row
-				for (leftToLaunch; leftToLaunch > 0; leftToLaunch--)
-				{
-					Position startOffset = Position(TILE_SIZE, 3*TILE_SIZE);
-					Position start = Position(x + startOffset.x, y + startOffset.y);
+				// Launch that number of throwables from this slot
+				DISPENSE_BY_TYPE
 
-					Position launchPos(start);
-					launchPos.x += rand()%(6*TILE_SIZE);
-
-					int launchAmount = 1;
-
-					// Launch that number of throwables from this slot
-					DISPENSE_BY_TYPE
-
-					amount--;
-				}
+				amount--;
 			}
 		}
 	}
-			
-	m_BurstTicker++;
-
-	if (m_BurstTicker == BURST_DELAY) // Reset at max
-		m_BurstTicker = 0;
 }
 
 void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
@@ -109,12 +101,10 @@ void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
 
 		int slotNum = 0;
 
-		int n = m_SerpentineTicker % (12*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
+		int n = m_SingleShotTicker % (12*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
 		slotNum = (n < 12) ?
 					n :
 					((12*2)-1) - n;
-
-		m_SerpentineTicker++;
 
 		Position startOffset = Position(2*TILE_SIZE, 3*TILE_SIZE);
 		Position start = Position(x + startOffset.x, y + startOffset.y);

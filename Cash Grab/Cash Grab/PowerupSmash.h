@@ -18,9 +18,9 @@ class PowerupSmash : public Powerup {
 public:
     static int value;
     
-    PowerupSmash(int start_x, int start_y, int end_x, int end_y);
-    ~PowerupSmash();
+    PowerupSmash(int start_x, int start_y, int end_x, int end_y, int _);
     
+	void OnCollect(void) override final;
 private:
     void InitSprites(void) override final;
     void UpdateImageRect(void) override { m_imageRect = sprites[0]; }

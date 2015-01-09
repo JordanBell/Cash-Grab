@@ -22,10 +22,31 @@ RoomIce_Lower::RoomIce_Lower(void)
 	// Create it's interact zones
 	SDL_Rect* zoneRect = new SDL_Rect();
 	zoneRect->x = smasher->x;
-	zoneRect->y = smasher->y - TILE_SIZE;
-	zoneRect->w = TILE_SIZE*4;
-	zoneRect->h = TILE_SIZE*4;
-	InteractZone* smasherActivation1 = new InteractZone(zoneRect, [smasher] { smasher->Dispense();}, Player::Direction::DOWN);
+	zoneRect->y = smasher->y + 3*TILE_SIZE;
+	zoneRect->w = TILE_SIZE*3.5;
+	zoneRect->h = TILE_SIZE/2;
+	InteractZone* smasherActivation1 = new InteractZone(zoneRect, [smasher] { smasher->Dispense();}, Player::Direction::UP);
+	
+	zoneRect = new SDL_Rect();
+	zoneRect->x = smasher->x;
+	zoneRect->y = smasher->y;
+	zoneRect->w = TILE_SIZE*3.5;
+	zoneRect->h = TILE_SIZE/2;
+	InteractZone* smasherActivation2 = new InteractZone(zoneRect, [smasher] { smasher->Dispense();}, Player::Direction::DOWN);
+	
+	zoneRect = new SDL_Rect();
+	zoneRect->x = smasher->x - TILE_SIZE/2;
+	zoneRect->y = smasher->y + TILE_SIZE/2;
+	zoneRect->w = TILE_SIZE/2;
+	zoneRect->h = TILE_SIZE*2.5;
+	InteractZone* smasherActivation3 = new InteractZone(zoneRect, [smasher] { smasher->Dispense();}, Player::Direction::RIGHT);
+	
+	zoneRect = new SDL_Rect();
+	zoneRect->x = smasher->x + 3.5*TILE_SIZE;
+	zoneRect->y = smasher->y + TILE_SIZE/2;
+	zoneRect->w = TILE_SIZE/2;
+	zoneRect->h = TILE_SIZE*2.5;
+	InteractZone* smasherActivation4 = new InteractZone(zoneRect, [smasher] { smasher->Dispense();}, Player::Direction::LEFT);
 
 	// Top Walls
 	for (int _x = x+TILE_SIZE; _x < x + m_Size.x; _x += TILE_SIZE) 

@@ -5,7 +5,7 @@
 #include "Resources.h"
 using namespace std;
 
-#define BLAST_SUPPRESSION 1
+#define BLAST_SUPPRESSION 0
 #define DAMAGE_PERCENTAGE 1.0f
 
 typedef list<pair<string, int>> DispenseList;
@@ -21,7 +21,7 @@ public:
 	void Update(int delta) override final;
 
 	// Only render if in the air. The icicle still exists for a little while after landing, but shouldn't be rendered
-	void Render(void) override final { if (IsAirborne()) { y -= 64; x -= 16; GameObject::Render(); x += 16; y += 64;} }
+	void Render(void) override final;
 
 	// Check that a rect overlaps this this one damage area
 	const bool OverlapsWith(SDL_Rect* rect);
@@ -37,6 +37,9 @@ private:
 	Position m_DropPos;
 	int m_CounterToDeletion;
 	SDL_Rect* m_HitBox;
+
+	// The icicle's shadow
+	SDL_Surface* m_ShadowSurface;
 
 	// Get a position in the blast radius for a throwable to go
 	const Position GetLaunchTo(void);

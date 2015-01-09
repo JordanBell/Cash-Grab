@@ -66,40 +66,32 @@ void Machine::OnDump(DispenseList& dispenseList)
 
 void Machine::OnBurst(DispenseList& dispenseList)
 {
-	if (m_BurstTicker == 0)
+	for (auto& dispensePair : dispenseList)
 	{
-		for (auto& dispensePair : dispenseList)
-		{
-			const string type = dispensePair.first;
-			int& amount = dispensePair.second;
+		const string type = dispensePair.first;
+		int& amount = dispensePair.second;
 
-			// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
-			const int maxPerSlot = (amount / (QUANTITY_THRESHOLD*6/BURST_DELAY)) + 1;
+		// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
+		const int maxPerSlot = (amount / (QUANTITY_THRESHOLD*6/DEFAULT_BURST_DELAY)) + 1;
 				
-			// Throwables to be shot per slot
-			int perSlot;
+		// Throwables to be shot per slot
+		int perSlot;
 
-			// Dispense a set of throwables for each row
-			for (int slotNum = 0; (slotNum < 6) && (amount > 0); slotNum++)
-			{
-				perSlot = amount;
-				if (perSlot > maxPerSlot)
-					perSlot = maxPerSlot;
+		// Dispense a set of throwables for each row
+		for (int slotNum = 0; (slotNum < 6) && (amount > 0); slotNum++)
+		{
+			perSlot = amount;
+			if (perSlot > maxPerSlot)
+				perSlot = maxPerSlot;
 
-				// Launch that number of throwables from this slot
-				const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
-				const int launchAmount = perSlot;
-				DISPENSE_BY_TYPE
+			// Launch that number of throwables from this slot
+			const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
+			const int launchAmount = perSlot;
+			DISPENSE_BY_TYPE
 
-				amount -= perSlot;
-			}
+			amount -= perSlot;
 		}
 	}
-			
-	m_BurstTicker++;
-
-	if (m_BurstTicker == BURST_DELAY) // Reset at max
-		m_BurstTicker = 0;
 }
 
 void Machine::OnSerpentine(DispenseList& dispenseList)
@@ -118,12 +110,10 @@ void Machine::OnSerpentine(DispenseList& dispenseList)
 
 		int slotNum = 0;
 
-		int n = m_SerpentineTicker % (NUM_SLOTS*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
+		int n = m_SingleShotTicker % (NUM_SLOTS*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
 		slotNum = (n < NUM_SLOTS) ?
 					n :
 					((NUM_SLOTS*2)-1) - n;
-
-		m_SerpentineTicker++;
 
 		// Launch that number of throwables from this slot
 		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);

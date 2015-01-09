@@ -1,5 +1,6 @@
 #pragma once
 #include "dispenser.h"
+
 class IcicleSmasher :
 	public Dispenser
 {
@@ -7,7 +8,8 @@ public:
 	IcicleSmasher(void);
 	~IcicleSmasher(void) {}
 
-	void Update(int delta) { Dispenser::Update(delta); }
+	void Update(int delta) override final { if (m_HammerTicker > 0) m_HammerTicker--; Dispenser::Update(delta); }
+	void Render(void) override final;
 
 protected:
 	// Return a position to be launched to.
@@ -23,9 +25,13 @@ protected:
 private:
 	int m_RemainingIcicles;
 	int m_ThrowablesPerIcicle;
+	int m_HammerTicker; // The number of frames the hammer spends down
+
+	// Get a position in the blast radius for a throwable to go, in a serpentine pattern
+	const Position GetSerpentineLaunchTo(void);
 	
 	// Drop a number of icicle, keeping to the limits of m_RemainingIcicles
-	void DropIcicles(DispenseList& dispenseList, const int maxNumIcicles);
+	void DropIcicles(DispenseList& dispenseList, const int maxNumIcicles, const bool isSerpentine = false);
 
 	// Determine the number of throwables to be added to the icicle.
 	DispenseList* IcicleSmasher::GetIcicleDispenseList(DispenseList& dispenseList);

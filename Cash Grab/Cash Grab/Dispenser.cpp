@@ -6,9 +6,11 @@ using namespace std;
 
 #define DISPENSING_STUTTER 35
 #define BURST_TIMES 5
+#define POWERUP_CHANCE 0.16f
 
 Dispenser::Dispenser(const int x, const int y, const int ele)
-	: GameObject(x, y), m_Dispensing(false), m_BurstTicker(0), m_BurstAmount(0), m_SerpentineTicker(0), m_CurrentCost(START_MONEY), m_TimeElapsed(0), m_LaunchData(), m_CoinElement(ele)
+	: GameObject(x, y), m_Dispensing(false), m_BurstTicker(0), m_BurstAmount(0), m_SingleShotTicker(0), m_CurrentCost(START_MONEY), 
+	m_TimeElapsed(0), m_LaunchData(), m_CoinElement(ele), m_BurstDelay(DEFAULT_BURST_DELAY), m_FireRate(DEFAULT_FIRE_RATE)
 {
 	// Initialise level progress
 	m_Progress = new LevelProgress();
@@ -98,7 +100,6 @@ void Dispenser::Dispense(void)
 			}
 		}
 	}
-	else throw string("Still going...");
 }
 
 void Dispenser::ForceDispense(int coinNum)
@@ -106,30 +107,44 @@ void Dispenser::ForceDispense(int coinNum)
 	m_Dispensing = true;
 	m_CurrentCost = coinNum;
 	m_LaunchData = m_Progress->GetDataPacket();
-	OnDispense();
-
 	DetermineList();
+	OnDispense();
 }
 
 void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 {
 	DispenseStyle dispenseStyle = m_LaunchData->style;
-
+	
 	if (dispenseStyle == DUMP)
 	{
 		OnDump(dispenseList);
 	}
 	else if (dispenseStyle == BURST)
 	{
-		OnBurst(dispenseList);
+		if (m_BurstTicker == 0)
+		{
+			OnBurst(dispenseList);
+		}
+			
+		m_BurstTicker++;
+
+		if (m_BurstTicker == m_BurstDelay) // Reset at max
+			m_BurstTicker = 0;
+
 	}
 	else if (dispenseStyle == SERPENTINE) // Serpentine or Sputter. Both work similarly. Differentiate within.
 	{
-		OnSerpentine(dispenseList);
+		if ((m_SingleShotTicker % m_FireRate) == 0)
+			OnSerpentine(dispenseList);
+
+		m_SingleShotTicker++;
 	}
 	else if (dispenseStyle == SPUTTER) // Serpentine or Sputter. Both work similarly. Differentiate within.
 	{
-		OnSputter(dispenseList);
+		if ((m_SingleShotTicker % m_FireRate) == 0)
+			OnSputter(dispenseList);
+
+		m_SingleShotTicker++;
 	}
 	else
 		throw runtime_error("Dispense style not recognised.");
@@ -219,6 +234,7 @@ void Dispenser::DetermineList(void)
 	// Determine the list of throwables to be dispensed
 	m_DispenseList.clear();
 	m_DispenseList = DetermineCoinList(m_CurrentCost);
+	AddPowerupsToList();
 
 	// Should we launch the key?
 	//if (!m_KeyLaunched) 
@@ -251,8 +267,25 @@ void Dispenser::DetermineList(void)
 
 	// Set the burst amount
 	m_BurstAmount = ComputeListTotal() / BURST_TIMES;
-
 }
+
+void Dispenser::AddPowerupsToList(void)
+{
+	bool willDispensePowerup = (rand()%100 < POWERUP_CHANCE*100);
+
+	if (willDispensePowerup)
+	{
+		int randPowerupIndex = rand() % 3;
+
+		switch (randPowerupIndex)
+		{
+		case 0: m_DispenseList.push_back(pair<string, int>("powerupmagnetism", 1)); break;
+		case 1: m_DispenseList.push_back(pair<string, int>("poweruppull", 1)); break;
+		case 2: m_DispenseList.push_back(pair<string, int>("powerupsmash", 1)); break;
+		}
+	}
+}
+
 
 void Dispenser::OnFinish(void) 
 {

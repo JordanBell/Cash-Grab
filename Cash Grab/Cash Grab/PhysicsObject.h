@@ -48,6 +48,10 @@ protected:
 
 	Position const& GetPOPosition(void) { return m_pos; }
 
+	Position const& GetEndPosition(void) { return m_endPos; }
+
+	const int GetHeight(void) { return m_spatialKin.height; }
+
 	// The force of gravity on this object
 	float m_gravityForce;
 

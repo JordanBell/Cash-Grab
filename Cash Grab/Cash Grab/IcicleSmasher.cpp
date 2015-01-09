@@ -2,29 +2,66 @@
 #include "Game.h"
 #include "Icicle.h"
 #include "Resources.h"
+#include "Wall.h"
 #include <cmath>
 
-#define TOTAL_ICICLES 9
+#define TOTAL_ICICLES 25
 #define DROP_RATE 5
-#define POS -0.5*screen->w, 3*TILE_SIZE-screen->h
+#define POS -0.5*screen->w - 1.25*TILE_SIZE, 4.5*TILE_SIZE-screen->h
+#define HAMMER_TIME 10
 
 IcicleSmasher::IcicleSmasher(void)
-	: Dispenser(POS, Element::ICE), m_RemainingIcicles(0)
+	: Dispenser(POS, Element::ICE), m_RemainingIcicles(0), m_HammerTicker(0)
 {
 	m_imageSurface = g_resources->GetIceSmasher();
-	m_renderPriority = LAYER_ENV_UPPER;
+	m_renderPriority = LAYER_GROUND;
+
+	// The image rect will later be defined in the render function
+	m_imageRect = new SDL_Rect();
+
+
+	// Set up wall
+	g_game->addCollidable( new Wall(POS + 0.5*TILE_SIZE, 3.5*TILE_SIZE, 2.25*TILE_SIZE ));
+
+	SetBurstDelay(DEFAULT_BURST_DELAY*4);
+	SetFireRate(5);
 }
+
+void IcicleSmasher::Render(void)
+{
+	if (m_HammerTicker == 0)
+	{
+		// Hammer up
+		m_imageRect->x = 0;
+		m_imageRect->y = 0;
+		m_imageRect->w = 6*TILE_SIZE;
+		m_imageRect->h = 3*TILE_SIZE;
+	}
+	else
+	{
+		// Hammer down
+		m_imageRect->x = 6*TILE_SIZE;
+		m_imageRect->y = 0;
+		m_imageRect->w = 6*TILE_SIZE;
+		m_imageRect->h = 3*TILE_SIZE;
+	}
+
+	// Render normally using this new imageRect
+	GameObject::Render();
+}
+
 
 void IcicleSmasher::OnDispense(void)
 {
 	// Remaining icicles to drop equals the total number of icicles
-	m_RemainingIcicles = TOTAL_ICICLES; 
+	m_RemainingIcicles = TOTAL_ICICLES;
 
 	// Find the number of throwables per icicle (may not divide perfectly, but that's fine - will be handled in DropIcicles)
 	float perIcicle = (float)GetListTotal() / (float)TOTAL_ICICLES;
 	m_ThrowablesPerIcicle = ceil(perIcicle);
-}
 
+	m_HammerTicker = HAMMER_TIME;
+}
 
 void IcicleSmasher::OnDump(DispenseList& dispenseList)
 {
@@ -34,39 +71,24 @@ void IcicleSmasher::OnDump(DispenseList& dispenseList)
 
 void IcicleSmasher::OnBurst(DispenseList& dispenseList)
 {
-	if (m_BurstTicker == 0)
-	{
-		// TODO add burst stutter
-		// Dispense three icicles per burst
-		DropIcicles(dispenseList, 3);
-	}
-			
-	m_BurstTicker++;
-
-	if (m_BurstTicker == BURST_DELAY*4) // Reset at max
-		m_BurstTicker = 0;
+	// Dispense three icicles per burst
+	DropIcicles(dispenseList, 3);
 }
 
 void IcicleSmasher::OnSputter(DispenseList& dispenseList)
 {
 	// Dispense one icicle per frame
-	if (m_SerpentineTicker % DROP_RATE == 0)
-		DropIcicles(dispenseList, 1);
-
-	m_SerpentineTicker++;
+	DropIcicles(dispenseList, 1);
 }
 
 void IcicleSmasher::OnSerpentine(DispenseList& dispenseList)
 {
 	// TODO make this serpentine
 	// Dispense one icicle per frame
-	if (m_SerpentineTicker % DROP_RATE == 0)
-		DropIcicles(dispenseList, 1);
-
-	m_SerpentineTicker++;
+	DropIcicles(dispenseList, 1, true);
 }
 
-void IcicleSmasher::DropIcicles(DispenseList& dispenseList, const int maxNumIcicles)
+void IcicleSmasher::DropIcicles(DispenseList& dispenseList, const int maxNumIcicles, const bool isSerpentine)
 {
 	// The number of icicles dropped should not go over the number of remaining icicles
 	int numIcicles = min(maxNumIcicles, m_RemainingIcicles);
@@ -79,7 +101,11 @@ void IcicleSmasher::DropIcicles(DispenseList& dispenseList, const int maxNumIcic
 	{
 		// The number of throwables held within the icicle. This list will be passed to create the icicle, but first we need to build it.
 		DispenseList* icicleDispenseList = GetIcicleDispenseList(dispenseList);
-		Position iciclePos = GetLaunchTo();
+		Position iciclePos;
+		if (isSerpentine)
+			iciclePos = GetSerpentineLaunchTo();
+		else
+			iciclePos = GetLaunchTo();
 
 		// Create an icicle with this information, and drop it
 		Icicle* icicle = new Icicle(icicleDispenseList, iciclePos);
@@ -131,21 +157,38 @@ DispenseList* IcicleSmasher::GetIcicleDispenseList(DispenseList& dispenseList)
 	return r_icicleDispenseList;
 }
 
-const Position IcicleSmasher::GetLaunchTo(void)
+const Position IcicleSmasher::GetSerpentineLaunchTo(void)
 {
 	// Get a random position in the enclosure
-	Position center = Position(-0.5*screen->w, 4.5*TILE_SIZE-screen->h);
+	Position center = Position(-0.5*screen->w, 3*TILE_SIZE-screen->h);
 
 	// Find a point around the center that isn't on the machine
-	// Which means, anywhere from 3*TILE_SIZE to 7*TILE_SIZE
-	//int randDistanceFromCenter = rand()%(int)(4*TILE_SIZE) + 3*TILE_SIZE;
-	int randDistanceFromCenter = 5*TILE_SIZE;
+	int distanceFromCenter = 6*TILE_SIZE;
+
+	// Get an angle that naturally changes each call (using the ticker for single shot dispense methods)
+	float serpProgress = (((m_SingleShotTicker/GetFireRate())%TOTAL_ICICLES) / (float)TOTAL_ICICLES);
+	float serpAngle = serpProgress * 6.28f;
+
+	Position launchToHere = Position();
+	launchToHere.x = center.x + (distanceFromCenter * cos(serpAngle));
+	launchToHere.y = center.y + (distanceFromCenter * sin(serpAngle));
+	launchToHere.y *= 0.75f;
+
+	return launchToHere;
+}
+
+const Position IcicleSmasher::GetLaunchTo(void)
+{
+	// Get a somewhat random position around the enclosure
+	Position center = Position(-0.5*screen->w, 3*TILE_SIZE-screen->h);
+
+	int distanceFromCenter = 6*TILE_SIZE;
 	float randAngle = rand()%(628) / 100.0f;
 
 	Position launchToHere = Position();
-	launchToHere.x = center.x + (randDistanceFromCenter * cos(randAngle));
-	launchToHere.y = center.y + (randDistanceFromCenter * sin(randAngle));
-	launchToHere.y *= 0.80f;
+	launchToHere.x = center.x + (distanceFromCenter * cos(randAngle));
+	launchToHere.y = center.y + (distanceFromCenter * sin(randAngle));
+	launchToHere.y *= 0.75f;
 
 	return launchToHere;
 }

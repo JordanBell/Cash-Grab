@@ -12,19 +12,26 @@
 
 int PowerupPull::value = 0;
 
-PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y) : Powerup(start_x, start_y, end_x, end_y)
+PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y, int _) : Powerup(start_x, start_y, end_x, end_y)
 {
     m_Effect = new EffectPull(this);
     InitSprites();
 }
 
-PowerupPull::~PowerupPull()
+void PowerupPull::OnCollect(void)
 {
-    for (int i = 0; i < 8; i++)
-    {
-        delete sprites[i];
-    }
+	Powerup::OnCollect();
+
+	int randPhrase = rand()%3;
+
+	switch (randPhrase)
+	{
+	case 0: g_player->Say("Come to me!");
+	case 1: g_player->Say("All mine!");
+	case 2: g_player->Say("Hahaaaaa...!");
+	}
 }
+
 
 void PowerupPull::InitSprites(void)
 {

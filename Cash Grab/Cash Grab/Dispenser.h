@@ -6,11 +6,15 @@
 #include "CoinBronze.h"
 #include "CoinSilver.h"
 #include "CoinGold.h"
+#include "PowerupMagnetism.h"
+#include "PowerupPull.h"
+#include "PowerupSmash.h"
 
 typedef list<pair<string, int>> DispenseList;
 
 #define ANGLE_SUPPRESSION 1
-#define BURST_DELAY 5
+#define DEFAULT_BURST_DELAY 5
+#define DEFAULT_FIRE_RATE 1
 #define QUANTITY_THRESHOLD 20
 
 /* This small chunk of code has been defined, as a lot of dispensers 
@@ -22,7 +26,13 @@ it's usefull to have all in one place. */
 		if (type == "silvercoin")\
 			LaunchThrowable<CoinSilver>(launchPos, launchAmount);\
 		if (type == "goldcoin")\
-			LaunchThrowable<CoinGold>(launchPos, launchAmount);
+			LaunchThrowable<CoinGold>(launchPos, launchAmount);\
+		if (type == "powerupsmash")\
+			LaunchThrowable<PowerupSmash>(launchPos, launchAmount);\
+		if (type == "poweruppull")\
+			LaunchThrowable<PowerupPull>(launchPos, launchAmount);\
+		if (type == "powerupmagnetism")\
+			LaunchThrowable<PowerupMagnetism>(launchPos, launchAmount);
 
 class Dispenser :
 	public GameObject
@@ -81,11 +91,15 @@ protected:
 
 	int GetListTotal(void) const;
 
+	void SetBurstDelay(const int newDelay) { m_BurstDelay = newDelay; }
+	void SetFireRate(const int newRate) { m_FireRate = newRate; }
+	const int GetFireRate(void) { return m_FireRate; }
+
 	// The current coin cost to dispense TODO: Move this to LevelProgress
 	int m_CurrentCost;
 
-	// A counter for use with the serpentine dispense style
-	int m_SerpentineTicker;
+	// A counter for use with the some dispense styles
+	int m_SingleShotTicker;
 
 	// A counter for use with the burst dispense style
 	int m_BurstTicker;
@@ -112,8 +126,16 @@ private:
 	// The counter between the last dispense - makes sure it doesn't call OnDispense for every frame.
 	int m_TimeElapsed;
 
+	// Time between bursts when in burst mode
+	int m_BurstDelay;
+
+	// Time between single shots sputter or serpentine modes
+	int m_FireRate;
+
 	// Delegate to the virtual functions On___() depending on the DispenseStyle
 	virtual void HandleDispenseList(DispenseList& dispenseList);
+
+	void AddPowerupsToList(void);
 
 	// Determine and set the list of throwables to be dispensed
 	void DetermineList(void);
