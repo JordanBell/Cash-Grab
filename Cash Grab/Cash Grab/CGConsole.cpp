@@ -106,7 +106,7 @@ void Smash(vector<int> args)
 
 /* Forces Ability: Smash Wave */
 void SmashWave(vector<int> args)
-	{ g_player->SmashWave(); }
+	{ printf("This is now deprecated. Considered not worth implementing and should be removed when convenient."); }
 
 
 /* Toggles coin magnetism */
@@ -181,8 +181,8 @@ void j(vector<int> args)
 /* Set the rendering offset values */
 void SetRenderOffset(vector<int> args)
 {
-	s_renderingOffset_x = args.at(0);
-	s_renderingOffset_y = args.at(1);
+	cameraRenderingOffset.x = args.at(0);
+	cameraRenderingOffset.y = args.at(1);
 }
 
 /* Draw the player's hit box and AABB */

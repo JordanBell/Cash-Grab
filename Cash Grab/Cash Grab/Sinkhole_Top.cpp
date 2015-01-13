@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Wall.h"
 #include "XY.h"
+#include "RoomFire_Lower.h"
 #include "FirePit.h"
 
 #include "CoinBronze.h"
@@ -10,10 +11,11 @@
 #include "CoinGold.h"
 
 #define ANGLE_SUPPRESSION 1
+#define MULTISHOT_QUANTITY_THRESHOLD 20
 #define POS 1.5*screen->w-5*TILE_SIZE, 3*TILE_SIZE-screen->h
 
-Sinkhole_Top::Sinkhole_Top(const SDL_Rect* targetBounds)
-	: Dispenser(POS, Element::FIRE), m_TargetBounds(targetBounds)
+Sinkhole_Top::Sinkhole_Top(const SDL_Rect* targetBounds, RoomFire_Lower* roomPointer)
+	: Dispenser(POS, Element::FIRE), m_TargetBounds(targetBounds), m_RoomPointer(roomPointer)
 {
 	m_imageSurface = g_resources->GetSinkholeSheet();
 	// Get the top rect
@@ -42,7 +44,7 @@ void Sinkhole_Top::OnDump(DispenseList& dispenseList)
 			launchPos.x += rand()%(6*TILE_SIZE);
 			int launchAmount = 1;
 
-			DISPENSE_BY_TYPE
+			DispenseByType(launchPos, launchAmount, type);
 		}
 	}
 }
@@ -77,7 +79,7 @@ void Sinkhole_Top::OnBurst(DispenseList& dispenseList)
 				int launchAmount = 1;
 
 				// Launch that number of throwables from this slot
-				DISPENSE_BY_TYPE
+				DispenseByType(launchPos, launchAmount, type);
 
 				amount--;
 			}
@@ -94,7 +96,7 @@ void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
 		int total = amount;
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerShot = (amount / QUANTITY_THRESHOLD) + 1;
+		const int maxPerShot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
 		int launchAmount = amount;
 		if (launchAmount > maxPerShot)
 			launchAmount = maxPerShot;
@@ -112,7 +114,7 @@ void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
 		Position launchPos(start.x + slotNum*TILE_SIZE/2, start.y);
 
 		// Launch that number of throwables from this slot
-		DISPENSE_BY_TYPE
+		DispenseByType(launchPos, launchAmount, type);
 
 		amount -= launchAmount;
 	}
@@ -127,7 +129,7 @@ void Sinkhole_Top::OnSputter(DispenseList& dispenseList)
 		int total = amount;
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerShot = (amount / QUANTITY_THRESHOLD) + 1;
+		const int maxPerShot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
 		int launchAmount = amount;
 		if (launchAmount > maxPerShot)
 			launchAmount = maxPerShot;
@@ -140,13 +142,13 @@ void Sinkhole_Top::OnSputter(DispenseList& dispenseList)
 		Position launchPos(start.x + slotNum*TILE_SIZE/2, start.y);
 
 		// Launch that number of throwables from this slot
-		DISPENSE_BY_TYPE
+		DispenseByType(launchPos, launchAmount, type);
 
 		amount -= launchAmount;
 	}
 }
 
-const Position Sinkhole_Top::GetLaunchTo(void)
+const Position Sinkhole_Top::GetLaunchTo(void) const
 {
 	Position to;
 
@@ -206,13 +208,11 @@ const Position Sinkhole_Top::GetLaunchTo(void)
 	}
 	else if ((dispensePattern == LaunchData::LEFT) || (dispensePattern == LaunchData::RIGHT) || (dispensePattern == LaunchData::BOTH))
 	{
-		if (dispensePattern == LaunchData::LEFT) to = GetLeftPitCoords();
-		else if (dispensePattern == LaunchData::RIGHT) to = GetRightPitCoords();
+		if (dispensePattern == LaunchData::LEFT) to = m_RoomPointer->GetRandPitPos("left");
+		else if (dispensePattern == LaunchData::RIGHT) to = m_RoomPointer->GetRandPitPos("right");
 		else // (dispensePattern == LaunchData::BOTH)
 		{
-			// Get either of the circle's coordinates
-			bool b = rand() % 2;
-			to = b? GetLeftPitCoords() : GetRightPitCoords();
+			to = m_RoomPointer->GetRandPitPos("any");
 		}
 	}
 	else // NORM, randomise within the box
@@ -226,51 +226,7 @@ const Position Sinkhole_Top::GetLaunchTo(void)
 	return to;
 }
 
-const Position Sinkhole_Top::GetLeftPitCoords(void) const
-{
-	// Get pits whose x coord in left of this center
-	const int centerX = x + m_imageRect->w/2;
-	const int numLeftPits = g_firePits.size() / 2;
-	const int randPitCount = rand() % numLeftPits; // Determines which pit in sequence is selected
-	int count = 0;
-
-	for (FirePit* pit : g_firePits)
-	{
-		if (pit->x < centerX) // LessThan selects the left ones
-		{
-			if (randPitCount == count)
-				return Position(pit->x, pit->y);
-
-			count++;
-		}
-	}
-
-	throw runtime_error("No left pits.");
-}
-
-const Position Sinkhole_Top::GetRightPitCoords(void) const
-{
-	// Get pits whose x coord in left of this center
-	const int centerX = x + m_imageRect->w/2;
-	const int numLeftPits = g_firePits.size() / 2;
-	const int randPitCount = rand() % numLeftPits; // Determines which pit in sequence is selected
-	int count = 0;
-
-	for (FirePit* pit : g_firePits)
-	{
-		if (pit->x > centerX) // GreaterThan select the right ones
-		{
-			if (randPitCount == count)
-				return Position(pit->x, pit->y);
-
-			count++;
-		}
-	}
-
-	throw runtime_error("No left pits.");
-}
-
-const bool Sinkhole_Top::InSinkhole(const Position& pos)
+const bool Sinkhole_Top::InSinkhole(const Position& pos) const
 {
 	bool inX, inY, in;
 
@@ -281,5 +237,3 @@ const bool Sinkhole_Top::InSinkhole(const Position& pos)
 
 	return in;
 }
-
-#undef DISPENSE_BY_TYPE

@@ -11,7 +11,7 @@ void CoinGold::OnCollect(void)
 	Mix_PlayChannel(-1, g_resources->GetCoinSound_Gold(), 0);
     
 	Inventory::GetCoinWallet(m_Element)->Add(value);
-	g_player->IncSpeed(SPEED_GAIN*value);
+	g_player->IncreaseSpeed(SPEED_GAIN*value);
 }
 
 void CoinGold::InitSprites(void)

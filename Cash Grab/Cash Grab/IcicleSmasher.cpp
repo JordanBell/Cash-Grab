@@ -83,7 +83,6 @@ void IcicleSmasher::OnSputter(DispenseList& dispenseList)
 
 void IcicleSmasher::OnSerpentine(DispenseList& dispenseList)
 {
-	// TODO make this serpentine
 	// Dispense one icicle per frame
 	DropIcicles(dispenseList, 1, true);
 }
@@ -177,7 +176,7 @@ const Position IcicleSmasher::GetSerpentineLaunchTo(void)
 	return launchToHere;
 }
 
-const Position IcicleSmasher::GetLaunchTo(void)
+const Position IcicleSmasher::GetLaunchTo(void) const
 {
 	// Get a somewhat random position around the enclosure
 	Position center = Position(-0.5*screen->w, 3*TILE_SIZE-screen->h);

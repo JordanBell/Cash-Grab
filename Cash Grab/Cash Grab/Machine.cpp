@@ -15,6 +15,7 @@
 #define KEY_LAUNCH_VAL 50
 #define CASH_INTERVAL 25
 #define CASH_AMOUNT 100
+#define MULTISHOT_QUANTITY_THRESHOLD 20
 
 Machine::Machine(const int x, const int y)
 	: Collidable(x, y), Dispenser(x, y, Element::NORMAL), m_LaunchKey(false), m_KeyLaunched(false)
@@ -59,7 +60,7 @@ void Machine::OnDump(DispenseList& dispenseList)
 			int perSlot = slotAmounts[slotNum];
 			const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
 			const int launchAmount = perSlot;
-			DISPENSE_BY_TYPE
+			DispenseByType(launchPos, launchAmount, type);
 		}
 	}
 }
@@ -72,7 +73,7 @@ void Machine::OnBurst(DispenseList& dispenseList)
 		int& amount = dispensePair.second;
 
 		// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
-		const int maxPerSlot = (amount / (QUANTITY_THRESHOLD*6/DEFAULT_BURST_DELAY)) + 1;
+		const int maxPerSlot = (amount / (MULTISHOT_QUANTITY_THRESHOLD*6/DEFAULT_BURST_DELAY)) + 1;
 				
 		// Throwables to be shot per slot
 		int perSlot;
@@ -87,7 +88,7 @@ void Machine::OnBurst(DispenseList& dispenseList)
 			// Launch that number of throwables from this slot
 			const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
 			const int launchAmount = perSlot;
-			DISPENSE_BY_TYPE
+			DispenseByType(launchPos, launchAmount, type);
 
 			amount -= perSlot;
 		}
@@ -103,7 +104,7 @@ void Machine::OnSerpentine(DispenseList& dispenseList)
 		int total = amount;
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerSlot = (amount / QUANTITY_THRESHOLD) + 1;
+		const int maxPerSlot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
 		int perSlot = amount;
 		if (perSlot > maxPerSlot)
 			perSlot = maxPerSlot;
@@ -118,7 +119,7 @@ void Machine::OnSerpentine(DispenseList& dispenseList)
 		// Launch that number of throwables from this slot
 		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
 		const int launchAmount = perSlot;
-		DISPENSE_BY_TYPE
+		DispenseByType(launchPos, launchAmount, type);
 
 		amount -= perSlot;
 	}
@@ -133,7 +134,7 @@ void Machine::OnSputter(DispenseList& dispenseList)
 		int total = amount;
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerSlot = (amount / QUANTITY_THRESHOLD) + 1;
+		const int maxPerSlot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
 		int perSlot = amount;
 		if (perSlot > maxPerSlot)
 			perSlot = maxPerSlot;
@@ -143,13 +144,13 @@ void Machine::OnSputter(DispenseList& dispenseList)
 		// Launch that number of throwables from this slot
 		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
 		const int launchAmount = perSlot;
-		DISPENSE_BY_TYPE
+		DispenseByType(launchPos, launchAmount, type);
 
 		amount -= perSlot;
 	}
 }
 
-const Position Machine::GetLaunchTo(void)
+const Position Machine::GetLaunchTo(void) const
 {
 	// Determint the 
 	Position to;
@@ -232,7 +233,7 @@ const Position Machine::GetLaunchTo(void)
 	return to;
 }
 
-const Position Machine::GetLeftCircleCoords(const bool addRightCoords)
+const Position Machine::GetLeftCircleCoords(const bool addRightCoords) const
 {
 	Position r_Pos;
 
@@ -247,10 +248,5 @@ const Position Machine::GetLeftCircleCoords(const bool addRightCoords)
 	r_Pos.x = ((rand() % 4) * TILE_SIZE) + topLeft.x + xc;
 	r_Pos.y = ((rand() % 5) * TILE_SIZE) + topLeft.y;
 
-//	printf("(%f, %f)\n", r_coords.x, r_coords.y);
-
 	return r_Pos;
-
 }
-
-#undef DISPENSE_BY_TYPE

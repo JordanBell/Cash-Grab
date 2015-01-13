@@ -10,7 +10,11 @@ public:
 
 	void Render(void) override final;
 
+	const Position& GetRandPitPos(const string pitSelection = "any") const;
+
 private:
+	list<const Position> m_PitPositions;
+
 	// Render the floor, outer walls, etc.
 	void RenderBasic(void);
 

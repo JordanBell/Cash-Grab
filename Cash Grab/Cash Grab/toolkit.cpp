@@ -11,11 +11,9 @@ SDL_Color machineTextColor = { 60, 175, 60 }; // Text color on the machine's dis
 SDL_Color textColor = { 120, 10, 20 };
 SDL_Event event;
 
-// Rendering offset are not applicable at the beginning
-float s_renderingOffset_x = 0; 
-float s_renderingOffset_y = 0;
-
 bool inFullScreen;
+
+Position cameraRenderingOffset = Position(0, 0);
 
 void toggleScreenFormat()
 {
@@ -124,8 +122,8 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 
 	if (applyRenderingOffset)
 	{
-		offset.x += s_renderingOffset_x;
-		offset.y += s_renderingOffset_y;
+		offset.x += cameraRenderingOffset.x;
+		offset.y += cameraRenderingOffset.y;
 	}
 
 	//// Only blit if it is within the screen
@@ -150,6 +148,22 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	//if (shouldBlit)
 		SDL_BlitSurface(source, clip, destination, &offset);
 }
+
+const bool RectIntersect(const SDL_Rect* r1, const SDL_Rect* r2)
+{
+	// Only return true if overlapping on all sides. Stop checking if a single side doesn't overlap.
+	if (!(r1->x < r2->x+r2->w)) // Over Right
+		return false;
+	else if (!(r1->x + r1->w > r2->x)) // Over Left
+		return false;
+	else if (!(r1->y < r2->y+r2->h)) // Over Top
+		return false;
+	else if (!(r1->y + r1->h > r2->y)) // Over Bottom
+		return false;
+	else 
+		return true;
+}
+
 
 bool GameObject_Compare(const GameObject* first, const GameObject* second)
 {

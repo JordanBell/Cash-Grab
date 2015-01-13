@@ -19,18 +19,11 @@ const bool InteractZone::OverlapsWith(const SDL_Rect* rect, const int dir)
 	if (!m_Active)
 		return false;
 
+	// Return false if the given direction does not match the required direction
 	if (m_RequiredDirection != Player::Direction::NULLDIR)
 		if (dir != m_RequiredDirection)
 			return false;
-	// Only return true if overlapping on all sides
-	if (!(rect->x < m_Area->x+m_Area->w)) // Over Right
-		return false;
-	else if (!(rect->x + rect->w > m_Area->x)) // Over Left
-		return false;
-	else if (!(rect->y < m_Area->y+m_Area->h)) // Over Top
-		return false;
-	else if (!(rect->y + rect->h > m_Area->y)) // Over Bottom
-		return false;
-	else 
-		return true;
+	
+	// If everything is good so far, check the overlap
+	return RectIntersect(m_Area, rect);
 }

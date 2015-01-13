@@ -5,6 +5,7 @@
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
+#include "XY.h"
 #include <string>
 
 #define SCREEN_WIDTH 640
@@ -17,7 +18,8 @@ extern SDL_Surface* screen;
 extern SDL_Color textColor;
 extern SDL_Color machineTextColor;
 extern SDL_Event event;
-extern float s_renderingOffset_x, s_renderingOffset_y;
+
+extern Position cameraRenderingOffset;
 
 // Functions
 SDL_Surface* load_image(std::string filename);
@@ -31,6 +33,8 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 bool SDL_init();
 bool load_files();
 void SDL_deinit();
+
+const bool RectIntersect(const SDL_Rect* r1, const SDL_Rect* r2);
 
 // Comparison function for sorting GameObject lists
 bool GameObject_Compare(const GameObject* first, const GameObject* second);

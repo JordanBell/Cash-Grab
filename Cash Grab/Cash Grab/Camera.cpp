@@ -51,11 +51,11 @@ void Camera::UpdateFocus(void)
 
 
 			// Only bother updating if update is needed
-			if ((s_renderingOffset_x != targetX) || (s_renderingOffset_y != targetY))
+			if ((cameraRenderingOffset.x != targetX) || (cameraRenderingOffset.y != targetY))
 			{
 				// Find the difference between the current offset and the target offset
-				int diffX = targetX - s_renderingOffset_x;
-				int diffY = targetY - s_renderingOffset_y;
+				int diffX = targetX - cameraRenderingOffset.x;
+				int diffY = targetY - cameraRenderingOffset.y;
 
 				int polX = (diffX < 0)? -1 : 1;
 				int polY = (diffY < 0)? -1 : 1;
@@ -65,8 +65,8 @@ void Camera::UpdateFocus(void)
 				speedY *= polY;
 
 				// Change the rendering offset
-				s_renderingOffset_x += speedX;
-				s_renderingOffset_y += speedY;
+				cameraRenderingOffset.x += speedX;
+				cameraRenderingOffset.y += speedY;
 			}
 		}
 		else printf("Could not find player room.");

@@ -10,6 +10,12 @@ RoomFire_Lower::RoomFire_Lower(void)
 {
 	InitialiseDispenser();
 	CreateStationWalls(8*TILE_SIZE, 3*TILE_SIZE);
+	SDL_Rect* stationInteractZone = new SDL_Rect();
+	stationInteractZone->x = x + 8*TILE_SIZE;
+	stationInteractZone->y = y + 7*TILE_SIZE;
+	stationInteractZone->w = 4*TILE_SIZE;
+	stationInteractZone->h = TILE_SIZE/2;
+	InteractZone* i = new InteractZone(stationInteractZone, [] { g_player->Say("It's not working..."); }, Player::UP);
 
 	// Top & Bottom Walls
 	for (int _x = x+TILE_SIZE; _x < x + m_Size.x; _x += TILE_SIZE) 
@@ -41,15 +47,19 @@ RoomFire_Lower::RoomFire_Lower(void)
 		}
 	}
 
-	// Create locations for the FirePits
-	g_game->addGameObject( new FirePit(x+6*TILE_SIZE, y+16.5*TILE_SIZE) );
-	g_game->addGameObject( new FirePit(x+screen->w-7*TILE_SIZE, y+16.5*TILE_SIZE) );
+	// Create locations for the FirePits. This is kept in a member list so that the dispenser can get their positions
+	m_PitPositions.push_back( Position(x+6*TILE_SIZE, y+16.5*TILE_SIZE) );
+	m_PitPositions.push_back( Position(x+screen->w-7*TILE_SIZE, y+16.5*TILE_SIZE) );
 
-	g_game->addGameObject( new FirePit(x+3*TILE_SIZE, y+20.5*TILE_SIZE) );
-	g_game->addGameObject( new FirePit(x+screen->w-4*TILE_SIZE, y+20.5*TILE_SIZE) );
+	m_PitPositions.push_back( Position(x+3*TILE_SIZE, y+20.5*TILE_SIZE) );
+	m_PitPositions.push_back( Position(x+screen->w-4*TILE_SIZE, y+20.5*TILE_SIZE) );
 
-	g_game->addGameObject( new FirePit(x+6*TILE_SIZE, y+25*TILE_SIZE) );
-	g_game->addGameObject( new FirePit(x+screen->w-7*TILE_SIZE, y+25*TILE_SIZE) );
+	m_PitPositions.push_back( Position(x+6*TILE_SIZE, y+25*TILE_SIZE) );
+	m_PitPositions.push_back( Position(x+screen->w-7*TILE_SIZE, y+25*TILE_SIZE) );
+
+	// Create firepits at those positions
+	for (Position& pitPos : m_PitPositions)
+		g_game->addGameObject( new FirePit(pitPos.x, pitPos.y) );
 }
 
 void RoomFire_Lower::InitialiseDispenser(void)
@@ -60,7 +70,7 @@ void RoomFire_Lower::InitialiseDispenser(void)
 	targetBounds->w = 17*TILE_SIZE;
 	targetBounds->h = 14*TILE_SIZE;
 
-	Sinkhole_Top* dispenseSinkhole = new Sinkhole_Top(targetBounds);
+	Sinkhole_Top* dispenseSinkhole = new Sinkhole_Top(targetBounds, this);
 	g_game->addGameObject( dispenseSinkhole );
 	SetDispenser(dispenseSinkhole);
 
@@ -151,4 +161,47 @@ void RoomFire_Lower::RenderInterior(void)
 			apply_surface(_x, _y+3*TILE_SIZE, m_imageSurface, screen, tiles[WALL_BASE][m_BaseE]);
 		}
 	}
+}
+
+const Position& RoomFire_Lower::GetRandPitPos(const string pitSelection) const
+{
+	// Get pits whose x coord in left of this center
+	const int centerX = x + screen->w/2;
+	const int numLeftPits = (pitSelection == "any") ? m_PitPositions.size() : m_PitPositions.size() / 2;
+	const int randPitCount = rand() % numLeftPits; // Determines which pit in sequence is selected
+	int count = 0;
+
+	function<bool (Position)> isValidPit;
+
+	// The above function has a different definition based on the pitSelection parameter
+	if (pitSelection == "left")
+	{
+		// Pit position is valid when left of center
+		isValidPit = [centerX](Position pos) { return (pos.x <= centerX); };
+	}
+	else if (pitSelection == "right")
+	{
+		// Pit position is valid when right of center
+		isValidPit = [centerX](Position pos) { return (pos.x > centerX); };
+	}
+	else // pitSelection == "any"
+	{
+		// Pit position is always valid
+		isValidPit = [](Position pos) { return true; };
+	}
+
+	// Loop through and return a random pit position
+	for (Position const& pitPos : m_PitPositions)
+	{
+		// Use isValidPit to filter out positions
+		if (isValidPit(pitPos))
+		{
+			if (randPitCount == count)
+				return pitPos;
+
+			count++;
+		}
+	}
+
+	throw runtime_error("No pits found.");
 }

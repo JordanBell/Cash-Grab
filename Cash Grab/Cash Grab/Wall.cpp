@@ -25,7 +25,7 @@ void Wall::Render(void)
 { 
 	if ( SHOW_WALLS ) 
 	{ 
-		SDL_Rect r = { (Sint16)(x+s_renderingOffset_x), (Sint16)(y+s_renderingOffset_y), m_HitBox->w, m_HitBox->h};
+		SDL_Rect r = { (Sint16)(x+cameraRenderingOffset.x), (Sint16)(y+cameraRenderingOffset.y), m_HitBox->w, m_HitBox->h};
 		SDL_FillRect(screen, &r, 0x000000FF); 
 	} 
 }

@@ -24,9 +24,6 @@ RoomOriginal_Lower::RoomOriginal_Lower(void)
 	SetDispenser(machine);
 	g_game->addCollidable(machine);
 
-	// Create a prompt, linking to that machine TODO: Link it to the wallet instead.
-	//g_game->addGameObject(new Prompt(machine));
-
 	// Left and Right Walls
 	for (int _y = 0; _y < (screen->h - TILE_SIZE); _y += TILE_SIZE) // Loop through height
 	{

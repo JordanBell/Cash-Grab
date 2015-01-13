@@ -10,12 +10,12 @@ struct KeyCode
 	KeyCode(void) {}
 	~KeyCode(void) {}
 
-	void up()			{ g_player->move(Player::UP); }
-	void down()			{ g_player->move(Player::DOWN); }
-	void left()			{ g_player->move(Player::LEFT); }
-	void right()		{ g_player->move(Player::RIGHT); }
+	void up()			{ g_player->SetDirection(Player::UP); }
+	void down()			{ g_player->SetDirection(Player::DOWN); }
+	void left()			{ g_player->SetDirection(Player::LEFT); }
+	void right()		{ g_player->SetDirection(Player::RIGHT); }
 	void f()			{ g_player->Interact(); }
-	void no_direction()	{ g_player->stop_moving();}
+	void no_direction()	{ g_player->StopMoving();}
 	void _1();
 
 	static void ToggleBool1(void) { bool1 = !bool1; }

@@ -11,16 +11,20 @@
 #define NUM_CHARGING 1
 #define NUM_ERUPTION 6
 
-#define DAMAGE_PERCENTAGE 1.0f
-
-// The higher the fraction (up to 1.0) the lower the lava from the edge
+// The higher the fraction (up to 1.0) the lower the lava from the edge in the radius of eruption
 #define TIP_CURVE 0.3f
+// The height of the highest point in the eruption
 #define TIP_HEIGHT 13
 
-std::list<FirePit*> g_firePits = std::list<FirePit*>();
+#define HAZARD_AREA x-8,\
+					y-8,\
+					TILE_SIZE + 16,\
+					TILE_SIZE + 16
 
 FirePit::FirePit(const int x, const int y)
-	: Sprite(x, y), m_State(IDLE), m_EruptChance(ERUPT_CHANCE), m_ChargeCounter(0), m_EruptCounter(0), m_DamagePercentage(DAMAGE_PERCENTAGE)
+	: Sprite(x, y), 
+	 Hazard(HAZARD_AREA), 
+	m_State(IDLE), m_EruptChance(ERUPT_CHANCE), m_ChargeCounter(0), m_EruptCounter(0)
 {
 	// GameObject stuff
 	m_renderPriority = LAYER_GROUND;
@@ -30,20 +34,8 @@ FirePit::FirePit(const int x, const int y)
 	m_maxCycles = 8;
 	InitSprites();
 
-	// Initialise the area of effect for this
-	m_Area = new SDL_Rect();
-	m_Area->x = x-8;
-	m_Area->y = y-8;
-	m_Area->w = TILE_SIZE + 16;
-	m_Area->h = TILE_SIZE + 16;
-
-	// Add to list of fire pits
-	g_firePits.push_back(this);
-}
-
-FirePit::~FirePit(void) 
-{ 
-	g_firePits.remove(this); 
+	// Set the hazard as initially inactive
+	Hazard_Deactivate();
 }
 
 void FirePit::InitSprites(void)
@@ -60,12 +52,23 @@ void FirePit::InitSprites(void)
 	}
 }
 
+void FirePit::SetState(State s) 
+{ 
+	m_State = s; 
+
+	// Activate or Deactive this hazard, depending on the new state
+	if (m_State == ERUPTING)
+		Hazard_Activate();
+	else
+		Hazard_Deactivate();
+}
+
 void FirePit::Update(int delta)
 {
 	// Update based on the state
 	switch (m_State)
 	{
-		case IDLE:		UpdateIdle(); break;
+		case IDLE:		UpdateIdle();	  break;
 		case CHARGING:	UpdateCharging(); break;
 		case ERUPTING:	UpdateErupting(); break;
 		default: throw runtime_error("Unrecognised fire pit state.");
@@ -221,21 +224,6 @@ void FirePit::IncCycle(void)
 		default: 
 			throw runtime_error("Unrecognised fire pit state.");
 	}
-}
-
-const bool FirePit::OverlapsWith(const SDL_Rect* rect)
-{
-	// Only return true if overlapping on all sides
-	if (!(rect->x < m_Area->x+m_Area->w)) // Over Right
-		return false;
-	else if (!(rect->x + rect->w > m_Area->x)) // Over Left
-		return false;
-	else if (!(rect->y < m_Area->y+m_Area->h)) // Over Top
-		return false;
-	else if (!(rect->y + rect->h > m_Area->y)) // Over Bottom
-		return false;
-	else 
-		return true;
 }
 
 const bool FirePit::IsErupting(void) 

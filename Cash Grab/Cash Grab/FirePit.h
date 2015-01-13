@@ -1,26 +1,20 @@
 #pragma once
 #include "sprite.h"
+#include "hazard.h"
 #include "Collidable.h"
 #include <list>
 
-// TODO: Make this a collidable that has a simple onCollision effect that only follows through if this is erupting
 class FirePit :
-	public Sprite
+	public Sprite, public Hazard
 {
 public:
 	FirePit(const int x, const int y);
-	~FirePit(void);
 
 	// Update differently depending on the state (see UpdateIdle, UpdateCharging and UpdateEruption accordingly)
 	void Update(int delta) override final;
 
 	// Return whether or not the state is ERUPTING
 	const bool IsErupting(void);
-
-	// Check if a rect overlaps with this one
-	const bool OverlapsWith(const SDL_Rect* rect);
-
-	const float GetDamagePercentage(void) { return m_DamagePercentage; }
 
 protected:
 	// Initial fire pit sprites
@@ -42,13 +36,7 @@ private:
 
 	SDL_Rect* m_Sprites[ 8 ];
 
-	// The area of effect while erupting. Used in collision.
-	SDL_Rect* m_Area;
-
-	// The percentage of coins that the player loses when hit by a fire pit
-	float m_DamagePercentage;
-
-	void SetState(State s) { m_State = s; }
+	void SetState(State s);
 
 	// Update, when Idle
 	void UpdateIdle(void);
@@ -68,5 +56,3 @@ private:
 	// The chance, per frame, of an eruption triggering
 	float m_EruptChance;
 };
-
-extern std::list<FirePit*> g_firePits;

@@ -47,7 +47,7 @@ RoomHub_Lower::RoomHub_Lower(void)
 	interactArea->y = y+TILE_SIZE*9;
 	interactArea->w = TILE_SIZE*4;
 	interactArea->h = TILE_SIZE/3;
-	InteractZone* zone1 = new InteractZone(interactArea, [] { printf("Shopping!\n"); }, Player::Direction::UP);
+	InteractZone* zone = new InteractZone(interactArea, [] { g_player->Say("It's not working..."); }, Player::Direction::UP);
 }
 
 void RoomHub_Lower::Render(void)

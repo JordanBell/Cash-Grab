@@ -10,7 +10,6 @@ std::vector<Room*> Room::s_Rooms;
 Room::Room(const int x, const int y, const Dimensions& size, Element element, const int renderPriority) 
 	: GameObject(x, y), m_Size(size), m_BaseE(element), m_Dispenser(nullptr)
 {
-	// TODO rename Environment spritesheet to Room spritesheet?
 	m_imageSurface = g_resources->GetEnvironmentImage();
 
 	//Set the bounds for the possible clips from the m_imageSurface

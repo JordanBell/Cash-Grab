@@ -2,6 +2,8 @@
 #include "Dispenser.h"
 #include "XY.h"
 
+class RoomFire_Lower;
+
 class Sinkhole_Top :
 	public Dispenser
 {
@@ -9,12 +11,12 @@ class Sinkhole_Top :
 	const SDL_Rect* m_TargetBounds;
 
 public:
-	Sinkhole_Top(const SDL_Rect* targetBounds);
+	Sinkhole_Top(const SDL_Rect* targetBounds, RoomFire_Lower* roomPointer);
 	~Sinkhole_Top(void) { delete m_TargetBounds; }
 
 protected:
 	// Return a position to be launched to.
-	const Position GetLaunchTo(void) override final;
+	const Position GetLaunchTo(void) const override final;
 
 	void OnDump(DispenseList& dispenseList) override final;
 	void OnBurst(DispenseList& dispenseList) override final;
@@ -22,9 +24,9 @@ protected:
 	void OnSerpentine(DispenseList& dispenseList) override final;
 
 private:
-	// Whether or not a position intersects with the sinkhole's area
-	const bool InSinkhole(const Position& pos);
+	// Points to the parent fire room, from which information about the fire pit positions can be taken.
+	RoomFire_Lower* m_RoomPointer;
 
-	const Position GetLeftPitCoords(void) const;
-	const Position GetRightPitCoords(void) const;
+	// Whether or not a position intersects with the sinkhole's area
+	const bool InSinkhole(const Position& pos) const;
 };

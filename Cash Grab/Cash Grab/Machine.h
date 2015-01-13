@@ -23,7 +23,7 @@ public:
 
 protected:
 	// Return a position to be launched to.
-	const Position GetLaunchTo(void) override final;
+	const Position GetLaunchTo(void) const override final;
 
 	void OnDump(DispenseList& dispenseList) override final;
 	void OnBurst(DispenseList& dispenseList) override final;
@@ -36,8 +36,8 @@ private:
 
     Position CoinSlots[NUM_SLOTS];
 	
-	const XY GetLeftCircleCoords(const bool addRightCoords = false);
-	const XY GetRightCircleCoords(void) { return GetLeftCircleCoords(true); }
+	const XY GetLeftCircleCoords(const bool addRightCoords = false) const;
+	const XY GetRightCircleCoords(void) const { return GetLeftCircleCoords(true); }
 };
 
 #endif

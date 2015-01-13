@@ -11,6 +11,13 @@ RoomIce_Lower::RoomIce_Lower(void)
 	: Room(-screen->w, -screen->h*2, Dimensions(screen->w, screen->h*2), ICE, LAYER_ENV_LOWER)
 {
 	CreateStationWalls(8*TILE_SIZE, 3*TILE_SIZE);
+	// Add an interact zone for the station
+	SDL_Rect* stationInteractZone = new SDL_Rect();
+	stationInteractZone->x = x + 8*TILE_SIZE;
+	stationInteractZone->y = y + 7*TILE_SIZE;
+	stationInteractZone->w = 4*TILE_SIZE;
+	stationInteractZone->h = TILE_SIZE/2;
+	InteractZone* i = new InteractZone(stationInteractZone, [] { g_player->Say("It's not working..."); }, Player::UP);
 	m_IceWall = g_resources->GetIceWall();
 
 	CreateIceWalls();

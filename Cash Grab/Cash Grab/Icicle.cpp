@@ -1,6 +1,13 @@
 #include "Icicle.h"
-#include "Dispenser.h" // Import this to get the #define for dispensing by type
 #include "Resources.h"
+#include "Game.h"
+
+#include "CoinBronze.h"
+#include "CoinSilver.h"
+#include "CoinGold.h"
+#include "PowerupMagnetism.h"
+#include "PowerupPull.h"
+#include "PowerupSmash.h"
 
 #define RENDER_OFFSET XY(-16, -64)
 #define BLAST_RADIUS (2*TILE_SIZE)
@@ -10,38 +17,29 @@
 #define DAMAGE_HEIGHT (0.8f*TILE_SIZE)
 #define SHADOW_SPRITES_NUM 3
 
-list<Icicle*> g_icicles = list<Icicle*>();
+#define HAZARD_AREA dropPos.x - DAMAGE_WIDTH/2,\
+					dropPos.y - DAMAGE_HEIGHT/2,\
+					DAMAGE_WIDTH,\
+					DAMAGE_HEIGHT
 
 Icicle::Icicle(DispenseList* dispenseList, const Position& dropPos)
 		: GameObject(dropPos.x, dropPos.y - ICICLE_HEIGHT), 
 		PhysicsObject(dropPos.x, dropPos.y, ICICLE_HEIGHT), 
+		Hazard(HAZARD_AREA),
 		m_DispenseList(dispenseList), 
 		m_DropPos(dropPos), 
 		m_CounterToDeletion(DAMAGE_DURATION) 
 {
-	g_icicles.push_back(this);
-
 	m_imageSurface = g_resources->GetIcicle();
 	m_ShadowSurface = g_resources->GetIcicleShadow();
-
-	// Initialise the hitbox
-	m_HitBox = new SDL_Rect();
-	m_HitBox->w = DAMAGE_WIDTH;
-	m_HitBox->h = DAMAGE_HEIGHT;
-	m_HitBox->x = dropPos.x - DAMAGE_WIDTH/2;
-	m_HitBox->y = dropPos.y - DAMAGE_HEIGHT/2;
 
 	// Lower gravity, since dropping from a high height (so that it's off screen) means it'll go too fast with normal gravity.
     SetGravity(m_gravityForce/10);
 
 	m_renderPriority = LAYER_UI;
-	
-	// TODO: Add a shadow below
-}
 
-Icicle::~Icicle(void) 
-{ 
-	g_icicles.remove(this); 
+	// Set the hazard as initially inactive
+	Hazard_Deactivate();
 }
 
 void Icicle::Update(int delta) 
@@ -91,10 +89,24 @@ void Icicle::Render(void)
 	}
 }
 
-
-const Position Icicle::GetLaunchTo(void)
+void Icicle::DispenseByType(const Position launchPos, const int launchAmount, const string type) const
 {
-	// TODO make sure it doesn't go into walls
+	if (type == "bronzecoin")
+		LaunchThrowable<CoinBronze>(launchPos, launchAmount);
+	if (type == "silvercoin")
+		LaunchThrowable<CoinSilver>(launchPos, launchAmount);
+	if (type == "goldcoin")
+		LaunchThrowable<CoinGold>(launchPos, launchAmount);
+	if (type == "powerupsmash")
+		LaunchThrowable<PowerupSmash>(launchPos, launchAmount);
+	if (type == "poweruppull")
+		LaunchThrowable<PowerupPull>(launchPos, launchAmount);
+	if (type == "powerupmagnetism")
+		LaunchThrowable<PowerupMagnetism>(launchPos, launchAmount);
+}
+
+const Position Icicle::GetLaunchTo(void) const
+{
 	// Get a random position in a circle
 	float randDistance = rand()%(100*BLAST_RADIUS) / 100.0f; // 0 to BLAST_RADIUS, to 2 decimal places
 	float randAngle = (rand()%628) / 100.0f; // 0 to 2*PI (imprecise, but that's fine)
@@ -108,6 +120,9 @@ const Position Icicle::GetLaunchTo(void)
 
 void Icicle::OnLanding(void)
 {
+	// Activate this hazard for damage checking
+	Hazard_Activate();
+
 	// For everything in the dispense list, throw them around
 	for (auto dispensePair : *m_DispenseList)
 	{
@@ -118,25 +133,10 @@ void Icicle::OnLanding(void)
 		{
 			Position launchPos = Position(x, y);
 			int launchAmount = 1;
-			DISPENSE_BY_TYPE
+			DispenseByType(launchPos, launchAmount, type);
 		}
 	}
 
 	// The dispense list has been expended.
 	delete m_DispenseList;
-}
-
-const bool Icicle::OverlapsWith(SDL_Rect* rect)
-{
-	// Only return true if overlapping on all sides
-	if (!(rect->x < m_HitBox->x+m_HitBox->w)) // Over Right
-		return false;
-	else if (!(rect->x + rect->w > m_HitBox->x)) // Over Left
-		return false;
-	else if (!(rect->y < m_HitBox->y+m_HitBox->h)) // Over Top
-		return false;
-	else if (!(rect->y + rect->h > m_HitBox->y)) // Over Bottom
-		return false;
-	else 
-		return true;
 }

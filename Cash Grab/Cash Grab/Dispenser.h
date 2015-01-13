@@ -10,29 +10,21 @@
 #include "PowerupPull.h"
 #include "PowerupSmash.h"
 
+// A DispenseList holds types and quantities. These are implemented as pairs of strings and ints.
 typedef list<pair<string, int>> DispenseList;
 
 #define ANGLE_SUPPRESSION 1
 #define DEFAULT_BURST_DELAY 5
 #define DEFAULT_FIRE_RATE 1
-#define QUANTITY_THRESHOLD 20
 
-/* This small chunk of code has been defined, as a lot of dispensers 
-use this repeated bit. It will be altered throughout development, so 
-it's usefull to have all in one place. */
-#define DISPENSE_BY_TYPE \
-		if (type == "bronzecoin")\
-			LaunchThrowable<CoinBronze>(launchPos, launchAmount);\
-		if (type == "silvercoin")\
-			LaunchThrowable<CoinSilver>(launchPos, launchAmount);\
-		if (type == "goldcoin")\
-			LaunchThrowable<CoinGold>(launchPos, launchAmount);\
-		if (type == "powerupsmash")\
-			LaunchThrowable<PowerupSmash>(launchPos, launchAmount);\
-		if (type == "poweruppull")\
-			LaunchThrowable<PowerupPull>(launchPos, launchAmount);\
-		if (type == "powerupmagnetism")\
-			LaunchThrowable<PowerupMagnetism>(launchPos, launchAmount);
+// Default burst delay for the burst dispense style. Controls the number of frames between OnBurst calls.
+const int k_DefaultBurstDelay = 5;
+
+// Default fire rate for the sputter and serpentine dispense styles. Controls the number of frames between OnSputter and OnSerpentine calls.
+const int k_DefaultFireRate = 1;
+
+// The suppression on the angle of launch when dispensing.
+const int k_AngleSuppression = 1;
 
 class Dispenser :
 	public GameObject
@@ -49,7 +41,9 @@ public:
 	// Forcibly dispense coins from the dispenser. Used in testing.
 	void ForceDispense(const int num);
 
-	// Determine a DispenseList of coins based on this dispenser's level progress but with a different total value
+	/* Determine a DispenseList of coins based on this dispenser's level 
+	progress and total coin value. This is public so that something 
+	can get a DispenseList using the dispenser's launch information. */
 	DispenseList DetermineCoinList(const int totalValue) const;
 
 	// Get the number of coins required in order to dispense
@@ -59,10 +53,11 @@ public:
 	LevelProgress* GetProgress(void) { return m_Progress; }
 
 protected:
+	// Implement as a dispenser, giving an x and y position for the GameObject component, and a dispenser element.
 	Dispenser(const int x, const int y, const int ele);
 
 	// Return a position to be launched do. (Each subclass handles this different based on the DispensePatterns)
-	virtual const Position GetLaunchTo(void) = 0;
+	virtual const Position GetLaunchTo(void) const = 0;
 
 	virtual void OnDump(DispenseList& dispenseList) = 0;
 	virtual void OnBurst(DispenseList& dispenseList) = 0;
@@ -71,9 +66,12 @@ protected:
 
 	virtual void OnDispense(void) {}
 
+	// Dispense a throwable based on a string type
+	void DispenseByType(const Position launchPos, const int launchAmount, const string type) const;
+
 	// Launch a particular type of throwable
 	template <class Throw_Type>
-	void LaunchThrowable(const Position start, const int count)
+	void LaunchThrowable(const Position start, const int count) const
 	{
 		for (int i = 0; i < count; i++)
 		{
@@ -89,6 +87,7 @@ protected:
 		}
 	}
 
+	// The dispense list holds types and quantities. Return the total quantity.
 	int GetListTotal(void) const;
 
 	void SetBurstDelay(const int newDelay) { m_BurstDelay = newDelay; }

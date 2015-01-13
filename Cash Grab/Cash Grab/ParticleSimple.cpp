@@ -16,7 +16,7 @@ ParticleSimple::ParticleSimple(int end_x, int end_y, int height)
 		: PhysicsObject(end_x, end_y, height), GameObject(end_x, end_y-height), m_size(3, 3), 
 		m_fadeCounter(FADE_LENGTH), m_age(0), m_AgeLimit(AGE_LIMIT)
 { 
-	// Create a square surface of this particle's color and size TODO: Create all surfaces in video memory (HWSURFACE)
+	// Create a square surface of this particle's color and size
 	m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32,
 									 0,0,0,0);
 	SetColor(s_color);
@@ -32,7 +32,7 @@ ParticleSimple::ParticleSimple(int end_x, int end_y, int height)
 ParticleSimple::ParticleSimple(int start_x, int start_y, int end_x, int end_y) 
 		: PhysicsObject(start_x, start_y, end_x, end_y), GameObject(start_x, start_y), m_size(3, 3), m_fadeCounter(FADE_LENGTH), m_age(0)
 {	
-	// Create a square surface of this particle's color and size TODO: Create all surfaces in video memory (HWSURFACE)
+	// Create a square surface of this particle's color and size
 	m_imageSurface = SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32,
 									 0,0,0,0);
 	SetColor(s_color);
@@ -57,7 +57,7 @@ void ParticleSimple::StartFade(void)
 void ParticleSimple::Render(void)
 {
 	// Find the rendering rectangle based on position and size.
-	//SDL_Rect renderRect = { x + s_renderingOffset_x, y + s_renderingOffset_y, m_size.x, m_size.y };
+	//SDL_Rect renderRect = { x + cameraRenderingOffset.x, y + cameraRenderingOffset.y, m_size.x, m_size.y };
 
 	// Fill the rect onto the screen - cheaper than blitting a surface
 	//SDL_FillRect(screen, &renderRect, m_color);

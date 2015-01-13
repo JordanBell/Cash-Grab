@@ -6,9 +6,8 @@
 #include "SpeechBubble.h"
 #include "InteractZone.h"
 #include "Room.h"
-#include "FirePit.h"
 #include "Inventory.h"
-#include "Icicle.h"
+#include "Hazard.h"
 
 #include "CoinBronze.h"
 #include "CoinSilver.h"
@@ -22,43 +21,17 @@ Player *g_player = nullptr;
 
 //Initialise the size and position of each sprite clip
 Player::Player(int x, int y) 
-	: Collidable(x, y), Sprite(x, y), direction(DOWN), moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
-	smashCount(SMASH_LIMIT), m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED), 
+	: Collidable(x, y), Sprite(x, y), m_Direction(DOWN), m_Moving(false), m_CanMove(true), m_TargetVelocities(0, 0),
+	m_evasion1(false), m_evasion2(false), m_speed(MIN_SPEED), 
 	m_Speech(nullptr), m_Interaction(nullptr), m_Prompt(nullptr), m_DamageImmunityCounter(0), m_Debug(false)
 {
     m_imageSurface = g_resources->GetPlayerSheet();
 		
-    //m_animationDelay = 200;
     m_maxCycles = WALK_CYCLE_LENGTH * WALK_SPEED;
 
 	InitSprites();
 
 	m_renderPriority = LAYER_PLAYER;
-}
-
-void Player::InitSprites(void)
-{
-	//Initialise the clips of the m_imageSurface
-    int clip_w = (m_imageSurface->w / WALK_CYCLE_LENGTH);
-    int clip_h = (m_imageSurface->h / 4);
-    m_HitBox->w = m_AABB->w = clip_w;
-	m_HitBox->h = m_AABB->h = clip_h/2;
-
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < WALK_CYCLE_LENGTH; j++)
-        {
-            SDL_Rect* clip = new SDL_Rect();
-            
-            clip->x = clip_w * j;
-            clip->y = clip_h * i,
-            
-            clip->w = clip_w;
-            clip->h = clip_h;
-            
-            sprites[i][j] = clip;
-        }
-    }
 }
 
 Player::~Player(void)
@@ -72,7 +45,124 @@ Player::~Player(void)
     }
 }
 
-void Player::Interact(void) 
+void Player::Update(int delta)
+{
+	// Handle Sprite Update
+	Sprite::Update(delta);
+
+	// Update Friction
+	m_Friction = Room::GetPlayerRoom()->GetFriction();
+
+	if (m_Prompt == nullptr)
+	{
+		m_Prompt = new Prompt(this);
+		g_game->addGameObject(m_Prompt);
+	}
+
+	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
+		DecaySpeed();
+    
+    m_AABB->w = sprites[0][0]->w;
+    m_AABB->h = sprites[0][0]->h/2;
+    m_AABB->x = x;
+    m_AABB->y = y+m_AABB->h;
+
+	// If the player is moving fast, kick up dirt
+	if (!((m_Velocities.x == 0) && (m_Velocities.y == 0))) // If not still
+		if (ComputeSpeedPercentage() > 0.75f) // If going fast enough to kick up dirt
+			AddDirtParticles();
+
+    if (m_Moving) {
+		float pixelsToMove = m_speed * 1000 / 60; //delta
+
+		// Calculate target Y velocity
+		if (m_Direction == UP) 
+		{
+			m_TargetVelocities.y = -pixelsToMove;
+			m_AABB->y = y + m_AABB->h + m_Velocities.y;
+		}
+		else if (m_Direction == DOWN)
+		{
+			m_TargetVelocities.y = pixelsToMove;
+		}
+		else 
+		{
+			// No vertical input
+			m_TargetVelocities.y = 0; 
+		}
+
+		// Calculate target X velocity
+		if (m_Direction == LEFT) 
+		{
+			m_TargetVelocities.x = -pixelsToMove;
+			m_AABB->x = x + m_Velocities.x;
+		}
+		else if (m_Direction == RIGHT)
+		{
+			m_TargetVelocities.x = pixelsToMove;
+		}
+		else 
+		{
+			// No horizontal input
+			m_TargetVelocities.x = 0;
+		}
+
+		// The player has moved, so make sure he's still in the same room
+		g_camera->FocusOnPlayerRoom();
+    } 
+	else 
+	{
+		m_TargetVelocities.x = 0;
+		m_TargetVelocities.y = 0;
+	}
+
+	// Check again for if this is in a zone
+	m_Interaction = nullptr;
+	for (InteractZone* zone : g_interactZones)
+		if (zone->OverlapsWith(m_HitBox, m_Direction))
+			m_Interaction = zone;
+
+	m_Prompt->SetVisible(m_Interaction != nullptr);
+
+	// Check for collisions with damage objects
+	UpdateDamageDetection();
+	
+	// Adjust the actual velocity to accelerate toward the set target velocities
+	ApproachTargetVelocity();
+
+	// Update AABB based on the new velocities
+	if (m_Direction == UP)
+		m_AABB->y = y + m_AABB->h + m_Velocities.y;
+
+	if (m_Direction == LEFT)
+		m_AABB->x = x + m_Velocities.x;
+    
+	m_AABB->w += fabs(m_Velocities.x);
+    m_AABB->h += fabs(m_Velocities.y);
+
+    UpdateCollidablePos(x, y);
+}
+
+void Player::Render(void)
+{
+    if (m_Debug) {
+        // Draw the AABB, then the player
+        Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
+        Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
+
+        SDL_Rect r1 = { static_cast<Sint16>(m_AABB->x+cameraRenderingOffset.x), static_cast<Sint16>(m_AABB->y+cameraRenderingOffset.y), m_AABB->w, m_AABB->h };
+        SDL_Rect r2 = { static_cast<Sint16>(m_HitBox->x+cameraRenderingOffset.x), static_cast<Sint16>(m_HitBox->y+cameraRenderingOffset.y), m_HitBox->w, m_HitBox->h };
+        
+        SDL_FillRect(screen, &r1, aabbColor);
+        SDL_FillRect(screen, &r2, hitBoxColor);
+    }
+    
+	// Check for recent damage flashing
+	if (m_DamageImmunityCounter % (2*DAMAGE_IMMUNITY_FLASH_RATE) < DAMAGE_IMMUNITY_FLASH_RATE) // True half of the time, alternating every 'n' seconds (n = DAMAGE_IMMUNITY_FLASH_RATE)
+		Sprite::Render();
+}
+
+void Player::Interact(void)
 { 
 	try 
 	{
@@ -84,33 +174,6 @@ void Player::Interact(void)
 		Say(s, false);
 	}
 }
-
-void Player::move(int direction)
-{
-    // If it's possible to move or moving in a different direction
-    if (m_CanMove || direction != this->direction)
-    {
-        m_CanMove = true;
-        moving = true;
-        this->direction = direction;
-    }
-}
-
-//// Say something indefinitely - without timeout
-//void Player::SayIndef(const string phrase)
-//{
-//	// Delete the old SpeechBubble, if exists.
-//	if (m_Speech)
-//		m_Speech->Deactivate();
-//	
-//	// Create the new speech bubble
-//	SpeechBubble* newSpeech = new SpeechBubble(this, phrase);
-//
-//	// Add it to the game loop and set it as the player's speech
-//	g_game->addGameObject(newSpeech);
-//	m_Speech = newSpeech;
-//}
-
 
 void Player::Say(const string phrase, bool useProportionalTimeout)
 {
@@ -133,24 +196,7 @@ void Player::Say(const string phrase, bool useProportionalTimeout)
 	}
 }
 
-void Player::ReplaceSpeech(SpeechBubble* sPtr)
-{
-	static int speechCount = 0;
-	speechCount++;
-	printf("Speech #%d\n", speechCount);
-
-	// Delete the current speech
-	//if (m_Speech) g_game->removeGameObject(*m_Speech);
-	if (m_Speech) (m_Speech)->Deactivate();
-
-	// Set argument as the new speach
-	m_Speech = sPtr;
-
-	// Add it to the game loop and set it as the player's speech
-	g_game->addGameObject(m_Speech);
-}
-
-void Player::Smash(int radius)
+void Player::Smash(int radius) const
 {
 	// Get all coins in the radius
 	list<Coin*> radiusCoins = Coin::CoinsAroundPlayer(radius);
@@ -180,7 +226,18 @@ void Player::Smash(int radius)
 	}
 }
 
-void Player::DoMove()
+void Player::SetDirection(int direction)
+{
+    // If it's possible to move or moving in a different direction
+    if (m_CanMove || direction != m_Direction)
+    {
+        m_CanMove = true;
+        m_Moving = true;
+        m_Direction = direction;
+    }
+}
+
+void Player::DoMove(void)
 {
     if (m_CanMove)
     {
@@ -191,9 +248,9 @@ void Player::DoMove()
     }
 }
 
-void Player::stop_moving()
+void Player::StopMoving()
 {
-    moving = false;
+    m_Moving = false;
 }
 
 void Player::SetCanMove(bool canMove)
@@ -202,29 +259,11 @@ void Player::SetCanMove(bool canMove)
     
     if (!canMove)
     {
-        moving = false;
-//        SnapToGrid();
+        m_Moving = false;
     }
 }
 
-void Player::SnapToGrid()
-{
-    // Get grid position based on middle of the player
-    int gridX = (x + m_HitBox->w / 2) / TILE_SIZE;
-    int gridY = (y + m_HitBox->h / 2) / TILE_SIZE;
-    
-    // Snap to coordinates
-    if (direction == LEFT || direction == RIGHT)
-    {
-        x = gridX * TILE_SIZE;
-    }
-    else
-    {
-        y = gridY * TILE_SIZE;
-    }
-}
-
-void Player::IncSpeed(const float amount) 
+void Player::IncreaseSpeed(const float amount) 
 { 
 	// Increase the player's speed
 	if (amount == 0.03)
@@ -232,12 +271,7 @@ void Player::IncSpeed(const float amount)
 	else
 		m_speed += amount; 
 
-	//// Limit to MIN if fallen below
-	//m_speed = (m_speed < MIN_SPEED)? 
-	//		  MIN_SPEED 
-	//		  : m_speed; 
-
-	// Limit to MIN and MAX speeds if exceeding
+	// Limit m_speed to MIN and MAX speeds if exceeding
 	m_speed = (m_speed < MIN_SPEED)? 
 			  MIN_SPEED 
 			  : (m_speed > MAX_SPEED)? 
@@ -245,7 +279,47 @@ void Player::IncSpeed(const float amount)
 				  : m_speed; 
 }
 
-const float Player::ComputeDecay(void)
+void Player::UpdateImageRect(void)
+{
+	int i1, i2;
+
+	// First index is the direction.
+	i1 = m_Direction;
+
+	// Second index is part of the walk cycle. Set as still if not moving.
+	i2 = m_Moving? 
+		 m_cycle/WALK_SPEED 
+		 : STILL;
+
+	m_imageRect = sprites[i1][i2];
+}
+
+void Player::InitSprites(void)
+{
+	//Initialise the clips of the m_imageSurface
+    int clip_w = (m_imageSurface->w / WALK_CYCLE_LENGTH);
+    int clip_h = (m_imageSurface->h / 4);
+    m_HitBox->w = m_AABB->w = clip_w;
+	m_HitBox->h = m_AABB->h = clip_h/2;
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < WALK_CYCLE_LENGTH; j++)
+        {
+            SDL_Rect* clip = new SDL_Rect();
+            
+            clip->x = clip_w * j;
+            clip->y = clip_h * i,
+            
+            clip->w = clip_w;
+            clip->h = clip_h;
+            
+            sprites[i][j] = clip;
+        }
+    }
+}
+
+const float Player::ComputeDecay(void) const
 {
 	// Speed decay varies based on how far it is from minimum
 	float diffFromMin = m_speed - MIN_SPEED;
@@ -253,115 +327,33 @@ const float Player::ComputeDecay(void)
 	return DECAY_MINIMUM + ((diffFromMin*diffFromMin) * DECAY_FACTOR);
 }
 
-void Player::Update(int delta)
-{
-	// Handle Sprite Update
-	Sprite::Update(delta);
-
-	// Update the beta update for the smash ability
-	SmashUpdate();
-
-	// Update Friction
-	m_Friction = Room::GetPlayerRoom()->GetFriction();
-
-	if (m_Prompt == nullptr)
-	{
-		m_Prompt = new Prompt(this);
-		g_game->addGameObject(m_Prompt);
-	}
-
-	if (m_speed > MIN_SPEED) // Only calculate new speeds if above minimum
-		DecaySpeed();
-    
-    m_AABB->w = sprites[0][0]->w;
-    m_AABB->h = sprites[0][0]->h/2;
-    m_AABB->x = x;
-    m_AABB->y = y+m_AABB->h;
-
-	// If the player is moving fast, kick up dirt
-	if (!((m_Velocities.x == 0) && (m_Velocities.y == 0))) // If not still
-		if (ComputeSpeedPercentage() > 0.75f) // If going fast enough to kick up dirt
-			AddDirtParticles();
-
-    if (moving) {
-		float pixelsToMove = m_speed * 1000 / 60; //delta
-
-		// Calculate target Y velocity
-		if (this->direction == UP) {
-			m_TargetVelocities.y = -pixelsToMove;
-			m_AABB->y = y + m_AABB->h + m_Velocities.y;
-		}
-		else if (this->direction == DOWN)
-			m_TargetVelocities.y = pixelsToMove;
-		else // No input (vertical)
-			m_TargetVelocities.y = 0; 
-
-		// Calculate target X velocity
-		if (this->direction == LEFT) {
-			m_TargetVelocities.x = -pixelsToMove;
-			m_AABB->x = x + m_Velocities.x;
-		}
-		else if (this->direction == RIGHT)
-			m_TargetVelocities.x = pixelsToMove;
-		else // No input (horizontal)
-			m_TargetVelocities.x = 0;
-
-		// The player has moved, so make sure he's still in the same room
-		g_camera->FocusOnPlayerRoom();
-    } 
-	else 
-	{
-		m_TargetVelocities.x = 0;
-		m_TargetVelocities.y = 0;
-	}
-
-	// Check again for if this is in a zone
-	m_Interaction = nullptr;
-	for (InteractZone* zone : g_interactZones)
-		if (zone->OverlapsWith(m_HitBox, direction))
-			m_Interaction = zone;
-
-	m_Prompt->SetVisible(m_Interaction != nullptr);
-
-	// Check for collisions with damage objects
-	UpdateDamageDetection();
-	
-	// Adjust the actual velocity to accelerate toward the set target velocities
-	ApproachTargetVelocity();
-
-	// Update AABB based on the new velocities
-	if (this->direction == UP)
-		m_AABB->y = y + m_AABB->h + m_Velocities.y;
-
-	if (this->direction == LEFT)
-		m_AABB->x = x + m_Velocities.x;
-    
-	m_AABB->w += fabs(m_Velocities.x);
-    m_AABB->h += fabs(m_Velocities.y);
-
-    UpdateCollidablePos(x, y);
-}
-
 void Player::UpdateDamageDetection(void)
 {
 	// First, check for immunity
 	if (m_DamageImmunityCounter <= 0)
 	{
-		// Check against all fire pits
-		for (FirePit* pit : g_firePits)
+		const list<Hazard*> activeHazards = Hazard::GetActiveHazards();
+		for (Hazard* hazard : activeHazards)
 		{
-			if (pit->IsErupting())
-				if (pit->OverlapsWith(m_AABB))
-					OnDamage(pit->GetDamagePercentage());
+			if (hazard->OverlapsInEffect(m_HitBox))
+				OnDamage(hazard->GetDamagePercentage());
 		}
 
-		// Check against all icicles
-		for (Icicle* icicle : g_icicles)
-		{
-			if (!icicle->IsAirborne())
-				if (icicle->OverlapsWith(m_AABB))
-					OnDamage(icicle->GetDamagePercentage());
-		}
+		//// Check against all fire pits
+		//for (FirePit* pit : g_firePits)
+		//{
+		//	if (pit->IsErupting())
+		//		if (pit->OverlapsWith(m_HitBox))
+		//			OnDamage(pit->GetDamagePercentage());
+		//}
+
+		//// Check against all icicles
+		//for (Icicle* icicle : g_icicles)
+		//{
+		//	if (!icicle->IsAirborne())
+		//		if (icicle->OverlapsWith(m_HitBox))
+		//			OnDamage(icicle->GetDamagePercentage());
+		//}
 	}
 	else
 		m_DamageImmunityCounter--;
@@ -372,12 +364,6 @@ void Player::SetImmunityCounter(const int newCount)
 {
 	m_DamageImmunityCounter = newCount;
 }
-
-void Player::SetSpeed(const float newSpeed)
-{
-	m_TargetVelocities.x = m_TargetVelocities.y = m_Velocities.x = m_Velocities.y = m_speed = newSpeed;
-}
-
 
 void Player::OnDamage(const float damagePercentage)
 {
@@ -438,16 +424,20 @@ void Player::OnDamage(const float damagePercentage)
 	}
 }
 
+void Player::SetSpeed(const float newSpeed)
+{
+	m_TargetVelocities.x = m_TargetVelocities.y = m_Velocities.x = m_Velocities.y = m_speed = newSpeed;
+}
+
 void Player::ApproachTargetVelocity(void)
 {
-	int polY = m_Velocities.y > 0 ? 1 : -1;
+	const double acceleration = m_Moving? 3*m_Friction : m_Friction;
 
 	// (x) Horizontal
 	if (m_Velocities.x != m_TargetVelocities.x)
 	{
+		// Get the polarity of the velocity number (pos or neg)
 		const int pol = (m_TargetVelocities.x - m_Velocities.x) > 0 ? 1 : -1;
-
-		const double acceleration = moving? 3*m_Friction : m_Friction;
 		const float changeInVelocity = pol * min((float)acceleration, fabsf(m_TargetVelocities.x - m_Velocities.x));
 
 		m_Velocities.x += changeInVelocity;
@@ -456,9 +446,8 @@ void Player::ApproachTargetVelocity(void)
 	// (y) Vertical
 	if (m_Velocities.y != m_TargetVelocities.y)
 	{
+		// Get the polarity of the velocity number (pos or neg)
 		const int pol = (m_TargetVelocities.y - m_Velocities.y) > 0 ? 1 : -1;
-		
-		const double acceleration = moving? 3*m_Friction : m_Friction;
 		const float changeInVelocity = pol * min((float)acceleration, fabsf(m_TargetVelocities.y - m_Velocities.y));
 
 		m_Velocities.y += changeInVelocity;
@@ -466,18 +455,7 @@ void Player::ApproachTargetVelocity(void)
 
 }
 
-void Player::SmashUpdate(void)
-{
-	// Not fully complete
-	if (smashCount < SMASH_LIMIT)
-	{
-		smashCount++;
-		if (smashCount % SMASH_INTERVAL == 0)
-			Smash(smashCount/2);
-	}
-}
-
-void Player::AddDirtParticles(void)
+void Player::AddDirtParticles(void) const
 {
 	float minSpeed = MAX_SPEED * 0.75;
 	float aboveMin = m_speed - minSpeed;
@@ -509,7 +487,7 @@ void Player::AddDirtParticles(void)
 			e_x = s_x - val1;
 			e_y = s_y - val2;
 
-			switch (direction)
+			switch (m_Direction)
 			{
 				case UP:
 					e_y += TILE_SIZE/4;
@@ -536,23 +514,4 @@ void Player::AddDirtParticles(void)
 			dirtParticle->Launch(thisAngle);
 		}
 	}
-}
-
-void Player::Render(void)
-{
-    if (m_Debug) {
-        // Draw the AABB, then the player
-        Uint32 aabbColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0xFF, 0);
-        Uint32 hitBoxColor = SDL_MapRGB(g_resources->GetEnvironmentImage()->format, 0x0, 0, 0xFF);
-
-        SDL_Rect r1 = { static_cast<Sint16>(m_AABB->x+s_renderingOffset_x), static_cast<Sint16>(m_AABB->y+s_renderingOffset_y), m_AABB->w, m_AABB->h };
-        SDL_Rect r2 = { static_cast<Sint16>(m_HitBox->x+s_renderingOffset_x), static_cast<Sint16>(m_HitBox->y+s_renderingOffset_y), m_HitBox->w, m_HitBox->h };
-        
-        SDL_FillRect(screen, &r1, aabbColor);
-        SDL_FillRect(screen, &r2, hitBoxColor);
-    }
-    
-	// Check for recent damage flashing
-	if (m_DamageImmunityCounter % (2*DAMAGE_IMMUNITY_FLASH_RATE) < DAMAGE_IMMUNITY_FLASH_RATE) // True half of the time, alternating every 'n' seconds (n = DAMAGE_IMMUNITY_FLASH_RATE)
-		Sprite::Render();
 }

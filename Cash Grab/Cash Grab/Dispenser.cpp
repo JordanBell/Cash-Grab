@@ -7,6 +7,7 @@ using namespace std;
 #define DISPENSING_STUTTER 35
 #define BURST_TIMES 5
 #define POWERUP_CHANCE 0.16f
+#define MULTISHOT_QUANTITY_THRESHOLD 20
 
 Dispenser::Dispenser(const int x, const int y, const int ele)
 	: GameObject(x, y), m_Dispensing(false), m_BurstTicker(0), m_BurstAmount(0), m_SingleShotTicker(0), m_CurrentCost(START_MONEY), 
@@ -130,7 +131,6 @@ void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 
 		if (m_BurstTicker == m_BurstDelay) // Reset at max
 			m_BurstTicker = 0;
-
 	}
 	else if (dispenseStyle == SERPENTINE) // Serpentine or Sputter. Both work similarly. Differentiate within.
 	{
@@ -149,6 +149,23 @@ void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 	else
 		throw runtime_error("Dispense style not recognised.");
 }
+
+void Dispenser::DispenseByType(const Position launchPos, const int launchAmount, const string type) const
+{
+	if (type == "bronzecoin")
+		LaunchThrowable<CoinBronze>(launchPos, launchAmount);
+	if (type == "silvercoin")
+		LaunchThrowable<CoinSilver>(launchPos, launchAmount);
+	if (type == "goldcoin")
+		LaunchThrowable<CoinGold>(launchPos, launchAmount);
+	if (type == "powerupsmash")
+		LaunchThrowable<PowerupSmash>(launchPos, launchAmount);
+	if (type == "poweruppull")
+		LaunchThrowable<PowerupPull>(launchPos, launchAmount);
+	if (type == "powerupmagnetism")
+		LaunchThrowable<PowerupMagnetism>(launchPos, launchAmount);
+}
+
 
 int Dispenser::GetListTotal(void) const
 {
@@ -228,9 +245,6 @@ DispenseList Dispenser::DetermineCoinList(const int totalValue) const
 
 void Dispenser::DetermineList(void)
 {
-	// TODO replace beginning of this with: 
-	//m_DispenseList = DetermineCoinList(m_CurrentCost);
-
 	// Determine the list of throwables to be dispensed
 	m_DispenseList.clear();
 	m_DispenseList = DetermineCoinList(m_CurrentCost);

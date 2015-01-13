@@ -7,7 +7,6 @@
 #define HALF_ANGLE (PI)
 #define THREEQ_ANGLE (3*PI/2)
 
-// TODO Change m_pos to GetPOPosition()
 class PhysicsObject
 {
 public:		

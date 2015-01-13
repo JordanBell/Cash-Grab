@@ -13,7 +13,7 @@ public:
 
 protected:
 	// Return a position to be launched to.
-	const Position GetLaunchTo(void) override final;
+	const Position GetLaunchTo(void) const override final;
 
 	void OnDump(DispenseList& dispenseList) override final;
 	void OnBurst(DispenseList& dispenseList) override final;
