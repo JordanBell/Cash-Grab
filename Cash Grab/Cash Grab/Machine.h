@@ -13,8 +13,6 @@
 
 using namespace std;
 
-#define NUM_SLOTS 6
-
 class Machine :
 	public Collidable, public Dispenser
 {
@@ -34,7 +32,9 @@ private:
 	TruthSwitch m_LaunchKey;
 	bool m_KeyLaunched;
 
-    Position CoinSlots[NUM_SLOTS];
+	static const unsigned int k_NumSlots = 6;
+
+    Position CoinSlots[k_NumSlots];
 	
 	const XY GetLeftCircleCoords(const bool addRightCoords = false) const;
 	const XY GetRightCircleCoords(void) const { return GetLeftCircleCoords(true); }

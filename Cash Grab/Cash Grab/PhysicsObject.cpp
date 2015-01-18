@@ -3,6 +3,8 @@
 #include <math.h>
 #include <cmath>
 
+const float PhysicsObject::k_DefaultGravity = 0.5f;
+
 void PhysicsObject::LaunchTo(int _x, int _y, int angleSuppression, int speedOverride)
 {
 	// Launch the coin towards the end coordinates

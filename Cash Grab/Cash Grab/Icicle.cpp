@@ -89,22 +89,6 @@ void Icicle::Render(void)
 	}
 }
 
-void Icicle::DispenseByType(const Position launchPos, const int launchAmount, const string type) const
-{
-	if (type == "bronzecoin")
-		LaunchThrowable<CoinBronze>(launchPos, launchAmount);
-	if (type == "silvercoin")
-		LaunchThrowable<CoinSilver>(launchPos, launchAmount);
-	if (type == "goldcoin")
-		LaunchThrowable<CoinGold>(launchPos, launchAmount);
-	if (type == "powerupsmash")
-		LaunchThrowable<PowerupSmash>(launchPos, launchAmount);
-	if (type == "poweruppull")
-		LaunchThrowable<PowerupPull>(launchPos, launchAmount);
-	if (type == "powerupmagnetism")
-		LaunchThrowable<PowerupMagnetism>(launchPos, launchAmount);
-}
-
 const Position Icicle::GetLaunchTo(void) const
 {
 	// Get a random position in a circle
@@ -124,19 +108,6 @@ void Icicle::OnLanding(void)
 	Hazard_Activate();
 
 	// For everything in the dispense list, throw them around
-	for (auto dispensePair : *m_DispenseList)
-	{
-		string type = dispensePair.first;
-		int& amount = dispensePair.second;
-
-		for (amount; amount > 0; amount--)
-		{
-			Position launchPos = Position(x, y);
-			int launchAmount = 1;
-			DispenseByType(launchPos, launchAmount, type);
-		}
-	}
-
-	// The dispense list has been expended.
-	delete m_DispenseList;
+	for (auto& throwableQuantity : *m_DispenseList)
+		throwableQuantity->ThrowAll(Position(x, y), std::bind(&Icicle::GetLaunchTo, this));
 }

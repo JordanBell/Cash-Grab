@@ -12,11 +12,17 @@
 
 int PowerupPull::value = 0;
 
-PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y, int _) : Powerup(start_x, start_y, end_x, end_y)
+PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y) : Powerup(start_x, start_y, end_x, end_y)
 {
     m_Effect = new EffectPull(this);
     InitSprites();
 }
+
+PowerupPull::PowerupPull(int start_x, int start_y, int end_x, int end_y, int _) : Powerup(start_x, start_y, end_x, end_y)
+{
+    throw runtime_error("Cannot create a powerup with an element");
+}
+
 
 void PowerupPull::OnCollect(void)
 {

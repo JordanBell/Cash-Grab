@@ -27,6 +27,9 @@ private:
 	int m_ThrowablesPerIcicle;
 	int m_HammerTicker; // The number of frames the hammer spends down
 
+	static const unsigned int k_HammerTimeSpentDown = 15;
+	static const unsigned int k_MaxIciclesPerDispense = 12;
+
 	// Get a position in the blast radius for a throwable to go, in a serpentine pattern
 	const Position GetSerpentineLaunchTo(void);
 	
@@ -34,7 +37,7 @@ private:
 	void DropIcicles(DispenseList& dispenseList, const int maxNumIcicles, const bool isSerpentine = false);
 
 	// Determine the number of throwables to be added to the icicle.
-	DispenseList* IcicleSmasher::GetIcicleDispenseList(DispenseList& dispenseList);
+	DispenseList* IcicleSmasher::ComputeIcicleDispenseList(DispenseList& dispenseList);
 
 };
 

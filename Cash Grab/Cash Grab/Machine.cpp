@@ -15,7 +15,6 @@
 #define KEY_LAUNCH_VAL 50
 #define CASH_INTERVAL 25
 #define CASH_AMOUNT 100
-#define MULTISHOT_QUANTITY_THRESHOLD 20
 
 Machine::Machine(const int x, const int y)
 	: Collidable(x, y), Dispenser(x, y, Element::NORMAL), m_LaunchKey(false), m_KeyLaunched(false)
@@ -27,7 +26,7 @@ Machine::Machine(const int x, const int y)
 	// Claim as immoveable as a Collidable
     m_IsMoveable = false;
 
-    for (int i = 0; i < NUM_SLOTS; i++) 
+    for (int i = 0; i < k_NumSlots; i++) 
 	{
         int slotX = x + (i * TILE_SIZE);
         int slotY = y + 2*TILE_SIZE;
@@ -39,16 +38,15 @@ Machine::Machine(const int x, const int y)
 
 void Machine::OnDump(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
+		int amount = throwableQuantity->GetQuantity();
 
-		int slotAmounts[NUM_SLOTS];
+		int slotAmounts[k_NumSlots];
 		slotAmounts[0] = slotAmounts[1] = slotAmounts[2] = slotAmounts[3] = slotAmounts[4] = slotAmounts[5] = 0; 
 
 		// Add amounts for each slot
-		for (int slotNum = 0; amount > 0; slotNum = (slotNum==NUM_SLOTS-1) ? 0 : slotNum+1)
+		for (int slotNum = 0; amount > 0; slotNum = (slotNum==k_NumSlots-1) ? 0 : slotNum+1)
 		{
 			slotAmounts[slotNum]++;
 			amount--;
@@ -59,27 +57,27 @@ void Machine::OnDump(DispenseList& dispenseList)
 		{
 			int perSlot = slotAmounts[slotNum];
 			const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
-			const int launchAmount = perSlot;
-			DispenseByType(launchPos, launchAmount, type);
+
+			// Throw that amount from the throwableQuantity
+			throwableQuantity->Throw(launchPos, std::bind(&Machine::GetLaunchTo, this), perSlot);
 		}
 	}
 }
 
 void Machine::OnBurst(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
+		int amount = throwableQuantity->GetQuantity();
 
 		// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
-		const int maxPerSlot = (amount / (MULTISHOT_QUANTITY_THRESHOLD*6/DEFAULT_BURST_DELAY)) + 1;
+		const int maxPerSlot = (amount / (k_MultishotQuantityThreshold)) + 1;
 				
 		// Throwables to be shot per slot
 		int perSlot;
 
 		// Dispense a set of throwables for each row
-		for (int slotNum = 0; (slotNum < 6) && (amount > 0); slotNum++)
+		for (int slotNum = 0; (slotNum < 6) && !throwableQuantity->IsEmpty(); slotNum++)
 		{
 			perSlot = amount;
 			if (perSlot > maxPerSlot)
@@ -87,54 +85,46 @@ void Machine::OnBurst(DispenseList& dispenseList)
 
 			// Launch that number of throwables from this slot
 			const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
-			const int launchAmount = perSlot;
-			DispenseByType(launchPos, launchAmount, type);
-
-			amount -= perSlot;
+			
+			throwableQuantity->Throw(launchPos, std::bind(&Machine::GetLaunchTo, this), perSlot);
 		}
 	}
 }
 
 void Machine::OnSerpentine(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
-		int total = amount;
+		int amount = throwableQuantity->GetQuantity();
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerSlot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
+		const int maxPerSlot = (amount / k_MultishotQuantityThreshold) + 1;
 		int perSlot = amount;
 		if (perSlot > maxPerSlot)
 			perSlot = maxPerSlot;
 
 		int slotNum = 0;
 
-		int n = m_SingleShotTicker % (NUM_SLOTS*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
-		slotNum = (n < NUM_SLOTS) ?
+		int n = m_SingleShotTicker/GetFireRate() % (k_NumSlots*2); // SlotNum in a k_NumSlots*2 idea of slots (as it loops over the k_NumSlots twice in the pattern)
+		slotNum = (n < k_NumSlots) ?
 					n :
-					((NUM_SLOTS*2)-1) - n;
+					((k_NumSlots*2)-1) - n;
 
 		// Launch that number of throwables from this slot
 		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
-		const int launchAmount = perSlot;
-		DispenseByType(launchPos, launchAmount, type);
 
-		amount -= perSlot;
+		throwableQuantity->Throw(launchPos, std::bind(&Machine::GetLaunchTo, this), perSlot);
 	}
 }
 
 void Machine::OnSputter(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
-		int total = amount;
+		int amount = throwableQuantity->GetQuantity();
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerSlot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
+		const int maxPerSlot = (amount / k_MultishotQuantityThreshold) + 1;
 		int perSlot = amount;
 		if (perSlot > maxPerSlot)
 			perSlot = maxPerSlot;
@@ -143,10 +133,8 @@ void Machine::OnSputter(DispenseList& dispenseList)
 
 		// Launch that number of throwables from this slot
 		const Position launchPos = Position(CoinSlots[slotNum].x, CoinSlots[slotNum].y);
-		const int launchAmount = perSlot;
-		DispenseByType(launchPos, launchAmount, type);
 
-		amount -= perSlot;
+		throwableQuantity->Throw(launchPos, std::bind(&Machine::GetLaunchTo, this), perSlot);
 	}
 }
 

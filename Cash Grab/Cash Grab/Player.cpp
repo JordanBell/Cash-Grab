@@ -332,28 +332,15 @@ void Player::UpdateDamageDetection(void)
 	// First, check for immunity
 	if (m_DamageImmunityCounter <= 0)
 	{
+		// Check against all of the hazards
 		const list<Hazard*> activeHazards = Hazard::GetActiveHazards();
 		for (Hazard* hazard : activeHazards)
 		{
-			if (hazard->OverlapsInEffect(m_HitBox))
+			if (hazard->OverlapsInEffect(m_HitBox)) {
 				OnDamage(hazard->GetDamagePercentage());
+				return;
+			}
 		}
-
-		//// Check against all fire pits
-		//for (FirePit* pit : g_firePits)
-		//{
-		//	if (pit->IsErupting())
-		//		if (pit->OverlapsWith(m_HitBox))
-		//			OnDamage(pit->GetDamagePercentage());
-		//}
-
-		//// Check against all icicles
-		//for (Icicle* icicle : g_icicles)
-		//{
-		//	if (!icicle->IsAirborne())
-		//		if (icicle->OverlapsWith(m_HitBox))
-		//			OnDamage(icicle->GetDamagePercentage());
-		//}
 	}
 	else
 		m_DamageImmunityCounter--;
@@ -364,6 +351,21 @@ void Player::SetImmunityCounter(const int newCount)
 {
 	m_DamageImmunityCounter = newCount;
 }
+
+const Position Player::ComputeRandPosAroundPlayer(void) const
+{ 
+	// Find a random angle around the circle to shoot this to
+	Position circlePos = Position();
+
+	float angle = rand()%628; // A value out of 2*pi
+	angle /= 100; // Radians
+
+	circlePos.x = x + DAMAGE_COIN_LOSS_RADIUS * cos(angle);
+	circlePos.y = y + DAMAGE_COIN_LOSS_RADIUS * sin(angle) * 7/8; // Squish the y-axis a bit
+
+	return circlePos;
+}
+
 
 void Player::OnDamage(const float damagePercentage)
 {
@@ -388,39 +390,10 @@ void Player::OnDamage(const float damagePercentage)
 	DispenseList dispenseList = g_camera->GetRoomFocus()->GetDispenser()->DetermineCoinList(numCoinsLost);
 
 	// Throw those coins around the player
-	for (auto dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		// Throw the coins there
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
-
-		// Launch that amount of coins
-		while (amount > 0)
-		{
-			// Find a random angle around the circle to shoot this to
-			Position circlePos = Position();
-			Position center = GetCenter();
-
-			float angle = rand()%628; // A value out of 2*pi
-			angle /= 100; // Radians
-
-			circlePos.x = x + DAMAGE_COIN_LOSS_RADIUS * cos(angle);
-			circlePos.y = y + DAMAGE_COIN_LOSS_RADIUS * sin(angle) * 7/8; // Squish the y-axis a bit
-
-			// Create a new coin object based on the dispense pair's type
-			Coin* coin;
-
-			if (type == "bronzecoin")
-				coin = new CoinBronze(center.x, center.y, circlePos.x, circlePos.y, currentRoomElement);
-			if (type == "silvercoin")
-				coin = new CoinSilver(center.x, center.y, circlePos.x, circlePos.y, currentRoomElement);
-			if (type == "goldcoin")
-				coin = new CoinGold(center.x, center.y, circlePos.x, circlePos.y, currentRoomElement);
-
-			coin->Launch();
-			g_game->addCollidable(coin);
-			amount--;
-		}
+		// Throw everything around the player
+		throwableQuantity->ThrowAll(GetCenter(), std::bind(&Player::ComputeRandPosAroundPlayer, this)); // TODO Use variable: currentRoomElement
 	}
 }
 

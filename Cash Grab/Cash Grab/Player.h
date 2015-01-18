@@ -76,6 +76,10 @@ public:
 	// Toggle the debug variable, which reveals the player's hitboxes when rendering.
     inline void ToggleDebug(void) { m_Debug = !m_Debug; }
 
+	// Used in debug, calls OnDamage for 100% coin loss.
+	void OnDamage_Debug()
+		{ OnDamage(1); }
+
 protected:
 	// Update the image rect from the 4x4 sprite array based on the player's direction and walk cycle.
 	inline void UpdateImageRect(void) override final;
@@ -122,6 +126,9 @@ private:
 
 	// Respond to taking damage
 	void OnDamage(const float damagePercentage);
+
+	// Get a random point around the player, given the value of the defined radius. Used when throwing coins around the player after damage.
+	const Position ComputeRandPosAroundPlayer(void) const;
 
 	// Add dirt particles based on the currently travelled speed
 	void AddDirtParticles(void) const;

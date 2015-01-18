@@ -2,7 +2,6 @@
 #include "XY.h"
 #include "KinematicData.h"
 
-#define DEFAULT_GRAVITY 0.5
 #define RIGHT_ANGLE (PI/2)
 #define HALF_ANGLE (PI)
 #define THREEQ_ANGLE (3*PI/2)
@@ -23,26 +22,30 @@ public:
 	void MoveUpdate();
 
 protected:
+
+	// A default value for a PhysicsObject's speed of descent
+	static const float k_DefaultGravity;
+
 	// Can be contructed above a ground position
 	PhysicsObject(int end_x, int end_y, int height) 
 		: m_pos(end_x, end_y - height), 
 		m_endPos(end_x, end_y), 
 		m_DropHeight(height),
-		m_gravityForce(DEFAULT_GRAVITY), 
+		m_gravityForce(k_DefaultGravity), 
 		m_airborne(true) {}
 
 	// Can be constructed with specific start coordinates, initially stationary
 	PhysicsObject(int _x, int _y) 
 		: m_pos(_x, _y), 
 		m_endPos(_x, _y), 
-		m_gravityForce(DEFAULT_GRAVITY), 
+		m_gravityForce(k_DefaultGravity), 
 		m_airborne(false) {}
 
 	// Can be constructed with a start and end coordinate
 	PhysicsObject(int start_x, int start_y, int end_x, int end_y)
 		: m_pos(start_x, start_y), 
 		m_endPos(end_x, end_y), 
-		m_gravityForce(DEFAULT_GRAVITY),
+		m_gravityForce(k_DefaultGravity),
 		m_airborne(false) {}
 
 	Position const& GetPOPosition(void) { return m_pos; }

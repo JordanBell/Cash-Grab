@@ -111,8 +111,7 @@ void SmashWave(vector<int> args)
 
 /* Toggles coin magnetism */
 void ToggleMagnetism(vector<int> args)
-	{ //g_player->SetMagnetic( !g_player->IsMagnetic() );
-    }
+	{ /*g_player->SetMagnetic( !g_player->IsMagnetic() );*/ }
 
 
 
@@ -190,6 +189,18 @@ void ShowPlayerCollisionBoxes(vector<int> args)
 {
     g_player->ToggleDebug();
 }
+
+// Damage the player
+void DamagePlayer(vector<int> args)
+	{ g_player->OnDamage_Debug(); }
+ 
+// Print the cost of the current room's dispenser
+void PrintCost(vector<int> args)
+	{ printf("Cost: %d\n", g_camera->GetRoomFocus()->GetDispenser()->GetCost()); }
+ 
+// Print the cost of the current room's dispenser
+void PrintWallet(vector<int> args)
+	{ printf("Wallet holds: %d\n", Inventory::GetCoinWallet(g_camera->GetRoomFocus()->GetElement())->GetAmount() ); }
 
 
 
@@ -334,5 +345,26 @@ CGConsole::CGConsole(void)
         "",
         "Draws the player's hit box and AABB for collision debugging.",
         ShowPlayerCollisionBoxes)
+    );
+    
+    m_commands.push_back(
+        Command("damage",
+        "Ow!",
+        "Damages the player.",
+        DamagePlayer)
+    );
+    
+    m_commands.push_back(
+        Command("cost",
+        "",
+        "Prints the cost of the current room's dispenser.",
+        PrintCost)
+    );
+    
+    m_commands.push_back(
+        Command("wallet",
+        "",
+        "Prints the wallet for the current room.",
+        PrintWallet)
     );
 }

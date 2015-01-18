@@ -50,7 +50,7 @@ bool SDL_init()
     Mix_AllocateChannels(NUM_MIX_CHANNELS);
     
     // Pan each channel differently, for variety
-    for (int i = 0; i < NUM_MIX_CHANNELS; ++i) {
+    for (int i = 0; i < NUM_MIX_CHANNELS; i++) {
         int offset = NUM_MIX_CHANNELS - i * 2;
         int left = 127 + offset;
         

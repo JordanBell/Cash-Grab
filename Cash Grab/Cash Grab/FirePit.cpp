@@ -1,30 +1,21 @@
 #include "FirePit.h"
 #include "Resources.h"
-#include "Game.h"
 #include "ParticleLava.h"
 
-#define ERUPT_CHANCE 0.001f
-#define ERUPT_TIME 200.0f
-#define CHARGE_TIME 300.0f
-#define SIZE_LARGE Dimensions(8, 8)
-#define SIZE_SMALL Dimensions(3, 3)
-#define NUM_CHARGING 1
-#define NUM_ERUPTION 6
+#define HAZARD_AREA x-TILE_SIZE/2,\
+					y-TILE_SIZE/4,\
+					2*TILE_SIZE,\
+					1.5*TILE_SIZE
 
-// The higher the fraction (up to 1.0) the lower the lava from the edge in the radius of eruption
-#define TIP_CURVE 0.3f
-// The height of the highest point in the eruption
-#define TIP_HEIGHT 13
-
-#define HAZARD_AREA x-8,\
-					y-8,\
-					TILE_SIZE + 16,\
-					TILE_SIZE + 16
+const float FirePit::k_EruptChance = 0.001f;
+const float FirePit::k_TipCurve = 0.3f;
+const Dimensions FirePit::k_ParticleSize_Eruption = Dimensions(8, 8);
+const Dimensions FirePit::k_ParticleSize_Charge = Dimensions(3, 3);
 
 FirePit::FirePit(const int x, const int y)
 	: Sprite(x, y), 
 	 Hazard(HAZARD_AREA), 
-	m_State(IDLE), m_EruptChance(ERUPT_CHANCE), m_ChargeCounter(0), m_EruptCounter(0)
+	m_State(IDLE), m_ChargeCounter(0), m_EruptCounter(0)
 {
 	// GameObject stuff
 	m_renderPriority = LAYER_GROUND;
@@ -80,7 +71,7 @@ void FirePit::Update(int delta)
 void FirePit::UpdateIdle(void)
 {
 	// Try chances at eruption
-	const int integerChanceTotal = 1.0f/ERUPT_CHANCE;
+	const int integerChanceTotal = 1.0f/k_EruptChance;
 	const bool eruptTriggered = (rand() % integerChanceTotal) == 0;
 
 	if (eruptTriggered)
@@ -89,7 +80,7 @@ void FirePit::UpdateIdle(void)
 
 void FirePit::UpdateCharging(void)
 {
-	if (m_ChargeCounter < CHARGE_TIME)
+	if (m_ChargeCounter < k_TimeCharge)
 	{
 		// Still charging
 		m_ChargeCounter++;
@@ -107,7 +98,7 @@ void FirePit::UpdateCharging(void)
 
 void FirePit::UpdateErupting(void)
 {
-	if (m_EruptCounter < ERUPT_TIME)
+	if (m_EruptCounter < k_TimeErupt)
 	{
 		// Still erupting
 		m_EruptCounter++;
@@ -125,13 +116,13 @@ void FirePit::UpdateErupting(void)
 
 void FirePit::EmitCharge(void)
 {
-	for (int i = 0; i < NUM_CHARGING; i++)
+	for (int i = 0; i < k_ParticleNum_Charge; i++)
 	{
 		// Find the center of the circle
 		Position center(x+TILE_SIZE/2 - 2, y+TILE_SIZE*3/4 - 6);
 
 		// Find a random position in the hole's area
-		int maxDistance = TILE_SIZE*3/4;
+		int maxDistance = k_EmitRadius;
 		int distance = rand()%100 / 100.0f * maxDistance;
 		float angle = rand()%628; 
 		angle /= 100.0f;
@@ -142,13 +133,13 @@ void FirePit::EmitCharge(void)
 
 		Position from(center.x + startXChange, center.y + startYChange);
 
-		float chargePercentage = (float)m_ChargeCounter / CHARGE_TIME;
+		float chargePercentage = (float)m_ChargeCounter / k_TimeCharge;
 		int endXChange = startXChange * 0.05f*chargePercentage;
 		int endYChange = startYChange * 0.05f*chargePercentage;
 
 		Position to(from.x + endXChange, from.y + endYChange);
 
-		ParticleLava* p = new ParticleLava(from.x, from.y, to.x, to.y, SIZE_SMALL);
+		ParticleLava* p = new ParticleLava(from.x, from.y, to.x, to.y, k_ParticleSize_Charge);
 		p->Launch(1); // Suppress slightly
 		if ((from.x == to.x) && (from.y == to.y))
 		{
@@ -156,7 +147,7 @@ void FirePit::EmitCharge(void)
 			float percentage = (float)distance / (float)maxDistance;
 			// Make that percentage curve
 			percentage *= percentage;
-			int bounceHeight = chargePercentage * TIP_HEIGHT/2 * (1.0f - (percentage * TIP_CURVE)); // Vary by the percentage given in TIP_CURVE
+			int bounceHeight = chargePercentage * k_TipHeight/2 * (1.0f - (percentage * k_TipCurve)); // Vary by the percentage given in TIP_CURVE
 			p->Bounce(bounceHeight);
 		}
 		g_game->addGameObject(p);
@@ -165,13 +156,13 @@ void FirePit::EmitCharge(void)
 
 void FirePit::EmitEruption(void)
 {
-	for (int i = 0; i < NUM_ERUPTION; i++)
+	for (int i = 0; i < k_ParticleNum_Eruption; i++)
 	{
 		// Find the center of the circle
 		Position center(x+TILE_SIZE/2 - 4, y+TILE_SIZE*3/4 - 6);
 
 		// Find a random position in the hole's area
-		int maxDistance = TILE_SIZE*3/4;
+		int maxDistance = k_EruptionRadius;
 		int distance = rand()%100 / 100.0f * maxDistance + 1; // +1 at the end to prevent distance being 0 - center particles look odd (for some reason)
 		float angle = rand()%628; 
 		angle /= 100.0f;
@@ -187,7 +178,7 @@ void FirePit::EmitEruption(void)
 
 		Position to(from.x + endXChange, from.y + endYChange);
 
-		ParticleLava* p = new ParticleLava(from.x, from.y, to.x, to.y, SIZE_LARGE);
+		ParticleLava* p = new ParticleLava(from.x, from.y, to.x, to.y, k_ParticleSize_Eruption);
 		p->Launch(89);
 		if ((from.x == to.x) && (from.y == to.y))
 		{
@@ -195,7 +186,7 @@ void FirePit::EmitEruption(void)
 			float percentage = (float)distance / (float)maxDistance;
 			// Make that percentage curve
 			percentage *= percentage * percentage;
-			int bounceHeight = TIP_HEIGHT * (1.0f - (percentage * TIP_CURVE)); // Vary by the percentage given in TIP_CURVE
+			int bounceHeight = k_TipHeight * (1.0f - (percentage * k_TipCurve)); // Vary by the percentage given in TIP_CURVE
 			p->Bounce(bounceHeight);
 		}
 
@@ -213,9 +204,9 @@ void FirePit::IncCycle(void)
 
 		case CHARGING:	
 			{
-			float chargePercentage = (float)m_ChargeCounter / CHARGE_TIME;
-			if (chargePercentage < 1.0f) 
-				m_cycle = int(chargePercentage*(m_maxCycles-1)) + 1;
+			const float chargeProgressPercentage = (float)m_ChargeCounter / k_TimeCharge;
+			if (chargeProgressPercentage < 1.0f) 
+				m_cycle = int(chargeProgressPercentage*(m_maxCycles-1)) + 1;
 			}
 			break;
 		case ERUPTING:	

@@ -42,7 +42,7 @@ vector<int> LevelProgress::ComputeActivationLevels(bool print)
 	for (int i : numRoundsPerTier)
 	{
 		for (int j = 0; j < i; j++) // i times
-			coinsAfterRound *= COIN_INCREASE;
+			coinsAfterRound *= Inventory::k_CoinIncrease;
 
 		r_thresholds.push_back(coinsAfterRound);
 		count++;

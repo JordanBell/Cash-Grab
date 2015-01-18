@@ -16,6 +16,7 @@ class PowerupPull : public Powerup {
 public:
     static int value;
     
+    PowerupPull(int start_x, int start_y, int end_x, int end_y);
     PowerupPull(int start_x, int start_y, int end_x, int end_y, int _);
     
 	void OnCollect(void) override final;

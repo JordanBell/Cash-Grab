@@ -12,5 +12,7 @@ public:
 
 private:
 	Uint32 m_CoolingColorChange;
+	
+	static const Uint32 k_BaseColor = 0x00BB0000;
 };
 

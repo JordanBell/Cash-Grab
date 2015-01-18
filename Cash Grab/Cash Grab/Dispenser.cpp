@@ -4,14 +4,11 @@
 
 using namespace std;
 
-#define DISPENSING_STUTTER 35
-#define BURST_TIMES 5
-#define POWERUP_CHANCE 0.16f
-#define MULTISHOT_QUANTITY_THRESHOLD 20
+const float Dispenser::k_PowerupChance = 0.16f;
 
 Dispenser::Dispenser(const int x, const int y, const int ele)
-	: GameObject(x, y), m_Dispensing(false), m_BurstTicker(0), m_BurstAmount(0), m_SingleShotTicker(0), m_CurrentCost(START_MONEY), 
-	m_TimeElapsed(0), m_LaunchData(), m_CoinElement(ele), m_BurstDelay(DEFAULT_BURST_DELAY), m_FireRate(DEFAULT_FIRE_RATE)
+	: GameObject(x, y), m_Dispensing(false), m_BurstTicker(0), m_BurstAmount(0), m_SingleShotTicker(0), m_CurrentCost(Inventory::k_StartMoney), 
+	m_LaunchData(), m_CoinElement(ele), m_BurstDelay(k_DefaultBurstDelay), m_FireRate(k_DefaultFireRate)
 {
 	// Initialise level progress
 	m_Progress = new LevelProgress();
@@ -27,25 +24,21 @@ Dispenser::~Dispenser(void)
 
 void Dispenser::Update(int delta)
 {
-	m_TimeElapsed += delta;
-
-    if ((m_Dispensing) && (m_TimeElapsed >= DISPENSING_STUTTER))
+    if (m_Dispensing)
 	{
-		m_TimeElapsed = 0;
-
 		// Have the subclass handle the dispense list
 		HandleDispenseList(m_DispenseList);
 
 		// Remove any expended elements (int == 0)
 		DispenseList toRemove = DispenseList();
 
-		for (auto e : m_DispenseList)
-			if (e.second == 0)
-				toRemove.emplace_back(e);
+		for (auto tq : m_DispenseList)
+			if (tq->IsEmpty())
+				toRemove.emplace_back(tq);
 
 		// Remove them
-		for (auto e : toRemove)
-			m_DispenseList.remove(e);
+		for (auto tq : toRemove)
+			m_DispenseList.remove(tq);
 
 		// Stop dispensing if everything has now been dispensed
 		if (m_DispenseList.empty()) 
@@ -53,14 +46,14 @@ void Dispenser::Update(int delta)
 	}
 }
 
-const int Dispenser::ComputeListTotal(void)
+const int Dispenser::ComputeListTotal(void) const
 {
-	int r_total = 0;
+	int total = 0;
 
-	for (pair<string, int> pr : m_DispenseList)
-		r_total += pr.second;
+	for (auto tq : m_DispenseList)
+		total += tq->GetQuantity();
 
-	return r_total;
+	return total;
 }
 
 void Dispenser::Dispense(void)
@@ -75,7 +68,7 @@ void Dispenser::Dispense(void)
 			Inventory::GetCoinWallet(m_CoinElement)->Remove(m_CurrentCost);
 
 			// Increase the cost of the next coin set by the increase constant.
-			m_CurrentCost *= COIN_INCREASE; 
+			m_CurrentCost *= Inventory::k_CoinIncrease; 
 			// Note: We do this now, and not after dispensing, so that the number of coins dispensed is enough money for the player to afford the next price
 			
 			m_Dispensing = true;
@@ -115,7 +108,8 @@ void Dispenser::ForceDispense(int coinNum)
 void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 {
 	DispenseStyle dispenseStyle = m_LaunchData->style;
-	
+	dispenseStyle = BURST; // Override for testing
+
 	if (dispenseStyle == DUMP)
 	{
 		OnDump(dispenseList);
@@ -129,7 +123,7 @@ void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 			
 		m_BurstTicker++;
 
-		if (m_BurstTicker == m_BurstDelay) // Reset at max
+		if (m_BurstTicker == m_BurstDelay) // Reset when at max
 			m_BurstTicker = 0;
 	}
 	else if (dispenseStyle == SERPENTINE) // Serpentine or Sputter. Both work similarly. Differentiate within.
@@ -148,33 +142,6 @@ void Dispenser::HandleDispenseList(DispenseList& dispenseList)
 	}
 	else
 		throw runtime_error("Dispense style not recognised.");
-}
-
-void Dispenser::DispenseByType(const Position launchPos, const int launchAmount, const string type) const
-{
-	if (type == "bronzecoin")
-		LaunchThrowable<CoinBronze>(launchPos, launchAmount);
-	if (type == "silvercoin")
-		LaunchThrowable<CoinSilver>(launchPos, launchAmount);
-	if (type == "goldcoin")
-		LaunchThrowable<CoinGold>(launchPos, launchAmount);
-	if (type == "powerupsmash")
-		LaunchThrowable<PowerupSmash>(launchPos, launchAmount);
-	if (type == "poweruppull")
-		LaunchThrowable<PowerupPull>(launchPos, launchAmount);
-	if (type == "powerupmagnetism")
-		LaunchThrowable<PowerupMagnetism>(launchPos, launchAmount);
-}
-
-
-int Dispenser::GetListTotal(void) const
-{
-	int total = 0;
-
-	for (auto pair : m_DispenseList)
-		total += pair.second;
-
-	return total;
 }
 
 DispenseList Dispenser::DetermineCoinList(const int totalValue) const
@@ -232,13 +199,13 @@ DispenseList Dispenser::DetermineCoinList(const int totalValue) const
 	}
 
 	if (numBronze)
-		r_DispenseList.push_back(pair<string, int>("bronzecoin", numBronze));
+		r_DispenseList.push_back( new ThrowableQuantity<CoinBronze>(numBronze, m_CoinElement) );
 
 	if (numSilver)
-		r_DispenseList.push_back(pair<string, int>("silvercoin", numSilver));
-	
+		r_DispenseList.push_back( new ThrowableQuantity<CoinSilver>(numSilver, m_CoinElement) );
+
 	if (numGold)
-		r_DispenseList.push_back(pair<string, int>("goldcoin", numGold));
+		r_DispenseList.push_back( new ThrowableQuantity<CoinGold>(numGold, m_CoinElement) );
 
 	return r_DispenseList;
 }
@@ -280,12 +247,12 @@ void Dispenser::DetermineList(void)
 	//}
 
 	// Set the burst amount
-	m_BurstAmount = ComputeListTotal() / BURST_TIMES;
+	m_BurstAmount = ComputeListTotal() / k_NumBursts;
 }
 
 void Dispenser::AddPowerupsToList(void)
 {
-	bool willDispensePowerup = (rand()%100 < POWERUP_CHANCE*100);
+	bool willDispensePowerup = (rand()%100 < k_PowerupChance*100);
 
 	if (willDispensePowerup)
 	{
@@ -293,9 +260,15 @@ void Dispenser::AddPowerupsToList(void)
 
 		switch (randPowerupIndex)
 		{
-		case 0: m_DispenseList.push_back(pair<string, int>("powerupmagnetism", 1)); break;
-		case 1: m_DispenseList.push_back(pair<string, int>("poweruppull", 1)); break;
-		case 2: m_DispenseList.push_back(pair<string, int>("powerupsmash", 1)); break;
+		case 0: 
+			m_DispenseList.push_back( new ThrowableQuantity<PowerupMagnetism>(1) );
+			break;
+		case 1: 
+			m_DispenseList.push_back( new ThrowableQuantity<PowerupPull>(1) );
+			break;
+		case 2: 
+			m_DispenseList.push_back( new ThrowableQuantity<PowerupSmash>(1) );
+			break;
 		}
 	}
 }

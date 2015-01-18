@@ -1,6 +1,4 @@
 #pragma once
-#define START_MONEY 5
-#define COIN_INCREASE 1.25
 #include <vector>
 // Inventory::GetInstance().normCoins->GetAmount()
 class Key;
@@ -35,6 +33,9 @@ public:
 		return instance;
 	}
 
+	static const unsigned int k_StartMoney = 5;
+	static const float k_CoinIncrease;
+
 	// Get a coin wallet object based on the element
 	static Wallet* GetCoinWallet(const int ele);
 
@@ -50,9 +51,9 @@ public:
 
 private:
 	Inventory(void) 
-		: normCoins(new Wallet(START_MONEY)), normCash(0),
-		iceCoins(new Wallet(START_MONEY)), iceCash(0),
-		fireCoins(new Wallet(START_MONEY)), fireCash(0),
+		: normCoins(new Wallet(k_StartMoney)), normCash(0),
+		iceCoins(new Wallet(k_StartMoney)), iceCash(0),
+		fireCoins(new Wallet(k_StartMoney)), fireCash(0),
 		heldKeyIDs()
 	
 	{}

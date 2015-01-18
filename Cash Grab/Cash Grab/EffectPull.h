@@ -18,6 +18,9 @@ public:
     
     void OnStart() override;
     void OnEnd() override { }
+
+private:
+	static const unsigned int k_AngleSuppression = 1;
 };
 
 #endif /* defined(__CashGrab__EffectPull__) */

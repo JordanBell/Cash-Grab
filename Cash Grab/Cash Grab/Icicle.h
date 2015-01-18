@@ -4,11 +4,10 @@
 #include <list>
 #include "Resources.h"
 #include "Hazard.h"
+#include "ThrowableQuantity.h"
 using namespace std;
 
 #define BLAST_SUPPRESSION 0
-
-typedef list<pair<string, int>> DispenseList;
 
 class Icicle :
 	public PhysicsObject, public GameObject, public Hazard
@@ -37,27 +36,6 @@ private:
 
 	// Get a position in the blast radius for a throwable to go
 	const Position GetLaunchTo(void) const;
-
-	// Dispense a throwable based on a string type
-	void DispenseByType(const Position launchPos, const int launchAmount, const string type) const;
-
-	// Launch a particular type of throwable (modified from Dispenser)
-	template <class Throw_Type>
-	void LaunchThrowable(const Position start, const int count) const
-	{
-		for (int i = 0; i < count; i++)
-		{
-			// Find this throwable's target position
-			Position to = GetLaunchTo();
-
-			// Create a new throwable for that destination
-			Throw_Type* throwable = new Throw_Type(start.x, start.y, to.x, to.y, ICE);
-			throwable->Launch(BLAST_SUPPRESSION);
-
-			// Add it to the collidables list
-			g_game->addCollidable(throwable);
-		}
-	}
 };
 
 #undef BLASH_SUPPRESSION

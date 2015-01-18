@@ -10,8 +10,6 @@
 #include "CoinSilver.h"
 #include "CoinGold.h"
 
-#define ANGLE_SUPPRESSION 1
-#define MULTISHOT_QUANTITY_THRESHOLD 20
 #define POS 1.5*screen->w-5*TILE_SIZE, 3*TILE_SIZE-screen->h
 
 Sinkhole_Top::Sinkhole_Top(const SDL_Rect* targetBounds, RoomFire_Lower* roomPointer)
@@ -30,80 +28,53 @@ Sinkhole_Top::Sinkhole_Top(const SDL_Rect* targetBounds, RoomFire_Lower* roomPoi
 
 void Sinkhole_Top::OnDump(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
+		Position startOffset = Position(TILE_SIZE, 3*TILE_SIZE);
+		Position start = Position(x + startOffset.x, y + startOffset.y);
 
-		for (amount; amount > 0; amount--)
-		{
-			Position startOffset = Position(TILE_SIZE, 3*TILE_SIZE);
-			Position start = Position(x + startOffset.x, y + startOffset.y);
-
-			Position launchPos(start);
-			launchPos.x += rand()%(6*TILE_SIZE);
-			int launchAmount = 1;
-
-			DispenseByType(launchPos, launchAmount, type);
-		}
+		// Throw all of them
+		throwableQuantity->ThrowAll([start] { return Position(start.x + rand()%(6*TILE_SIZE), start.y); }, std::bind(&Sinkhole_Top::GetLaunchTo, this));
 	}
 }
 
 void Sinkhole_Top::OnBurst(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
+		int amount = throwableQuantity->GetQuantity();
 
-		if (amount > 0)
-		{
-			// Shoot a number of throwables from that slot, proportional to the total number being shot out. This will reduce times for large amounts of throwables to a maximum number of shot
-			int leftToLaunch;
+		int leftToLaunch;
 
-			if (m_BurstAmount <= 5)
-				leftToLaunch = amount;
-			else
-				leftToLaunch = min(amount, m_BurstAmount);
+		if (m_BurstAmount <= 5)
+			leftToLaunch = amount;
+		else
+			leftToLaunch = min(amount, m_BurstAmount);
+			
+		Position startOffset = Position(TILE_SIZE, 3*TILE_SIZE);
+		Position start = Position(x + startOffset.x, y + startOffset.y);
 
-
-			// Dispense a set of throwables for each row
-			for (leftToLaunch; leftToLaunch > 0; leftToLaunch--)
-			{
-				Position startOffset = Position(TILE_SIZE, 3*TILE_SIZE);
-				Position start = Position(x + startOffset.x, y + startOffset.y);
-
-				Position launchPos(start);
-				launchPos.x += rand()%(6*TILE_SIZE);
-
-				int launchAmount = 1;
-
-				// Launch that number of throwables from this slot
-				DispenseByType(launchPos, launchAmount, type);
-
-				amount--;
-			}
-		}
+		// Throw that many
+		throwableQuantity->Throw([start] { return Position(start.x + rand()%(6*TILE_SIZE), start.y); }, std::bind(&Sinkhole_Top::GetLaunchTo, this), leftToLaunch);
 	}
 }
 
 void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
+		int amount = throwableQuantity->GetQuantity();
 		int total = amount;
 
-		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerShot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
+		// Shoot a number proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
+		const int maxPerShot = (amount / k_MultishotQuantityThreshold) + 1;
 		int launchAmount = amount;
 		if (launchAmount > maxPerShot)
 			launchAmount = maxPerShot;
 
 		int slotNum = 0;
 
-		int n = m_SingleShotTicker % (12*2); // SlotNum in a NUM_SLOTS*2 idea of slots (as it loops over the NUM_SLOTS twice in the pattern)
+		int n = m_SingleShotTicker/GetFireRate() % (12*2); 
 		slotNum = (n < 12) ?
 					n :
 					((12*2)-1) - n;
@@ -113,8 +84,7 @@ void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
 
 		Position launchPos(start.x + slotNum*TILE_SIZE/2, start.y);
 
-		// Launch that number of throwables from this slot
-		DispenseByType(launchPos, launchAmount, type);
+		throwableQuantity->Throw(launchPos, std::bind(&Sinkhole_Top::GetLaunchTo, this), launchAmount);
 
 		amount -= launchAmount;
 	}
@@ -122,14 +92,13 @@ void Sinkhole_Top::OnSerpentine(DispenseList& dispenseList)
 
 void Sinkhole_Top::OnSputter(DispenseList& dispenseList)
 {
-	for (auto& dispensePair : dispenseList)
+	for (auto& throwableQuantity : dispenseList)
 	{
-		const string type = dispensePair.first;
-		int& amount = dispensePair.second;
+		int amount = throwableQuantity->GetQuantity();
 		int total = amount;
 
 		// Shoot a number of coins from that slot, proportional to the total number being shot out. This will reduce times for large amounts of coins to a maximum number of shot
-		const int maxPerShot = (amount / MULTISHOT_QUANTITY_THRESHOLD) + 1;
+		const int maxPerShot = (amount / k_MultishotQuantityThreshold) + 1;
 		int launchAmount = amount;
 		if (launchAmount > maxPerShot)
 			launchAmount = maxPerShot;
@@ -141,10 +110,8 @@ void Sinkhole_Top::OnSputter(DispenseList& dispenseList)
 
 		Position launchPos(start.x + slotNum*TILE_SIZE/2, start.y);
 
-		// Launch that number of throwables from this slot
-		DispenseByType(launchPos, launchAmount, type);
-
-		amount -= launchAmount;
+		// Launch that number of throwables
+		throwableQuantity->Throw(launchPos, std::bind(&Sinkhole_Top::GetLaunchTo, this), launchAmount);
 	}
 }
 

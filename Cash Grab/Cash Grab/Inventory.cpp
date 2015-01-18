@@ -2,6 +2,8 @@
 #include "LaunchData.h"
 #include "Camera.h"
 
+const float Inventory::k_CoinIncrease = 1.25f;
+
 Wallet* Inventory::GetCoinWallet(const int ele) 
 { 
 	if (ele == Element::NORMAL)

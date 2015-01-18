@@ -1,8 +1,5 @@
 #include "ParticleLava.h"
 
-#define BASE_COLOR 0x00BB0000
-#define BASE_COLOR_CHANGE 0x00050000
-
 ParticleLava::ParticleLava(const int sx, const int sy, const int ex, const int ey, Dimensions size)
 	: ParticleSimple(sx, sy, ex, ey), m_CoolingColorChange(0)
 {
@@ -36,7 +33,7 @@ ParticleLava::ParticleLava(const int sx, const int sy, const int ex, const int e
 	}
 
 
-	SetColor(BASE_COLOR - startDeviation);
+	SetColor(k_BaseColor - startDeviation);
 
 	// Find the rate of cooling
 	int changeKey = size.x; // Size determines the rate of cooling

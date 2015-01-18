@@ -9,22 +9,7 @@
 #include "PowerupMagnetism.h"
 #include "PowerupPull.h"
 #include "PowerupSmash.h"
-
-// A DispenseList holds types and quantities. These are implemented as pairs of strings and ints.
-typedef list<pair<string, int>> DispenseList;
-
-#define ANGLE_SUPPRESSION 1
-#define DEFAULT_BURST_DELAY 5
-#define DEFAULT_FIRE_RATE 1
-
-// Default burst delay for the burst dispense style. Controls the number of frames between OnBurst calls.
-const int k_DefaultBurstDelay = 5;
-
-// Default fire rate for the sputter and serpentine dispense styles. Controls the number of frames between OnSputter and OnSerpentine calls.
-const int k_DefaultFireRate = 1;
-
-// The suppression on the angle of launch when dispensing.
-const int k_AngleSuppression = 1;
+#include "ThrowableQuantity.h"
 
 class Dispenser :
 	public GameObject
@@ -53,7 +38,19 @@ public:
 	LevelProgress* GetProgress(void) { return m_Progress; }
 
 protected:
-	// Implement as a dispenser, giving an x and y position for the GameObject component, and a dispenser element.
+	// Default burst delay for the burst dispense style. Controls the number of frames between OnBurst calls.
+	static const unsigned int k_DefaultBurstDelay = 25;
+
+	// Default fire rate for the sputter and serpentine dispense styles. Controls the number of frames between OnSputter and OnSerpentine calls.
+	static const unsigned int k_DefaultFireRate = 5;
+
+	// The suppression on the angle of launch when dispensing.
+	static const unsigned int k_AngleSuppression = 1;
+
+	// The number of coins per shot at which multiple coins are shot from the same point (to save time at higher numbers)
+	static const unsigned int k_MultishotQuantityThreshold = 20;
+
+	// Implement as a dispenser, giving an x and y position for the GameObject component, and a dispenser element to determine coin element.
 	Dispenser(const int x, const int y, const int ele);
 
 	// Return a position to be launched do. (Each subclass handles this different based on the DispensePatterns)
@@ -64,31 +61,11 @@ protected:
 	virtual void OnSputter(DispenseList& dispenseList) = 0;
 	virtual void OnSerpentine(DispenseList& dispenseList) = 0;
 
+	// Extra virtual behaviour on dispense
 	virtual void OnDispense(void) {}
 
-	// Dispense a throwable based on a string type
-	void DispenseByType(const Position launchPos, const int launchAmount, const string type) const;
-
-	// Launch a particular type of throwable
-	template <class Throw_Type>
-	void LaunchThrowable(const Position start, const int count) const
-	{
-		for (int i = 0; i < count; i++)
-		{
-			// Find this throwable's target position
-			Position to = GetLaunchTo();
-
-			// Create a new throwable for that destination
-			Throw_Type* throwable = new Throw_Type(start.x, start.y, to.x, to.y, m_CoinElement);
-			throwable->Launch(ANGLE_SUPPRESSION);
-
-			// Add it to the collidables list
-			g_game->addCollidable(throwable);
-		}
-	}
-
 	// The dispense list holds types and quantities. Return the total quantity.
-	int GetListTotal(void) const;
+	const int ComputeListTotal(void) const;
 
 	void SetBurstDelay(const int newDelay) { m_BurstDelay = newDelay; }
 	void SetFireRate(const int newRate) { m_FireRate = newRate; }
@@ -122,14 +99,17 @@ private:
 	// Whether or not the dispenser is currently dispensing.
 	bool m_Dispensing;
 
-	// The counter between the last dispense - makes sure it doesn't call OnDispense for every frame.
-	int m_TimeElapsed;
-
 	// Time between bursts when in burst mode
 	int m_BurstDelay;
 
 	// Time between single shots sputter or serpentine modes
 	int m_FireRate;
+
+	// The chance of a powerup appearing per dispense
+	static const float k_PowerupChance;
+
+	// Number of bursts in burst mode
+	static const unsigned int k_NumBursts = 5;
 
 	// Delegate to the virtual functions On___() depending on the DispenseStyle
 	virtual void HandleDispenseList(DispenseList& dispenseList);
@@ -138,9 +118,6 @@ private:
 
 	// Determine and set the list of throwables to be dispensed
 	void DetermineList(void);
-
-	// Return the total amount in the currently held DispenseList
-	inline const int ComputeListTotal(void);
 
 	// Return whether or not the wallet contains the right amount of money to dispense.
 	const bool CanAfford(void) const;

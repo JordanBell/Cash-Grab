@@ -5,10 +5,7 @@
 #include "Wall.h"
 #include <cmath>
 
-#define TOTAL_ICICLES 25
-#define DROP_RATE 5
 #define POS -0.5*screen->w - 1.25*TILE_SIZE, 4.5*TILE_SIZE-screen->h
-#define HAMMER_TIME 10
 
 IcicleSmasher::IcicleSmasher(void)
 	: Dispenser(POS, Element::ICE), m_RemainingIcicles(0), m_HammerTicker(0)
@@ -23,9 +20,11 @@ IcicleSmasher::IcicleSmasher(void)
 	// Set up wall
 	g_game->addCollidable( new Wall(POS + 0.5*TILE_SIZE, 3.5*TILE_SIZE, 2.25*TILE_SIZE ));
 
-	SetBurstDelay(DEFAULT_BURST_DELAY*4);
-	SetFireRate(5);
+	SetBurstDelay(k_DefaultBurstDelay*3);
+	SetFireRate(k_DefaultFireRate*5);
 }
+
+#undef POS
 
 void IcicleSmasher::Render(void)
 {
@@ -50,23 +49,22 @@ void IcicleSmasher::Render(void)
 	GameObject::Render();
 }
 
-
 void IcicleSmasher::OnDispense(void)
 {
 	// Remaining icicles to drop equals the total number of icicles
-	m_RemainingIcicles = TOTAL_ICICLES;
+	m_RemainingIcicles = k_MaxIciclesPerDispense;
 
 	// Find the number of throwables per icicle (may not divide perfectly, but that's fine - will be handled in DropIcicles)
-	float perIcicle = (float)GetListTotal() / (float)TOTAL_ICICLES;
+	float perIcicle = (float)ComputeListTotal() / (float)k_MaxIciclesPerDispense;
 	m_ThrowablesPerIcicle = ceil(perIcicle);
 
-	m_HammerTicker = HAMMER_TIME;
+	m_HammerTicker = k_HammerTimeSpentDown;
 }
 
 void IcicleSmasher::OnDump(DispenseList& dispenseList)
 {
 	// Dispense all at once
-	DropIcicles(dispenseList, TOTAL_ICICLES);
+	DropIcicles(dispenseList, k_MaxIciclesPerDispense);
 }
 
 void IcicleSmasher::OnBurst(DispenseList& dispenseList)
@@ -99,7 +97,7 @@ void IcicleSmasher::DropIcicles(DispenseList& dispenseList, const int maxNumIcic
 	for (numIcicles; numIcicles > 0; numIcicles--)
 	{
 		// The number of throwables held within the icicle. This list will be passed to create the icicle, but first we need to build it.
-		DispenseList* icicleDispenseList = GetIcicleDispenseList(dispenseList);
+		DispenseList* icicleDispenseList = ComputeIcicleDispenseList(dispenseList);
 		Position iciclePos;
 		if (isSerpentine)
 			iciclePos = GetSerpentineLaunchTo();
@@ -113,23 +111,19 @@ void IcicleSmasher::DropIcicles(DispenseList& dispenseList, const int maxNumIcic
 	}
 }
 
-DispenseList* IcicleSmasher::GetIcicleDispenseList(DispenseList& dispenseList)
+DispenseList* IcicleSmasher::ComputeIcicleDispenseList(DispenseList& dispenseList)
 {
 	// The number of throwables held within the icicle. This list will be passed to create the icicle, but first we need to build it.
 	DispenseList* r_icicleDispenseList = new DispenseList();
 
 	// The number of remaining throwables to allocate
-	int toAllocate = min(m_ThrowablesPerIcicle, GetListTotal());
-
-	// There are two checks for whether or not we should keep looking through the dispense list. As defines, they will reassess.
-#define LIST_NOT_EMPTY (!dispenseList.empty())
-#define MORE_TO_ALLOCATE (toAllocate > 0)
+	int toAllocate = min(m_ThrowablesPerIcicle, ComputeListTotal());
 
 	// Ends when proper amount reached, or list becomes empty.
-	while (MORE_TO_ALLOCATE && LIST_NOT_EMPTY)
+	while ((toAllocate > 0) && (!dispenseList.empty()))
 	{
-		auto& frontPair = dispenseList.front();
-		int& frontAmount = frontPair.second;
+		auto& frontTQ = dispenseList.front();
+		int frontAmount = frontTQ->GetQuantity();
 
 		// Maybe the amount is 0, in which case we should pop it out
 		if (frontAmount == 0)
@@ -142,14 +136,11 @@ DispenseList* IcicleSmasher::GetIcicleDispenseList(DispenseList& dispenseList)
 			// Otherwise, find out how many of that throwable should be put in the icicle. Don't go past the number left to allocate
 			int thisIcicleAmount = min(frontAmount, toAllocate);
 
-			string frontType = frontPair.first;
-
 			// Add this number of throwables to the icicle's list
-			r_icicleDispenseList->push_back( pair<string, int>(frontType, thisIcicleAmount));
+			r_icicleDispenseList->emplace_back( frontTQ->Splice(thisIcicleAmount) );
 
 			// Some more has been allocated
 			toAllocate -= thisIcicleAmount;
-			frontAmount -= thisIcicleAmount; // As a reference, this affects the dispenser's dispenseList directly
 		}
 	} // The icicle's dispense list has now been allocated.
 
@@ -165,7 +156,7 @@ const Position IcicleSmasher::GetSerpentineLaunchTo(void)
 	int distanceFromCenter = 6*TILE_SIZE;
 
 	// Get an angle that naturally changes each call (using the ticker for single shot dispense methods)
-	float serpProgress = (((m_SingleShotTicker/GetFireRate())%TOTAL_ICICLES) / (float)TOTAL_ICICLES);
+	float serpProgress = (((m_SingleShotTicker/GetFireRate())%k_MaxIciclesPerDispense) / (float)k_MaxIciclesPerDispense);
 	float serpAngle = serpProgress * 6.28f;
 
 	Position launchToHere = Position();

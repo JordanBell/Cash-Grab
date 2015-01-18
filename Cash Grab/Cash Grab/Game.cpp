@@ -26,8 +26,6 @@
 
 #include "TextButton.h"
 
-#define INTERACT_COOLDOWN 15
-
 using namespace std;
 
 Game* g_game = nullptr;
@@ -39,8 +37,8 @@ Game::Game() : running(true), consoleCooldownCounter(0), m_InteractCooldown(0)
 
 	// Initialise all ENTITIES
 	//player = new Player((9.5*TILE_SIZE), (8*TILE_SIZE)); // NORM START
-	player = new Player(1.5*screen->w-TILE_SIZE/2, -screen->h + 2*TILE_SIZE); // FIRE ROOM
-	//player = new Player(-0.5*screen->w-TILE_SIZE/2, -screen->h + 2*TILE_SIZE); // ICE ROOM
+	//player = new Player(1.5*screen->w-TILE_SIZE/2, -screen->h + 2*TILE_SIZE); // FIRE ROOM
+	player = new Player(-0.5*screen->w-TILE_SIZE/2, -screen->h + 2*TILE_SIZE); // ICE ROOM
     g_player = player;
     
     m_EffectManager = new EffectManager();
@@ -169,7 +167,7 @@ void Game::HandleKeys()
 		if (m_InteractCooldown == 0) {
 			if (keystates[SDLK_f]) {
 				keys.f();
-				m_InteractCooldown = INTERACT_COOLDOWN;
+				m_InteractCooldown = k_InteractCooldown;
 			}
 		}
 		else m_InteractCooldown--;

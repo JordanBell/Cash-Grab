@@ -18,6 +18,7 @@ class PowerupSmash : public Powerup {
 public:
     static int value;
     
+    PowerupSmash(int start_x, int start_y, int end_x, int end_y);
     PowerupSmash(int start_x, int start_y, int end_x, int end_y, int _);
     
 	void OnCollect(void) override final;

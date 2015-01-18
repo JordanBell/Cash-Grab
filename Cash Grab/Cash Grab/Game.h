@@ -68,6 +68,9 @@ private:
     int lastUpdate; // Time of last update for delta tracking
 	int m_InteractCooldown;
 
+	// The number of frames until an interaction can be called again.
+	static const unsigned int k_InteractCooldown = 20;
+
 	//GameObjects
 	list<GameObject*> m_GameObjects;
     list<unique_ptr<GameObject>> m_GameObjectDeleteQueue;
